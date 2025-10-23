@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -250,8 +249,6 @@ export default function Pricing() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideWidth, setSlideWidth] = useState(0);
   const slideshowRef = useRef<HTMLDivElement | null>(null);
-
-  // Double the pricing plans for seamless looping
   const extendedPricingPlans = [...pricingPlans, ...pricingPlans];
 
   useEffect(() => {
@@ -264,10 +261,8 @@ export default function Pricing() {
         setCurrentSlide((prev) => prev % pricingPlans.length);
       }
     };
-
     window.addEventListener('resize', handleResize);
     handleResize();
-
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -307,14 +302,14 @@ export default function Pricing() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       id="pricing"
-      className="py-1 rounded-2xl shadow-xl relative overflow-hidden mx-4"
+      className="py-8 sm:py-12 lg:py-16 relative overflow-hidden mt-16 sm:mt-20 scroll-mt-[80px]"
       style={{ background: 'linear-gradient(to bottom right, var(--background), var(--card-bg))' }}
     >
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3 sm:mb-4" style={{ color: 'var(--foreground)' }}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12" style={{ color: 'var(--foreground)' }}>
           Our Pricing Plans
         </h2>
-        <p className="text-center mb-8 sm:mb-12 text-base sm:text-lg" style={{ color: 'var(--foreground)' }}>
+        <p className="text-center mb-6 sm:mb-8 lg:mb-12 text-sm sm:text-base lg:text-lg" style={{ color: 'var(--foreground)' }}>
           Professional Solutions Tailored to Your Business Needs
         </p>
         <div className="relative overflow-hidden" ref={slideshowRef}>
@@ -333,30 +328,30 @@ export default function Pricing() {
                 whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
               >
                 <div
-                  className={`relative p-4 sm:p-6 rounded-xl shadow-lg h-[320px] sm:h-[360px] flex flex-col justify-between transition-all duration-300 ${
+                  className={`relative p-4 sm:p-6 rounded-xl shadow-lg h-[360px] sm:h-[400px] lg:h-[420px] flex flex-col justify-between transition-all duration-300 ${
                     plan.popular ? "border-2 border-[var(--button-bg)]" : "border border-[var(--card-bg)]"
                   }`}
                   style={{ backgroundColor: 'var(--card-bg)' }}
                 >
                   {plan.popular && (
                     <span
-                      className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-md"
+                      className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md"
                       style={{ backgroundColor: 'var(--button-bg)' }}
                     >
                       Most Popular
                     </span>
                   )}
                   <div>
-                    <h3 className="text-lg sm:text-xl font-semibold mb-2 text-center" style={{ color: 'var(--foreground)' }}>
+                    <h3 className="text-base sm:text-lg lg:text-xl font-semibold mb-2 text-center" style={{ color: 'var(--foreground)' }}>
                       {plan.name}
                     </h3>
-                    <p className="text-center text-xs sm:text-sm mb-3 sm:mb-4" style={{ color: 'var(--foreground)' }}>
+                    <p className="text-center text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: 'var(--foreground)' }}>
                       {plan.description}
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-center mb-3 sm:mb-4" style={{ color: 'var(--button-bg)' }}>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-center mb-2 sm:mb-3" style={{ color: 'var(--button-bg)' }}>
                       From {plan.price}
                     </p>
-                    <ul className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 max-h-24 sm:max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--button-bg)] scrollbar-track-[var(--card-bg)]">
+                    <ul className="space-y-1 sm:space-y-2 mb-2 sm:mb-3 max-h-28 sm:max-h-32 lg:max-h-36 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--button-bg)] scrollbar-track-[var(--card-bg)]">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-center text-xs sm:text-sm" style={{ color: 'var(--foreground)' }}>
                           <CheckCircleIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0" style={{ color: 'var(--button-bg)' }} />
@@ -367,7 +362,7 @@ export default function Pricing() {
                   </div>
                   <div>
                     {plan.idealFor && (
-                      <p className="text-center text-xs sm:text-sm mb-3 sm:mb-4" style={{ color: 'var(--foreground)' }}>
+                      <p className="text-center text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: 'var(--foreground)' }}>
                         <span className="font-semibold">Ideal for:</span> {plan.idealFor}
                       </p>
                     )}
@@ -384,7 +379,7 @@ export default function Pricing() {
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ChevronLeftIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+            <ChevronLeftIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </motion.button>
           <motion.button
             onClick={goToNextSlide}
@@ -394,7 +389,7 @@ export default function Pricing() {
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ChevronRightIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+            <ChevronRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </motion.button>
         </div>
       </div>

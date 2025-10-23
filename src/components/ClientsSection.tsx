@@ -9,23 +9,23 @@ export default function ClientsSection() {
     { src: "/2.png", alt: "Client 4", url: "https://leasecaptain.com" },
     { src: "/black.png", alt: "Client 5", url: "https://vickins-technologies.onrender.com" },
     { src: "/flexi.png", alt: "Flexi", url: "#" },
+    { src: "/mti.png", alt: "crm", url: "#" },
+    { src: "/store.png", alt: "store", url: "#" },
+    { src: "/Jayden.png", alt: "ent", url: "#" },
+    { src: "/lovense.png", alt: "Blog", url: "#" },
   ];
-
-  // Duplicate 2x for continuous flow
   const extendedClients = [...clients, ...clients];
-
   return (
-    <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-[var(--background)]">
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        id="clients"
-        className="py-1 rounded-2xl shadow-xl relative overflow-hidden mx-4"
-        style={{ background: 'linear-gradient(to bottom right, var(--background), var(--card-bg))' }}
-      ></motion.section>
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8" style={{ color: 'var(--foreground)' }}>
+    <motion.section
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      id="clients"
+      className="py-8 sm:py-12 lg:py-16 bg-[var(--background)] mt-16 sm:mt-20 scroll-mt-[80px]"
+      style={{ background: 'linear-gradient(to bottom right, var(--background), var(--card-bg))' }}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12" style={{ color: 'var(--foreground)' }}>
           Our Clients
         </h2>
         <div className="overflow-hidden">
@@ -35,7 +35,7 @@ export default function ClientsSection() {
             transition={{
               repeat: Infinity,
               ease: "linear",
-              duration: 20, // slower = smoother
+              duration: 20,
             }}
             style={{ width: "200%" }}
           >
@@ -56,7 +56,7 @@ export default function ClientsSection() {
                     alt={client.alt}
                     fill
                     className="object-contain rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
-                    sizes="(max-width: 640px) 40vw, (max-width: 1024px) 20vw, 10vw"
+                    sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 15vw"
                   />
                 </a>
               </div>
@@ -64,6 +64,6 @@ export default function ClientsSection() {
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
