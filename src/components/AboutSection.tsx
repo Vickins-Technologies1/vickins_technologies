@@ -52,11 +52,11 @@ export default function AboutSection() {
         <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8 lg:gap-12">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="w-full md:w-1/2">
             <Image
-              src="/about.jpg"
-              alt="Vickins Technologies Team"
-              width={600}
-              height={400}
-              className="w-full h-auto rounded-xl shadow-2xl object-cover transform hover:scale-105 transition-transform duration-500"
+              src="/pnt.png"
+              alt="Vickins Technologies"
+              width={400}
+              height={200}
+              className="w-full h-auto transform hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>

@@ -13,6 +13,7 @@ interface PricingPlan {
 }
 
 const pricingPlans: PricingPlan[] = [
+  // ... (your pricingPlans array remains unchanged)
   {
     name: "E-commerce",
     description: "Complete online store",
@@ -52,12 +53,12 @@ const pricingPlans: PricingPlan[] = [
   {
     name: "Static Website",
     description: "Perfect for small businesses",
-    price: "KES 50,000+",
+    price: "KES 30,000+",
     features: [
       "Free Domain Name",
       "Website Security",
       "Free Lifetime Hosting",
-      "1-5 Pages",
+      "1-8 Pages",
       "5 Professional Emails",
       "Fast Loading Speed",
       "Unique Designs",
@@ -87,7 +88,7 @@ const pricingPlans: PricingPlan[] = [
   {
     name: "Blockchain & Crypto",
     description: "Crypto websites & dApps",
-    price: "KES 150,000+",
+    price: "KES 100,000+",
     features: [
       "Wallet Integration",
       "Smart Contracts",
@@ -105,7 +106,7 @@ const pricingPlans: PricingPlan[] = [
   {
     name: "Dynamic Website",
     description: "Database-driven sites",
-    price: "KES 100,000+",
+    price: "KES 80,000+",
     features: [
       "CMS Integration",
       "Database Management",
@@ -246,151 +247,149 @@ const pricingPlans: PricingPlan[] = [
 ];
 
 export default function Pricing() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [slideWidth, setSlideWidth] = useState(0);
-  const slideshowRef = useRef<HTMLDivElement | null>(null);
-  const extendedPricingPlans = [...pricingPlans, ...pricingPlans];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(1); // Default to 1 (safe for SSR)
 
+  // Safely determine items per view only on client
   useEffect(() => {
-    const handleResize = () => {
-      if (slideshowRef.current) {
-        const firstSlide = slideshowRef.current.querySelector('.flex > div') as HTMLElement | null;
-        if (firstSlide) {
-          setSlideWidth(firstSlide.getBoundingClientRect().width);
-        }
-        setCurrentSlide((prev) => prev % pricingPlans.length);
-      }
+    const updateItemsPerView = () => {
+      if (typeof window === "undefined") return;
+      if (window.innerWidth >= 1280) setItemsPerView(4);
+      else if (window.innerWidth >= 1024) setItemsPerView(3);
+      else if (window.innerWidth >= 768) setItemsPerView(3);
+      else if (window.innerWidth >= 640) setItemsPerView(2);
+      else setItemsPerView(1);
     };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
   }, []);
 
-  const goToPrevSlide = () => {
-    setCurrentSlide((prev) => {
-      let next = prev - 1;
-      if (next < 0) {
-        next = extendedPricingPlans.length + next;
-        setTimeout(() => {
-          setCurrentSlide(next % pricingPlans.length);
-        }, 800);
-      }
-      return next;
-    });
+  const totalSlides = pricingPlans.length;
+
+  const goToPrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
-  const goToNextSlide = () => {
-    setCurrentSlide((prev) => {
-      let next = prev + 1;
-      if (next >= extendedPricingPlans.length) {
-        next = next % extendedPricingPlans.length;
-        setTimeout(() => {
-          setCurrentSlide(next);
-        }, 800);
-      } else if (next >= pricingPlans.length) {
-        setTimeout(() => {
-          setCurrentSlide(next - pricingPlans.length);
-        }, 800);
-      }
-      return next;
-    });
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % totalSlides);
   };
+
+  // Triple the array for seamless infinite scroll
+  const extendedPlans = [...pricingPlans, ...pricingPlans, ...pricingPlans];
+  const offset = pricingPlans.length;
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7 }}
       id="pricing"
-      className="py-8 sm:py-12 lg:py-16 relative overflow-hidden mt-16 sm:mt-20 scroll-mt-[80px]"
-      style={{ background: 'linear-gradient(to bottom right, var(--background), var(--card-bg))' }}
+      className="py-10 lg:py-14 bg-gradient-to-br from-[var(--background)] to-[var(--card-bg)]"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12" style={{ color: 'var(--foreground)' }}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-4" style={{ color: 'var(--foreground)' }}>
           Our Pricing Plans
         </h2>
-        <p className="text-center mb-6 sm:mb-8 lg:mb-12 text-sm sm:text-base lg:text-lg" style={{ color: 'var(--foreground)' }}>
+        <p className="text-center text-sm sm:text-base mb-8 max-w-2xl mx-auto opacity-80" style={{ color: 'var(--foreground)' }}>
           Professional Solutions Tailored to Your Business Needs
         </p>
-        <div className="relative overflow-hidden" ref={slideshowRef}>
+
+        <div className="relative">
           <motion.div
             className="flex"
-            animate={{ x: -currentSlide * slideWidth }}
-            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            animate={{ x: `-${(currentIndex + offset) * (100 / itemsPerView)}%` }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
-            {extendedPricingPlans.map((plan, index) => (
-              <motion.div
-                key={`${plan.name}-${index}`}
-                className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-2 sm:px-3 mb-4 sm:mb-6"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+            {extendedPlans.map((plan, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 px-2 sm:px-3"
+                style={{ width: `${100 / itemsPerView}%` }}
               >
-                <div
-                  className={`relative p-4 sm:p-6 rounded-xl shadow-lg h-[360px] sm:h-[400px] lg:h-[420px] flex flex-col justify-between transition-all duration-300 ${
-                    plan.popular ? "border-2 border-[var(--button-bg)]" : "border border-[var(--card-bg)]"
-                  }`}
-                  style={{ backgroundColor: 'var(--card-bg)' }}
+                <motion.div
+                  className={`relative h-full p-4 sm:p-5 rounded-xl shadow-md flex flex-col transition-all duration-300 border-2 ${
+                    plan.popular ? "border-[var(--button-bg)]" : "border-transparent"
+                  } bg-[var(--card-bg)]`}
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  transition={{ duration: 0.25 }}
                 >
                   {plan.popular && (
                     <span
-                      className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md"
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold text-white shadow"
                       style={{ backgroundColor: 'var(--button-bg)' }}
                     >
-                      Most Popular
+                      Popular
                     </span>
                   )}
+
                   <div>
-                    <h3 className="text-base sm:text-lg lg:text-xl font-semibold mb-2 text-center" style={{ color: 'var(--foreground)' }}>
+                    <h3 className="text-lg sm:text-xl font-bold text-center mb-1" style={{ color: 'var(--foreground)' }}>
                       {plan.name}
                     </h3>
-                    <p className="text-center text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: 'var(--foreground)' }}>
+                    <p className="text-center text-xs sm:text-sm mb-3 opacity-80" style={{ color: 'var(--foreground)' }}>
                       {plan.description}
                     </p>
-                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-center mb-2 sm:mb-3" style={{ color: 'var(--button-bg)' }}>
+                    <p className="text-xl sm:text-2xl font-bold text-center mb-4" style={{ color: 'var(--button-bg)' }}>
                       From {plan.price}
                     </p>
-                    <ul className="space-y-1 sm:space-y-2 mb-2 sm:mb-3 max-h-28 sm:max-h-32 lg:max-h-36 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--button-bg)] scrollbar-track-[var(--card-bg)]">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center text-xs sm:text-sm" style={{ color: 'var(--foreground)' }}>
-                          <CheckCircleIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0" style={{ color: 'var(--button-bg)' }} />
-                          {feature}
+
+                    <ul className="space-y-1.5 mb-3 flex-1 overflow-y-auto max-h-40 text-xs sm:text-sm scrollbar-thin scrollbar-thumb-[var(--button-bg)] scrollbar-track-transparent">
+                      {plan.features.slice(0, 6).map((feature) => (
+                        <li key={feature} className="flex items-start" style={{ color: 'var(--foreground)' }}>
+                          <CheckCircleIcon className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" style={{ color: 'var(--button-bg)' }} />
+                          <span>{feature}</span>
                         </li>
                       ))}
+                      {plan.features.length > 6 && (
+                        <li className="text-xs opacity-70 italic">...and more</li>
+                      )}
                     </ul>
-                  </div>
-                  <div>
+
                     {plan.idealFor && (
-                      <p className="text-center text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: 'var(--foreground)' }}>
-                        <span className="font-semibold">Ideal for:</span> {plan.idealFor}
+                      <p className="text-center text-xs opacity-80" style={{ color: 'var(--foreground)' }}>
+                        <span className="font-medium">Ideal for:</span> {plan.idealFor}
                       </p>
                     )}
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             ))}
           </motion.div>
+
+          {/* Navigation Buttons */}
           <motion.button
-            onClick={goToPrevSlide}
-            className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 text-white p-2 sm:p-3 rounded-full shadow-lg transition duration-300"
-            style={{ backgroundColor: 'var(--button-bg)' }}
+            onClick={goToPrev}
+            className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full shadow-lg bg-[var(--button-bg)] text-white"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ChevronLeftIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronLeftIcon className="h-5 w-5" />
           </motion.button>
+
           <motion.button
-            onClick={goToNextSlide}
-            className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 text-white p-2 sm:p-3 rounded-full shadow-lg transition duration-300"
-            style={{ backgroundColor: 'var(--button-bg)' }}
+            onClick={goToNext}
+            className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full shadow-lg bg-[var(--button-bg)] text-white"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ChevronRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronRightIcon className="h-5 w-5" />
           </motion.button>
+        </div>
+
+        {/* Dots Indicator */}
+        <div className="flex justify-center mt-6 space-x-1.5">
+          {Array.from({ length: totalSlides }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === currentIndex ? "bg-[var(--button-bg)] w-6" : "bg-gray-400 w-2"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </motion.section>
