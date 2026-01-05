@@ -287,7 +287,7 @@ export default function Pricing() {
       viewport={{ once: true }}
       transition={{ duration: 0.7 }}
       id="pricing"
-      className="py-10 lg:py-14 bg-gradient-to-br from-[var(--background)] to-[var(--card-bg)]"
+      className="py-8 sm:py-12 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-4" style={{ color: 'var(--foreground)' }}>
