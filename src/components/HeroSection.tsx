@@ -8,87 +8,102 @@ export default function HeroSection() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2 }}
       id="home"
-      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, var(--navbar-bg) 0%, var(--button-bg) 100%)',
-      }}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Animated tech background particles */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,255,255,0.12)_0%,transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.1)_0%,transparent_60%)]" />
-        <div className="absolute inset-0 bg-grid-white/[0.03] animate-pulse-slow" />
+      {/* Tech Video Background - Full bleed */}
+      <div className="absolute inset-0 -z-10">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/bgd.jpg" // Optional: static fallback image for slow connections
+        >
+          {/* Option 1: Use a high-quality abstract tech video (recommended) */}
+          <source src="/videos/techbg2.mp4" type="video/mp4" />
+          <source src="/videos/techbg1.mp4" type="video/webm" />
+
+          {/* Fallback content if video fails to load */}
+          <div className="w-full h-full bg-gradient-to-br from-[var(--navbar-bg)] to-[var(--button-bg)]" />
+        </video>
+
+        {/* Dark overlay for text readability + premium feel */}
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      {/* Floating tech accent shapes */}
+      {/* Subtle animated glow accents on top of video */}
       <motion.div
-        className="absolute top-20 left-10 w-64 h-64 bg-[var(--button-bg)]/10 rounded-full blur-3xl"
-        animate={{ scale: [1, 1.2, 1], rotate: [0, 15, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-20 left-0 w-96 h-96 bg-[var(--button-bg)]/30 rounded-full blur-3xl -translate-x-1/2"
+        animate={{ scale: [1, 1.4, 1], rotate: [0, 25, 0] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-20 right-10 w-80 h-80 bg-[var(--button-bg)]/15 rounded-full blur-3xl"
-        animate={{ scale: [1, 1.3, 1], rotate: [0, -10, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute bottom-10 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl translate-x-1/3"
+        animate={{ scale: [1.1, 1.5, 1.1], rotate: [0, -20, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
       />
 
-      <div className="container mx-auto px-6 lg:px-8 relative z-10 text-center">
+      {/* Content - Centered and readable */}
+      <div className="relative z-10 w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto text-center">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.4 }}
         >
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
-            <span className="bg-gradient-to-r from-white to-[var(--button-bg)] bg-clip-text text-transparent">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-2xl">
+            <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
               Igniting Success
             </span>
             <br className="sm:hidden" />
-            <span className="text-white/90"> with Next-Gen Technology</span>
+            <span className="text-white"> with Next-Gen Technology</span>
           </h1>
 
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-xl sm:text-2xl lg:text-3xl text-white/80 max-w-3xl mx-auto mb-10 leading-relaxed"
+            transition={{ delay: 0.8, duration: 0.9 }}
+            className="text-xl sm:text-2xl lg:text-3xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed drop-shadow-lg"
           >
             We build powerful, scalable digital solutions that transform businesses and drive measurable growth.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.7 }}
+            transition={{ delay: 1.1, duration: 0.8 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
             <a
               href="#services"
-              className="group relative inline-flex items-center gap-3 bg-white text-[var(--button-bg)] font-bold px-10 py-5 rounded-full shadow-2xl hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+              className="group relative inline-flex items-center gap-4 bg-white text-[var(--button-bg)] font-bold px-10 py-5 rounded-full shadow-2xl hover:shadow-[0_25px_50px_rgba(0,0,0,0.4)] transition-all duration-500 hover:-translate-y-3 overflow-hidden"
             >
               <span className="relative z-10">Explore Our Solutions</span>
-              <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white to-gray-100 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform duration-300" />
+              <span className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity" />
             </a>
 
             <a
               href="#contact"
-              className="group inline-flex items-center gap-3 px-10 py-5 rounded-full border-2 border-white/30 text-white font-semibold hover:bg-white/10 transition-all duration-500 hover:scale-105"
+              className="group inline-flex items-center gap-3 px-10 py-5 rounded-full border-2 border-white/50 text-white font-semibold backdrop-blur-md hover:bg-white/10 hover:border-white/70 transition-all duration-500 hover:scale-110"
             >
               Get a Free Consultation
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
             </a>
           </motion.div>
 
-          {/* Subtle trust indicators */}
+          {/* Trust badges */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-            className="mt-16 flex flex-wrap justify-center gap-8 text-white/70 text-sm uppercase tracking-wider font-medium"
+            transition={{ delay: 1.4, duration: 0.8 }}
+            className="mt-20 flex flex-wrap justify-center gap-8 text-white/80 text-sm uppercase tracking-widest font-medium drop-shadow"
           >
-            <div>Trusted by 20+ Businesses</div>
-            <div>100% Client Satisfaction</div>
-            <div>4+ Years of Excellence</div>
+            <span>Trusted by 20+ Businesses</span>
+            <span>•</span>
+            <span>100% Client Satisfaction</span>
+            <span>•</span>
+            <span>4+ Years of Excellence</span>
           </motion.div>
         </motion.div>
       </div>

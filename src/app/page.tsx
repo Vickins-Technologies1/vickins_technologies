@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Add useEffect
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
@@ -17,11 +17,11 @@ export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Set light theme as default on initial render
+  // Ensure light mode on first load
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", "light");
     setIsDarkMode(false);
-  }, []); // Empty dependency array to run once on mount
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
@@ -32,12 +32,24 @@ export default function Home() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div className="min-h-screen font-[var(--font-sans)]">
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} isDarkMode={isDarkMode} toggleSidebar={toggleSidebar} />
+    <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
+      {/* Navbar stays on top, full width */}
+      <Navbar
+        isDarkMode={isDarkMode}
+        toggleTheme={toggleTheme}
+        toggleSidebar={toggleSidebar}
+      />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        isDarkMode={isDarkMode}
+        toggleSidebar={toggleSidebar}
+      />
 
-      <main className="container mx-auto px-4 py-12">
-        <HeroSection />
+      {/* Hero Section: Full-bleed, full viewport height */}
+      <HeroSection />
+
+      {/* All other sections: Contained with proper inner padding */}
+      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
@@ -47,6 +59,7 @@ export default function Home() {
         <ContactSection />
       </main>
 
+      {/* Footer: Full width or contained — your choice */}
       <Footer />
     </div>
   );
