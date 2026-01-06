@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/mongodb';
 import type { User } from '@/types/User';
 
-const handler = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -22,14 +22,14 @@ const handler = NextAuth({
         const user = await usersCollection.findOne({ email: credentials.email });
         if (!user) return null;
 
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(credentials.password as string, user.password);
         if (!isValid) return null;
 
         return {
           id: user._id?.toString(),
           name: user.name,
           email: user.email,
-          role: user.role, // Include role in session
+          role: user.role, // Include role for JWT callback
         };
       },
     }),
@@ -55,4 +55,4 @@ const handler = NextAuth({
   },
 });
 
-export { handler as GET, handler as POST };
+export { handlers as GET, handlers as POST };
