@@ -1,11 +1,10 @@
-// src/app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/mongodb';
 import type { User } from '@/types/User';
 
-const { handlers, auth, signIn, signOut } = NextAuth({
+const { handlers } = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -55,5 +54,5 @@ const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
+// Only export the handlers for GET and POST
 export { handlers as GET, handlers as POST };
-export { auth, signIn, signOut };
