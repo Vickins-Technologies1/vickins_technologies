@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/mongodb';
 import type { User } from '@/types/User';
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -29,7 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user._id?.toString(),
           name: user.name,
           email: user.email,
-          role: user.role, // Include role for JWT callback
+          role: user.role,
         };
       },
     }),
@@ -56,3 +56,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 
 export { handlers as GET, handlers as POST };
+export { auth, signIn, signOut };
