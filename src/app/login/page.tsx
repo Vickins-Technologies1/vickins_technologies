@@ -1,83 +1,118 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
 
-export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const router = useRouter();
+export default function LoginPage() {
+  const [isSignup, setIsSignup] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    setError('');
+    setLoading(true);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    if (isSignup) {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name: name.trim() || undefined }),
+      });
 
-    if (res?.error) {
-      setError("Invalid email or password.");
-      setIsLoading(false);
+      if (res.ok) {
+        await signIn('credentials', { email, password, redirect: true, callbackUrl: '/admin' });
+      } else {
+        const data = await res.json();
+        setError(data.error === 'User already exists' 
+          ? 'This email is already registered. Please log in.' 
+          : 'Signup failed. Try again.'
+        );
+      }
     } else {
-      router.push("/admin/dashboard");
-      router.refresh(); // Ensures fresh session data
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Invalid email or password');
+      } else {
+        window.location.href = '/admin';
+      }
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-      <div className="w-full max-w-md p-8 bg-[var(--card-bg)] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800">
-        <h2 className="text-3xl font-bold text-center mb-8 text-[var(--foreground)]">
-          Vickins Admin Login
+    <div className="min-h-screen flex items-center justify-center bg-[var(--background)] px-4">
+      <div className="w-full max-w-md p-8 bg-[var(--card-bg)] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700">
+        <h2 className="text-3xl font-bold text-center text-[var(--foreground)] mb-8">
+          {isSignup ? 'Create Admin Account' : 'Admin Login'}
         </h2>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-center">
-            {error}
-          </div>
-        )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {isSignup && (
+            <input
+              type="text"
+              placeholder="Full Name (optional)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 bg-[var(--background)] text-[var(--foreground)] border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]"
+            />
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
           <input
             type="email"
+            placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="admin@vickinstechnologies.com"
-            className="w-full px-4 py-3 bg-[var(--background)] border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] transition"
             required
-            disabled={isLoading}
+            className="w-full px-4 py-3 bg-[var(--background)] text-[var(--foreground)] border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]"
           />
+
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full px-4 py-3 bg-[var(--background)] border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] transition"
             required
-            disabled={isLoading}
+            className="w-full px-4 py-3 bg-[var(--background)] text-[var(--foreground)] border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]"
           />
+
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white font-medium rounded-lg transition flex items-center justify-center gap-2"
+            disabled={loading}
+            className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-70"
           >
-            {isLoading && (
-              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            )}
-            {isLoading ? "Signing in..." : "Login"}
+            {loading ? 'Processing...' : (isSignup ? 'Sign Up' : 'Login')}
           </button>
+
+          {error && (
+            <p className="text-red-500 text-center text-sm bg-red-50 dark:bg-red-900/30 py-2 rounded">
+              {error}
+            </p>
+          )}
         </form>
+
+        <p className="text-center mt-6 text-[var(--foreground)] text-sm">
+          {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <button
+            type="button"
+            onClick={() => {
+              setIsSignup(!isSignup);
+              setError('');
+            }}
+            className="text-[var(--button-bg)] font-medium hover:underline"
+          >
+            {isSignup ? 'Log In' : 'Sign Up'}
+          </button>
+        </p>
       </div>
     </div>
   );
