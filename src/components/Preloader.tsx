@@ -88,40 +88,40 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
           />
         </div>
 
-        {/* Company name with elegant letter reveal */}
-        <div className="flex flex-col items-center gap-8">
-          <h1
-            className="text-4xl sm:text-5xl font-extralight tracking-wider overflow-hidden"
-            style={{ color: textColor }}
-          >
-            <span className="inline-block animate-letter-reveal">
-              {"VICKINS TECH".split("").map((letter, i) => (
-                <span
-                  key={i}
-                  className="inline-block opacity-0"
-                  style={{
-                    animation: `letterFade 0.03s ease-out forwards`,
-                    animationDelay: `${1.2 + i * 0.06}s`,
-                  }}
-                >
-                  {letter === " " ? "\u00A0" : letter}
-                </span>
-              ))}
-            </span>
-          </h1>
+{/* Company name with elegant letter reveal */}
+<div className="flex flex-col items-center gap-8">
+  <h1
+    className="text-4xl sm:text-5xl font-bold tracking-wider overflow-hidden" // Changed from font-extralight to font-bold
+    style={{ color: textColor }}
+  >
+    <span className="inline-block animate-letter-reveal">
+      {"VICKINS TECHNOLOGIES".split("").map((letter, i) => (
+        <span
+          key={i}
+          className="inline-block opacity-0"
+          style={{
+            animation: `letterFade 0.03s ease-out forwards`,
+            animationDelay: `${1.2 + i * 0.03}s`,
+          }}
+        >
+          {letter === " " ? "\u00A0" : letter}
+        </span>
+      ))}
+    </span>
+  </h1>
 
-          {/* Sleek scanning loader bar */}
-          <div className="relative w-72 h-1 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="absolute inset-y-0 left-0 w-32 animate-scan-bar"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
-                boxShadow: `0 0 20px ${glowColor}`,
-              }}
-            />
-            <div className="absolute inset-0 animate-bar-glow" />
-          </div>
-        </div>
+  {/* Sleek scanning loader bar */}
+  <div className="relative w-72 h-1 bg-white/10 rounded-full overflow-hidden">
+    <div
+      className="absolute inset-y-0 left-0 w-32 animate-scan-bar"
+      style={{
+        background: `linear-gradient(90deg, transparent, ${primaryColor}, transparent)`,
+        boxShadow: `0 0 20px ${glowColor}`,
+      }}
+    />
+    <div className="absolute inset-0 animate-bar-glow" />
+  </div>
+</div>
       </div>
 
       <style jsx>{`
