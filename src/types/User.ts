@@ -1,8 +1,8 @@
 // src/types/User.ts
-export interface User {
+export interface DbUser {
   _id?: string;
   email: string;
-  password: string; // hashed
+  password: string; 
   name?: string;
-  role: 'user' | 'admin'; // NEW: role field
+  role: 'user' | 'admin';
 }
