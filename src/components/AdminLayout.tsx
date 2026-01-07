@@ -1,9 +1,10 @@
-'use client';
+// src/components/AdminLayout.tsx
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { 
   LayoutDashboard, 
   Users, 
@@ -15,11 +16,11 @@ import {
   LogOut,
   Copyright,
   Mail,
-  FileText // New icon for Quotations
-} from 'lucide-react';
+  FileText
+} from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
+  const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -27,39 +28,40 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Theme toggle with persistence
   const toggleTheme = () => {
-    const newTheme = !isDarkMode ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    const newTheme = !isDarkMode ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
     setIsDarkMode(!isDarkMode);
   };
 
   // Load saved theme preference
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      setIsDarkMode(savedTheme === 'dark');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      setIsDarkMode(savedTheme === "dark");
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
       setIsDarkMode(true);
     }
   }, []);
 
-  // Auth check
+  // Auth check – redirect if not authenticated or not admin
   useEffect(() => {
-    if (status === 'loading') return;
+    if (isPending) return;
 
-    if (!session) {
-      router.push('/login');
+    if (!session?.user) {
+      router.push("/login");
       return;
     }
 
-    if (session.user.role !== 'admin') {
-      router.push('/admin/unauthorized');
+    if (session.user.role !== "admin") {
+      router.push("/admin/unauthorized"); // or just "/login"
     }
-  }, [session, status, router]);
+  }, [session, isPending, router]);
 
-  if (status === 'loading' || !session || session.user.role !== 'admin') {
+  // Loading state
+  if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="text-center space-y-4">
@@ -70,19 +72,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  // Access denied (non-admin or no session)
+  if (!session?.user || session.user.role !== "admin") {
+    return null; // Redirect is handled in useEffect
+  }
+
   const navItems = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/users', label: 'Users', icon: Users },
-    { href: '/admin/quotations', label: 'Quotations', icon: FileText }, // Added Quotations nav item
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/admin/quotations", label: "Quotations", icon: FileText },
+    { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/login");
+  };
 
   return (
     <div className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased">
       {/* Sidebar */}
       <aside
         className={`
-          ${sidebarOpen ? 'w-64' : 'w-20'} 
+          ${sidebarOpen ? "w-64" : "w-20"} 
           transition-all duration-300 ease-in-out
           bg-[var(--sidebar-bg)] border-r border-[var(--border)]
           flex flex-col h-screen sticky top-0 overflow-hidden
@@ -94,7 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <h1
             className={`
               font-bold text-xl tracking-tight text-[var(--sidebar-text)]
-              ${!sidebarOpen && 'hidden'}
+              ${!sidebarOpen && "hidden"}
             `}
           >
             Admin
@@ -102,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--sidebar-text)] transition-colors"
-            aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
             {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
           </button>
@@ -121,13 +133,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={`
                       flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200
                       ${isActive 
-                        ? 'bg-[var(--primary)]/15 text-[var(--primary)] font-medium shadow-sm' 
-                        : 'text-[var(--sidebar-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--foreground)]'
+                        ? "bg-[var(--primary)]/15 text-[var(--primary)] font-medium shadow-sm" 
+                        : "text-[var(--sidebar-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--foreground)]"
                       }
                     `}
                   >
                     <Icon size={20} className="min-w-[20px]" />
-                    <span className={`${!sidebarOpen && 'hidden'} truncate`}>{item.label}</span>
+                    <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
                   </Link>
                 </li>
               );
@@ -137,9 +149,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Sidebar Footer */}
         <div className="border-t border-[var(--border)] p-4">
-          <div className={`flex items-center gap-3 text-xs text-[var(--muted)] ${!sidebarOpen && 'justify-center'}`}>
+          <div className={`flex items-center gap-3 text-xs text-[var(--muted)] ${!sidebarOpen && "justify-center"}`}>
             <Copyright size={14} />
-            <span className={`${!sidebarOpen && 'hidden'}`}>
+            <span className={`${!sidebarOpen && "hidden"}`}>
               2026 Vickins. All rights reserved.
             </span>
           </div>
@@ -183,7 +195,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </p>
               </div>
               <button
-                onClick={() => signOut({ callbackUrl: '/login' })}
+                onClick={handleSignOut}
                 className="
                   flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 
                   text-white text-sm font-medium rounded-lg 
@@ -203,7 +215,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {children}
           </div>
         </main>
-
       </div>
     </div>
   );

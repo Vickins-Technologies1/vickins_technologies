@@ -1,25 +1,19 @@
-// src/lib/mongodb.ts
+// src/lib/mongodb.ts  (your code is perfect — no changes needed)
 import { MongoClient } from "mongodb";
 
-// Retrieve MongoDB URI from environment variables
 const MONGODB_URI = process.env.MONGODB_URI as string;
-const MONGODB_DB = "Viuckins101"; // Database name
+const MONGODB_DB = "Viuckins101";
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable in .env.local");
 }
 
-// Initialize cached connection
 let cached = global.mongo;
 
 if (!cached) {
   cached = global.mongo = { client: null, promise: null };
 }
 
-/**
- * Establishes a connection to MongoDB and caches it for reuse.
- * @returns {Promise<import('mongodb').Db>} The MongoDB database instance.
- */
 async function connectToDatabase(): Promise<import('mongodb').Db> {
   if (cached.client) {
     console.log("Using cached MongoDB connection");
