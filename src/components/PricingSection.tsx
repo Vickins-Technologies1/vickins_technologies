@@ -1,4 +1,6 @@
+// src/components/PricingSection.tsx
 "use client";
+
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -13,7 +15,6 @@ interface PricingPlan {
 }
 
 const pricingPlans: PricingPlan[] = [
-  // ... (your pricingPlans array remains unchanged)
   {
     name: "E-commerce",
     description: "Complete online store",
@@ -248,25 +249,29 @@ const pricingPlans: PricingPlan[] = [
 
 export default function Pricing() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerView, setItemsPerView] = useState(1); // Default to 1 (safe for SSR)
+  const [itemsPerView, setItemsPerView] = useState(1);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  // Safely determine items per view only on client
+  // Update items per view on resize (client-side only)
   useEffect(() => {
-    const updateItemsPerView = () => {
+    const updateItems = () => {
       if (typeof window === "undefined") return;
-      if (window.innerWidth >= 1280) setItemsPerView(4);
-      else if (window.innerWidth >= 1024) setItemsPerView(3);
-      else if (window.innerWidth >= 768) setItemsPerView(3);
-      else if (window.innerWidth >= 640) setItemsPerView(2);
-      else setItemsPerView(1);
+      const width = window.innerWidth;
+      if (width >= 1280) return setItemsPerView(4);
+      if (width >= 1024) return setItemsPerView(3);
+      if (width >= 768) return setItemsPerView(2);
+      if (width >= 640) return setItemsPerView(2);
+      setItemsPerView(1);
     };
 
-    updateItemsPerView();
-    window.addEventListener("resize", updateItemsPerView);
-    return () => window.removeEventListener("resize", updateItemsPerView);
+    updateItems();
+    window.addEventListener("resize", updateItems);
+    return () => window.removeEventListener("resize", updateItems);
   }, []);
 
   const totalSlides = pricingPlans.length;
+  const extendedPlans = [...pricingPlans, ...pricingPlans, ...pricingPlans];
+  const offset = pricingPlans.length;
 
   const goToPrev = () => {
     setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
@@ -276,9 +281,38 @@ export default function Pricing() {
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
   };
 
-  // Triple the array for seamless infinite scroll
-  const extendedPlans = [...pricingPlans, ...pricingPlans, ...pricingPlans];
-  const offset = pricingPlans.length;
+  // Optional: Swipe support (touch gestures)
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    let startX = 0;
+    let diffX = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      diffX = e.touches[0].clientX - startX;
+    };
+
+    const onTouchEnd = () => {
+      if (diffX > 50) goToPrev();
+      if (diffX < -50) goToNext();
+      diffX = 0;
+    };
+
+    el.addEventListener("touchstart", onTouchStart);
+    el.addEventListener("touchmove", onTouchMove);
+    el.addEventListener("touchend", onTouchEnd);
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
 
   return (
     <motion.section
@@ -287,18 +321,21 @@ export default function Pricing() {
       viewport={{ once: true }}
       transition={{ duration: 0.7 }}
       id="pricing"
-      className="py-8 sm:py-12 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-12 sm:py-16 lg:py-20 mt-16 sm:mt-20 scroll-mt-[80px]"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-4" style={{ color: 'var(--foreground)' }}>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4" style={{ color: 'var(--foreground)' }}>
           Our Pricing Plans
         </h2>
-        <p className="text-center text-sm sm:text-base mb-8 max-w-2xl mx-auto opacity-80" style={{ color: 'var(--foreground)' }}>
+        <p className="text-center text-base sm:text-lg mb-8 sm:mb-12 max-w-2xl mx-auto opacity-80" style={{ color: 'var(--foreground)' }}>
           Professional Solutions Tailored to Your Business Needs
         </p>
 
-        <div className="relative">
+        {/* Carousel Wrapper */}
+        <div className="relative overflow-hidden">
+          {/* Cards */}
           <motion.div
+            ref={carouselRef}
             className="flex"
             animate={{ x: `-${(currentIndex + offset) * (100 / itemsPerView)}%` }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -306,87 +343,87 @@ export default function Pricing() {
             {extendedPlans.map((plan, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 px-2 sm:px-3"
+                className="flex-shrink-0 px-2 sm:px-3 md:px-4"
                 style={{ width: `${100 / itemsPerView}%` }}
               >
                 <motion.div
-                  className={`relative h-full p-4 sm:p-5 rounded-xl shadow-md flex flex-col transition-all duration-300 border-2 ${
-                    plan.popular ? "border-[var(--button-bg)]" : "border-transparent"
+                  className={`relative h-full p-5 sm:p-6 rounded-2xl shadow-lg flex flex-col transition-all duration-300 border-2 ${
+                    plan.popular ? "border-[var(--button-bg)] scale-105" : "border-transparent"
                   } bg-[var(--card-bg)]`}
-                  whileHover={{ scale: 1.03, y: -4 }}
+                  whileHover={{ scale: 1.03, y: -8 }}
                   transition={{ duration: 0.25 }}
                 >
                   {plan.popular && (
                     <span
-                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold text-white shadow"
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-sm font-semibold text-white shadow-md"
                       style={{ backgroundColor: 'var(--button-bg)' }}
                     >
-                      Popular
+                      Popular Choice
                     </span>
                   )}
 
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-center mb-1" style={{ color: 'var(--foreground)' }}>
+                  <div className="text-center mb-5">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>
                       {plan.name}
                     </h3>
-                    <p className="text-center text-xs sm:text-sm mb-3 opacity-80" style={{ color: 'var(--foreground)' }}>
+                    <p className="text-sm sm:text-base opacity-80 mb-3" style={{ color: 'var(--foreground)' }}>
                       {plan.description}
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-center mb-4" style={{ color: 'var(--button-bg)' }}>
+                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--button-bg)' }}>
                       From {plan.price}
                     </p>
-
-                    <ul className="space-y-1.5 mb-3 flex-1 overflow-y-auto max-h-40 text-xs sm:text-sm scrollbar-thin scrollbar-thumb-[var(--button-bg)] scrollbar-track-transparent">
-                      {plan.features.slice(0, 6).map((feature) => (
-                        <li key={feature} className="flex items-start" style={{ color: 'var(--foreground)' }}>
-                          <CheckCircleIcon className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" style={{ color: 'var(--button-bg)' }} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                      {plan.features.length > 6 && (
-                        <li className="text-xs opacity-70 italic">...and more</li>
-                      )}
-                    </ul>
-
-                    {plan.idealFor && (
-                      <p className="text-center text-xs opacity-80" style={{ color: 'var(--foreground)' }}>
-                        <span className="font-medium">Ideal for:</span> {plan.idealFor}
-                      </p>
-                    )}
                   </div>
+
+                  <ul className="space-y-2 sm:space-y-3 mb-6 flex-1 text-sm sm:text-base">
+                    {plan.features.slice(0, 8).map((feature) => (
+                      <li key={feature} className="flex items-start gap-2" style={{ color: 'var(--foreground)' }}>
+                        <CheckCircleIcon className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--button-bg)' }} />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                    {plan.features.length > 8 && (
+                      <li className="text-sm opacity-70 italic pl-7">...and more features</li>
+                    )}
+                  </ul>
+
+                  {plan.idealFor && (
+                    <p className="text-center text-sm opacity-80 mt-auto" style={{ color: 'var(--foreground)' }}>
+                      <span className="font-medium">Ideal for:</span> {plan.idealFor}
+                    </p>
+                  )}
                 </motion.div>
               </div>
             ))}
           </motion.div>
 
-          {/* Navigation Buttons */}
+          {/* Navigation Buttons – visible on all screens */}
           <motion.button
             onClick={goToPrev}
-            className="absolute left-0 sm:left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full shadow-lg bg-[var(--button-bg)] text-white"
-            whileHover={{ scale: 1.1 }}
+            className="absolute left-0 sm:left-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 rounded-full shadow-xl bg-[var(--button-bg)]/90 text-white hover:bg-[var(--button-bg)] transition-all"
+            whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
           >
-            <ChevronLeftIcon className="h-5 w-5" />
+            <ChevronLeftIcon className="h-6 w-6 sm:h-7 sm:w-7" />
           </motion.button>
 
           <motion.button
             onClick={goToNext}
-            className="absolute right-0 sm:right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full shadow-lg bg-[var(--button-bg)] text-white"
-            whileHover={{ scale: 1.1 }}
+            className="absolute right-0 sm:right-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 rounded-full shadow-xl bg-[var(--button-bg)]/90 text-white hover:bg-[var(--button-bg)] transition-all"
+            whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
           >
-            <ChevronRightIcon className="h-5 w-5" />
+            <ChevronRightIcon className="h-6 w-6 sm:h-7 sm:w-7" />
           </motion.button>
         </div>
 
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-6 space-x-1.5">
+        {/* Dots Indicator – centered & responsive */}
+        <div className="flex justify-center mt-6 sm:mt-8 space-x-2 sm:space-x-3">
           {Array.from({ length: totalSlides }).map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === currentIndex ? "bg-[var(--button-bg)] w-6" : "bg-gray-400 w-2"
+              className={`h-2.5 sm:h-3 rounded-full transition-all duration-300 ${
+                i === currentIndex ? "bg-[var(--button-bg)] w-6 sm:w-8" : "bg-gray-400/50 w-2.5 sm:w-3"
               }`}
             />
           ))}
