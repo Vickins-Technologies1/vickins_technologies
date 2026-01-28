@@ -112,15 +112,15 @@ const graphicCollection: GraphicCollection = {
 };
 
 const categories = [
-  "All",
-  "Fullstack + UI/UX",
-  "Fullstack Application",
-  "Business Application",
-  "Enterprise Web App",
-  "Web & Brand Identity",
-  "Fullstack + E-commerce",
-  "Fullstack + Corporate Website",
-  "Graphic Design",
+       "All",
+       "Fullstack + UI/UX",
+       "Fullstack Application",
+       "Business Application",
+       "Enterprise Web App",
+       "Web & Brand Identity",
+       "Fullstack + E-commerce",
+       "Fullstack + Corporate Website",
+       "Graphic Design",
 ];
 
 export default function Portfolio() {
