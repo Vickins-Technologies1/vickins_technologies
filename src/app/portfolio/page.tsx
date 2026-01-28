@@ -36,7 +36,7 @@ type GraphicCollection = {
 const devProjects: DevProject[] = [
 
        {
-              id: 2,
+              id: 1,
               title: "Smart Choice Rental Management SaaS",
               category: "Fullstack + UI/UX",
               description: "Kenya's leading property management platform: tenant tracking, M-Pesa payments, invoicing, SMS notifications, property listings, and admin dashboard.",
@@ -45,13 +45,24 @@ const devProjects: DevProject[] = [
               link: "https://smartchoicerentalmanagement.com",
        },
        {
+              id: 2,
+              title: "Baggit – Premium E-commerce Platform",
+              category: "Fullstack + E-commerce",
+              description:
+                     "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
+              image: "/projects/baggit 1.png", // ← add screenshot
+              tags: ["Next.js", "React", "Tailwind", "E-commerce", "UI/UX", "Responsive"],
+              link: "https://baggit-ashy.vercel.app/",
+       },
+       {
               id: 3,
-              title: "BizPro App",
-              category: "Business Application",
-              description: "Fullstack business management app with user roles, analytics, forms, and integrations. Clean UI for professional workflows.",
-              image: "/projects/bz.png",
-              tags: ["TypeScript", "Fullstack", "Business Tools", "Responsive UI"],
-              link: "/portfolio/bizpro-app",
+              title: "Wanjahi Group – Motors, Property & Business Solutions",
+              category: "Fullstack + Corporate Website",
+              description:
+                     "Professional company website for Wanjahi Group showcasing premium vehicles, property services, business solutions, client testimonials, and performance stats.",
+              image: "/projects/wanjahi.png", // ← add screenshot
+              tags: ["Next.js", "TypeScript", "Tailwind", "Corporate", "UI/UX", "Responsive"],
+              link: "https://wanjahi-group.vercel.app/",
        },
        {
               id: 4,
@@ -100,7 +111,17 @@ const graphicCollection: GraphicCollection = {
        ],
 };
 
-const categories = ["All", "Fullstack + UI/UX", "Business Application", "Enterprise Web App", "Web & Brand Identity", "Graphic Design"];
+const categories = [
+  "All",
+  "Fullstack + UI/UX",
+  "Fullstack Application",
+  "Business Application",
+  "Enterprise Web App",
+  "Web & Brand Identity",
+  "Fullstack + E-commerce",
+  "Fullstack + Corporate Website",
+  "Graphic Design",
+];
 
 export default function Portfolio() {
        const [isDarkMode, setIsDarkMode] = useState(false);
@@ -174,8 +195,8 @@ export default function Portfolio() {
                                                         key={cat}
                                                         onClick={() => setActiveCategory(cat)}
                                                         className={`px-4 sm:px-5 py-2 rounded-full text-sm sm:text-base font-medium transition-all ${activeCategory === cat
-                                                                      ? "bg-[var(--button-bg)] text-white shadow-md"
-                                                                      : "bg-[var(--card-bg)] text-[var(--foreground)]/80 hover:bg-[var(--card-bg)]/80"
+                                                               ? "bg-[var(--button-bg)] text-white shadow-md"
+                                                               : "bg-[var(--card-bg)] text-[var(--foreground)]/80 hover:bg-[var(--card-bg)]/80"
                                                                }`}
                                                  >
                                                         {cat}
