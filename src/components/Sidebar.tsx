@@ -36,6 +36,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
               />
             </Link>
           </motion.div>
+
           <motion.button
             onClick={toggleSidebar}
             aria-label="Close sidebar"
@@ -48,8 +49,9 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </motion.button>
+
           <ul className="mt-4 sm:mt-6 lg:mt-8 space-y-3 sm:space-y-4 lg:space-y-5">
-            {['Process', 'About', 'Services', 'Pricing', 'Clients', 'Contact'].map((item, index) => (
+            {['Process', 'About', 'Services', 'Portfolio', 'Pricing', 'Clients', 'Contact'].map((item, index) => (
               <motion.li
                 key={item}
                 initial={{ x: -20, opacity: 0 }}
@@ -58,7 +60,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                 whileHover={{ x: 5 }}
               >
                 <Link
-                  href={`#${item.toLowerCase()}`}
+                  href={item === 'Portfolio' ? '/portfolio' : `#${item.toLowerCase()}`}
                   className="relative text-sm sm:text-base lg:text-lg font-semibold tracking-wide text-[var(--navbar-text)] hover:text-[var(--button-bg)] transition duration-300 group"
                   onClick={toggleSidebar}
                 >

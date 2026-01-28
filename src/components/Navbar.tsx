@@ -29,7 +29,9 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
             />
           </motion.div>
         </Link>
+
         <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-6">
+          {/* Theme toggle */}
           <motion.button
             onClick={toggleTheme}
             aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -40,28 +42,18 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
           >
             <AnimatePresence mode="wait">
               {isDarkMode ? (
-                <motion.div
-                  key="sun"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
+                <motion.div key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.3 }}>
                   <SunIcon className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                 </motion.div>
               ) : (
-                <motion.div
-                  key="moon"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
+                <motion.div key="moon" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.3 }}>
                   <MoonIcon className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.button>
+
+          {/* Mobile menu button */}
           <motion.button
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
@@ -71,18 +63,20 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
             transition={{ type: 'spring', stiffness: 400, damping: 15 }}
           >
             <svg className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16 M4 12h16 m-7 6h7" />
             </svg>
           </motion.button>
+
+          {/* Desktop navigation */}
           <ul className="hidden lg:flex space-x-3 lg:space-x-5 xl:space-x-7 items-center">
-            {['Process', 'About', 'Services', 'Pricing', 'Clients', 'Contact'].map((item) => (
+            {['Process', 'About', 'Services', 'Portfolio', 'Pricing', 'Clients', 'Contact'].map((item) => (
               <motion.li
                 key={item}
                 whileHover={{ y: -2 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 <Link
-                  href={`#${item.toLowerCase()}`}
+                  href={item === 'Portfolio' ? '/portfolio' : `#${item.toLowerCase()}`}
                   className="relative text-xs sm:text-sm lg:text-base xl:text-lg font-semibold tracking-wide text-[var(--navbar-text)] hover:text-[var(--button-bg)] transition duration-300 group"
                 >
                   {item}
