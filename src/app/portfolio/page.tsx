@@ -50,7 +50,7 @@ const devProjects: DevProject[] = [
               category: "Fullstack + E-commerce",
               description:
                      "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
-              image: "/projects/baggit 1.png", // ← add screenshot
+              image: "/projects/Baggit.png", // ← add screenshot
               tags: ["Next.js", "React", "Tailwind", "E-commerce", "UI/UX", "Responsive"],
               link: "https://baggit-ashy.vercel.app/",
        },
