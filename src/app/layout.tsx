@@ -1,15 +1,20 @@
-
 import type { Metadata, Viewport } from "next";
-import { Roboto } from "next/font/google";
+import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import ThemePreloaderProvider from "../components/ThemePreloaderProvider"; // Import Client Component
+import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 
-// Configure the Roboto font
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700"],
+const manrope = Manrope({
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-roboto",
+  variable: "--font-manrope",
+});
+
+const playfair = Playfair_Display({
+  weight: ["500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -96,11 +101,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${roboto.variable} w-full h-full scroll-smooth`}>
-      <body className="antialiased min-h-screen w-full overflow-x-hidden font-roboto bg-[var(--background)] text-[var(--foreground)]">
-        <ThemePreloaderProvider>
-          {children}
-        </ThemePreloaderProvider>
+    <html lang="en" className={`${manrope.variable} ${playfair.variable} w-full h-full scroll-smooth`}>
+      <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
+        <ThemePreloaderProvider>{children}</ThemePreloaderProvider>
       </body>
     </html>
   );

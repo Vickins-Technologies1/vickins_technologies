@@ -50,7 +50,7 @@ export default function Home() {
       <HeroSection />
 
       {/* All other sections: Contained with proper inner padding */}
-      <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+      <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
         <ProcessSection />
         <AboutSection />
         <ServicesSection />

@@ -1,44 +1,141 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { EnvelopeIcon, PhoneIcon, MapPinIcon, CheckCircleIcon } from "@heroicons/react/24/solid";
+import {
+  EnvelopeIcon,
+  PhoneIcon,
+  MapPinIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/solid";
+import {
+  PencilSquareIcon,
+  SparklesIcon,
+  CalendarDaysIcon,
+  ShieldCheckIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ContactSection() {
   const [phone, setPhone] = useState<string | undefined>("");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [editorMode, setEditorMode] = useState<"write" | "preview">("write");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    company: "",
+    role: "",
+    website: "",
+    budget: "",
+    timeline: "",
+    contactMethod: "Email",
+    referral: "",
     message: "",
+    discoveryCall: false,
+    nda: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const servicesList = [
-    "E-commerce",
-    "POS Systems",
-    "Static Website",
-    "API & Automation",
-    "Blockchain & Crypto",
-    "Dynamic Website",
-    "Custom Software",
+    "Web Platform",
     "Mobile App",
-    "Graphic Design",
-    "Consultation",
+    "Automation & AI",
+    "Cloud & DevOps",
+    "Brand & UI Systems",
+    "Data & Analytics",
+    "Security & Compliance",
+    "E-commerce",
+    "Custom Software",
+    "Consulting",
   ];
+
   const handleServiceChange = (service: string) => {
     setSelectedServices((prev) =>
       prev.includes(service) ? prev.filter((s) => s !== service) : [...prev, service]
     );
   };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
+
+  const handleToggle = (name: "discoveryCall" | "nda") => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  const renderPreview = useMemo(() => {
+    const escapeHtml = (input: string) =>
+      input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    const formatInline = (line: string) =>
+      line
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/`(.+?)`/g, "<code>$1</code>");
+
+    const lines = escapeHtml(formData.message).split(/\n/);
+    let html = "";
+    let inList = false;
+
+    lines.forEach((raw) => {
+      const line = raw.trimEnd();
+      if (/^###\s+/.test(line)) {
+        if (inList) {
+          html += "</ul>";
+          inList = false;
+        }
+        html += `<h3>${formatInline(line.replace(/^###\s+/, ""))}</h3>`;
+        return;
+      }
+      if (/^##\s+/.test(line)) {
+        if (inList) {
+          html += "</ul>";
+          inList = false;
+        }
+        html += `<h2>${formatInline(line.replace(/^##\s+/, ""))}</h2>`;
+        return;
+      }
+      if (/^#\s+/.test(line)) {
+        if (inList) {
+          html += "</ul>";
+          inList = false;
+        }
+        html += `<h1>${formatInline(line.replace(/^#\s+/, ""))}</h1>`;
+        return;
+      }
+      if (/^\-\s+/.test(line)) {
+        if (!inList) {
+          html += "<ul>";
+          inList = true;
+        }
+        html += `<li>${formatInline(line.replace(/^\-\s+/, ""))}</li>`;
+        return;
+      }
+      if (inList) {
+        html += "</ul>";
+        inList = false;
+      }
+      if (line.length === 0) {
+        html += "<br />";
+        return;
+      }
+      html += `<p>${formatInline(line)}</p>`;
+    });
+
+    if (inList) html += "</ul>";
+    return html;
+  }, [formData.message]);
+
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -66,7 +163,20 @@ export default function ContactSection() {
       const result = await response.json();
       if (response.ok) {
         setSubmitStatus("success");
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          company: "",
+          role: "",
+          website: "",
+          budget: "",
+          timeline: "",
+          contactMethod: "Email",
+          referral: "",
+          message: "",
+          discoveryCall: false,
+          nda: false,
+        });
         setPhone("");
         setSelectedServices([]);
       } else {
@@ -80,165 +190,384 @@ export default function ContactSection() {
       setIsSubmitting(false);
     }
   };
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 1.2, ease: "easeOut" }}
       id="contact"
-      className="py-8 sm:py-12 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.6 }}
     >
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12">Let’s Connect and Innovate Together</h2>
-      <p className="text-center mb-6 sm:mb-8 lg:mb-12 text-sm sm:text-base lg:text-lg">
-        Reach out to discuss how we can transform your business with our expertise.
-      </p>
-      <div className="max-w-4xl mx-auto bg-[var(--card-bg)] p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 lg:mb-6">Contact Information</h3>
-            <div className="space-y-2 sm:space-y-3 lg:space-y-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="flex items-center"
-              >
-                <EnvelopeIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--button-bg)] mr-2 sm:mr-3" />
-                <a
-                  href="mailto:info@vickinstech.com"
-                  className="hover:text-[var(--button-bg)] transition duration-300 text-sm sm:text-base"
-                >
-                  info@vickinstechnologies.com
-                </a>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex items-center"
-              >
-                <PhoneIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--button-bg)] mr-2 sm:mr-3" />
-                <a
-                  href="tel:+254123456789"
-                  className="hover:text-[var(--button-bg)] transition duration-300 text-sm sm:text-base"
-                >
-                  +254 794 501 005
-                </a>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex items-center"
-              >
-                <MapPinIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--button-bg)] mr-2 sm:mr-3" />
-                <span className="text-sm sm:text-base">Ruiru, Kenya</span>
-              </motion.div>
+      <div className="text-center max-w-3xl mx-auto">
+        <p className="text-[var(--button-bg)] uppercase tracking-[0.35em] text-xs sm:text-sm">
+          Contact
+        </p>
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
+          Start a premium build with our studio.
+        </h2>
+        <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
+          Share your goals, scope, and timeline. We will respond with a tailored plan and next steps.
+        </p>
+      </div>
+
+      <div className="max-w-6xl mx-auto mt-8">
+        <div className="relative overflow-hidden rounded-3xl border border-white/40 bg-white/40 backdrop-blur-2xl shadow-[var(--shadow-soft)]">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent opacity-80" />
+          <div className="relative z-10 p-6 sm:p-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-white/70 border border-white/60">
+                  <SparklesIcon className="h-5 w-5 text-[var(--button-bg)]" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Premium Intake</p>
+                  <p className="text-sm text-[var(--foreground)]/70">We reply within 24 hours.</p>
+                </div>
+              </div>
+              <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/50">
+                <PencilSquareIcon className="h-4 w-4" />
+                Full Brief Editor
+              </div>
             </div>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 lg:mb-6">Send Us a Message</h3>
-            <form className="space-y-3 sm:space-y-4" onSubmit={handleContactSubmit}>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Your Name"
-                className="w-full p-2 sm:p-3 rounded-lg border border-[var(--navbar-text)]/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] transition duration-300 text-sm sm:text-base"
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Your Email"
-                className="w-full p-2 sm:p-3 rounded-lg border border-[var(--navbar-text)]/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] transition duration-300 text-sm sm:text-base"
-                required
-              />
-              <PhoneInput
-                placeholder="Your Phone Number"
-                value={phone}
-                onChange={setPhone}
-                defaultCountry="KE"
-                international
-                countryCallingCodeEditable={false}
-                className="w-full p-2 sm:p-3 rounded-lg border border-[var(--navbar-text)]/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] transition duration-300 text-sm sm:text-base"
-              />
-              <h4 className="text-sm sm:text-base lg:text-lg font-semibold mb-2">Interested Services</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 max-h-24 sm:max-h-32 lg:max-h-40 overflow-y-auto pr-2">
-                {servicesList.map((service, index) => (
-                  <div key={service} className="flex items-center">
-                    <input
-                      id={`service-${index}`}
-                      type="checkbox"
-                      value={service}
-                      checked={selectedServices.includes(service)}
-                      onChange={() => handleServiceChange(service)}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor={`service-${index}`}
-                      className="flex items-center cursor-pointer select-none text-xs sm:text-sm w-full p-1 sm:p-2 rounded-lg hover:bg-[var(--card-bg)]/50 transition-all duration-200"
-                    >
-                      <span
-                        className={`w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 border-2 rounded flex items-center justify-center transition-all duration-200 ${
-                          selectedServices.includes(service)
-                            ? "bg-[var(--button-bg)] border-[var(--button-bg)]"
-                            : "border-[var(--navbar-text)]/40"
-                        }`}
+
+            <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-8">
+              <div className="space-y-6">
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]"
+                >
+                  <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                    Contact Information
+                  </h3>
+                  <div className="mt-4 space-y-3 text-sm">
+                    <div className="flex items-center gap-3">
+                      <EnvelopeIcon className="h-5 w-5 text-[var(--button-bg)]" />
+                      <a
+                        href="mailto:info@vickinstech.com"
+                        className="hover:text-[var(--button-bg)] transition duration-300"
                       >
-                        <CheckCircleIcon
-                          className={`h-3 w-3 sm:h-4 sm:w-4 ${
-                            selectedServices.includes(service) ? "text-white" : "text-[var(--navbar-text)]/40"
-                          } transition-all duration-200`}
+                        info@vickinstechnologies.com
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <PhoneIcon className="h-5 w-5 text-[var(--button-bg)]" />
+                      <a
+                        href="tel:+254123456789"
+                        className="hover:text-[var(--button-bg)] transition duration-300"
+                      >
+                        +254 794 501 005
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MapPinIcon className="h-5 w-5 text-[var(--button-bg)]" />
+                      <span>Ruiru, Kenya</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <div className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]">
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                    <CalendarDaysIcon className="h-4 w-4" />
+                    Engagement Snapshot
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-[var(--foreground)]/70">
+                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                      Response time: <span className="font-semibold text-[var(--foreground)]">24 hrs</span>
+                    </div>
+                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                      Start window: <span className="font-semibold text-[var(--foreground)]">1-3 wks</span>
+                    </div>
+                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                      Project length: <span className="font-semibold text-[var(--foreground)]">4-12 wks</span>
+                    </div>
+                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                      Support: <span className="font-semibold text-[var(--foreground)]">Ongoing</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2 text-xs text-[var(--foreground)]/60">
+                    <ShieldCheckIcon className="h-4 w-4" />
+                    NDA-friendly engagements on request.
+                  </div>
+                </div>
+
+                <div className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]">
+                  <h4 className="text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">What happens next</h4>
+                  <ul className="mt-4 space-y-3 text-sm text-[var(--foreground)]/70">
+                    <li className="flex items-start gap-2">
+                      <CheckCircleIcon className="h-4 w-4 text-[var(--button-bg)] mt-0.5" />
+                      We review your brief and confirm scope alignment.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircleIcon className="h-4 w-4 text-[var(--button-bg)] mt-0.5" />
+                      You receive a tailored proposal and delivery timeline.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircleIcon className="h-4 w-4 text-[var(--button-bg)] mt-0.5" />
+                      We schedule a kickoff call and finalize next steps.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="rounded-3xl border border-white/40 bg-white/60 p-6 shadow-[var(--shadow-tight)]"
+              >
+                <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60 mb-4">
+                  Project Brief
+                </h3>
+                <form className="space-y-4" onSubmit={handleContactSubmit}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Your Name"
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      required
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Your Email"
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      placeholder="Company"
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    />
+                    <input
+                      type="text"
+                      name="role"
+                      value={formData.role}
+                      onChange={handleInputChange}
+                      placeholder="Role / Title"
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    />
+                    <input
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      placeholder="Company Website"
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    />
+                    <div className="flex items-center gap-3 rounded-xl border border-white/50 bg-white/70 px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--button-bg)]">
+                      <PhoneIcon className="h-4 w-4 text-[var(--button-bg)]" />
+                      <PhoneInput
+                        placeholder="Phone Number"
+                        value={phone}
+                        onChange={setPhone}
+                        defaultCountry="KE"
+                        international
+                        countryCallingCodeEditable={false}
+                        className="w-full text-sm bg-transparent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <select
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    >
+                      <option value="">Budget Range</option>
+                      <option value="Under KES 30k">Under KES 30k</option>
+                      <option value="KES 30k-80k">KES 30k - 80k</option>
+                      <option value="KES 80k-150k">KES 80k - 150k</option>
+                      <option value="KES 150k-300k">KES 150k - 300k</option>
+                      <option value="KES 300k+">KES 300k+</option>
+                    </select>
+                    <select
+                      name="timeline"
+                      value={formData.timeline}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    >
+                      <option value="">Timeline</option>
+                      <option value="ASAP">ASAP</option>
+                      <option value="2-4 weeks">2-4 weeks</option>
+                      <option value="1-2 months">1-2 months</option>
+                      <option value="3+ months">3+ months</option>
+                    </select>
+                    <select
+                      name="contactMethod"
+                      value={formData.contactMethod}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    >
+                      <option value="Email">Preferred Contact: Email</option>
+                      <option value="Phone">Preferred Contact: Phone</option>
+                      <option value="WhatsApp">Preferred Contact: WhatsApp</option>
+                    </select>
+                    <select
+                      name="referral"
+                      value={formData.referral}
+                      onChange={handleInputChange}
+                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                    >
+                      <option value="">How did you hear about us?</option>
+                      <option value="Referral">Referral</option>
+                      <option value="Social Media">Social Media</option>
+                      <option value="Search">Search</option>
+                      <option value="Event">Event</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <h4 className="text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                    Interested Services
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-32 overflow-y-auto pr-2">
+                    {servicesList.map((service, index) => (
+                      <label
+                        key={service}
+                        htmlFor={`service-${index}`}
+                        className="flex items-center cursor-pointer select-none text-xs w-full p-2 rounded-lg hover:bg-white/60 transition-all duration-200"
+                      >
+                        <input
+                          id={`service-${index}`}
+                          type="checkbox"
+                          value={service}
+                          checked={selectedServices.includes(service)}
+                          onChange={() => handleServiceChange(service)}
+                          className="hidden"
                         />
+                        <span
+                          className={`w-5 h-5 mr-3 border-2 rounded flex items-center justify-center transition-all duration-200 ${
+                            selectedServices.includes(service)
+                              ? "bg-[var(--button-bg)] border-[var(--button-bg)]"
+                              : "border-[var(--navbar-text)]/40"
+                          }`}
+                        >
+                          <CheckCircleIcon
+                            className={`h-4 w-4 ${
+                              selectedServices.includes(service)
+                                ? "text-white"
+                                : "text-[var(--navbar-text)]/40"
+                            } transition-all duration-200`}
+                          />
+                        </span>
+                        <span className="text-[var(--navbar-text)]">{service}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setEditorMode("write")}
+                          className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-semibold transition ${
+                            editorMode === "write"
+                              ? "bg-[var(--button-bg)] text-white"
+                              : "bg-white/60 text-[var(--foreground)]/70 hover:bg-white"
+                          }`}
+                        >
+                          Write
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditorMode("preview")}
+                          className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-semibold transition ${
+                            editorMode === "preview"
+                              ? "bg-[var(--button-bg)] text-white"
+                              : "bg-white/60 text-[var(--foreground)]/70 hover:bg-white"
+                          }`}
+                        >
+                          Preview
+                        </button>
+                      </div>
+                      <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/50">
+                        Markdown
                       </span>
-                      <span className="text-[var(--navbar-text)]">{service}</span>
+                    </div>
+
+                    {editorMode === "write" ? (
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        placeholder="Tell us your goals, timeline, and scope."
+                        className="w-full min-h-[140px] bg-transparent focus:outline-none text-sm text-[var(--foreground)]/90"
+                        required
+                      />
+                    ) : (
+                      <div
+                        className="min-h-[140px] text-sm text-[var(--foreground)]/80 leading-relaxed space-y-2 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:text-sm [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-white/70"
+                        dangerouslySetInnerHTML={{
+                          __html: renderPreview || "<p>Start writing to see a preview.</p>",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[var(--foreground)]/70">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.discoveryCall}
+                        onChange={() => handleToggle("discoveryCall")}
+                        className="h-4 w-4 rounded border-white/50"
+                      />
+                      Request a discovery call
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.nda}
+                        onChange={() => handleToggle("nda")}
+                        className="h-4 w-4 rounded border-white/50"
+                      />
+                      NDA required
                     </label>
                   </div>
-                ))}
-              </div>
-              <p className="text-xs sm:text-sm text-[var(--navbar-text)]">
-                Selected Services: {selectedServices.length > 0 ? selectedServices.join(", ") : "None"}
-              </p>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                placeholder="Your Message"
-                className="w-full p-2 sm:p-3 rounded-lg border border-[var(--navbar-text)]/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] h-20 sm:h-24 lg:h-32 resize-none transition duration-300 text-sm sm:text-base"
-                required
-              />
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className={`bg-[var(--button-bg)] text-[var(--navbar-text)] px-4 py-2 sm:px-6 sm:py-3 rounded-full w-full hover:opacity-90 transition duration-300 shadow-md font-semibold text-sm sm:text-base ${
-                  isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
-                whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </motion.button>
-              {submitStatus === "success" && (
-                <p className="text-green-500 text-center text-xs sm:text-sm">Message sent successfully!</p>
-              )}
-              {submitStatus === "error" && (
-                <p className="text-red-500 text-center text-xs sm:text-sm">{errorMessage || "Error sending message. Please try again."}</p>
-              )}
-            </form>
-          </motion.div>
+
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`bg-[var(--button-bg)] text-white px-6 py-3 rounded-full w-full hover:opacity-90 transition duration-300 shadow-lg font-semibold text-xs uppercase tracking-[0.22em] ${
+                      isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  >
+                    {isSubmitting ? "Sending..." : "Submit Brief"}
+                  </motion.button>
+                  {submitStatus === "success" && (
+                    <p className="text-green-500 text-center text-xs sm:text-sm">
+                      Message sent successfully!
+                    </p>
+                  )}
+                  {submitStatus === "error" && (
+                    <p className="text-red-500 text-center text-xs sm:text-sm">
+                      {errorMessage || "Error sending message. Please try again."}
+                    </p>
+                  )}
+                </form>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </motion.section>

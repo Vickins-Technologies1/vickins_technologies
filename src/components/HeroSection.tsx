@@ -1,110 +1,141 @@
 import { motion } from "framer-motion";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, SparklesIcon, ShieldCheckIcon, CpuChipIcon } from "@heroicons/react/24/outline";
+
+const highlights = [
+  "Product strategy & discovery",
+  "UI/UX and brand systems",
+  "Full-stack engineering",
+  "Automation and AI workflows",
+  "Security-first delivery",
+];
+
+const stats = [
+  { label: "Projects Delivered", value: "40+" },
+  { label: "Avg. Launch Time", value: "6-10 wks" },
+  { label: "Client Retention", value: "92%" },
+];
 
 export default function HeroSection() {
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1.2 }}
+      transition={{ duration: 1.1 }}
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[85vh] flex items-center overflow-hidden text-white"
     >
-      {/* Tech Video Background - Full bleed */}
       <div className="absolute inset-0 -z-10">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/bgd.jpg" // Optional: static fallback image for slow connections
-        >
-          {/* Option 1: Use a high-quality abstract tech video (recommended) */}
-          <source src="/videos/techbg2.mp4" type="video/mp4" />
-          <source src="/videos/techbg1.mp4" type="video/webm" />
-
-          {/* Fallback content if video fails to load */}
-          <div className="w-full h-full bg-gradient-to-br from-[var(--navbar-bg)] to-[var(--button-bg)]" />
-        </video>
-
-        {/* Dark overlay for text readability + premium feel */}
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0b1220] via-[#0f1b35] to-[#0b1220]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35),_transparent_55%)] opacity-80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(45,212,191,0.25),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(99,102,241,0.35),_transparent_50%)]" />
+        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       </div>
 
-      {/* Subtle animated glow accents on top of video */}
-      <motion.div
-        className="absolute top-20 left-0 w-96 h-96 bg-[var(--button-bg)]/30 rounded-full blur-3xl -translate-x-1/2"
-        animate={{ scale: [1, 1.4, 1], rotate: [0, 25, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-10 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl translate-x-1/3"
-        animate={{ scale: [1.1, 1.5, 1.1], rotate: [0, -20, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-      />
+      <div className="glow-orb float-slow" style={{ top: "-8%", left: "-5%", width: "380px", height: "380px", background: "rgba(59,130,246,0.45)" }} />
+      <div className="glow-orb float-slower" style={{ bottom: "-10%", right: "-5%", width: "420px", height: "420px", background: "rgba(20,184,166,0.35)" }} />
 
-      {/* Content - Centered and readable */}
-      <div className="relative z-10 w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto text-center">
+      <div className="relative z-10 w-full px-6 sm:px-8 lg:px-10 max-w-6xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4 }}
+          transition={{ duration: 0.9, delay: 0.2 }}
         >
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 drop-shadow-2xl">
-            <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-              Igniting Success
-            </span>
-            <br className="sm:hidden" />
-            <span className="text-white"> with Next-Gen Technology</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-xs sm:text-sm uppercase tracking-[0.2em]">
+            Premium Digital Studio
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-6 leading-[1.08]">
+            We design and engineer
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/70"> digital products</span>
+            <br />that elevate your business.
           </h1>
+          <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-2xl mt-5">
+            Vickins Technologies partners with growth-focused organizations to build secure, scalable web and mobile experiences, automation systems, and brand-forward platforms that drive measurable outcomes.
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.9 }}
-            className="text-xl sm:text-2xl lg:text-3xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed drop-shadow-lg"
-          >
-            We build powerful, scalable digital solutions that transform businesses and drive measurable growth.
-          </motion.p>
+          <div className="mt-7 flex flex-wrap gap-2">
+            {["Strategy", "Design", "Engineering", "Growth"].map((item) => (
+              <span key={item} className="glass-chip px-4 py-2 text-xs sm:text-sm text-white/90">
+                {item}
+              </span>
+            ))}
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-          >
-            <a
-              href="#services"
-              className="group relative inline-flex items-center gap-4 bg-white text-[var(--button-bg)] font-bold px-10 py-5 rounded-full shadow-2xl hover:shadow-[0_25px_50px_rgba(0,0,0,0.4)] transition-all duration-500 hover:-translate-y-3 overflow-hidden"
-            >
-              <span className="relative z-10">Explore Our Solutions</span>
-              <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-3 transition-transform duration-300" />
-              <span className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <a
               href="#contact"
-              className="group inline-flex items-center gap-3 px-10 py-5 rounded-full border-2 border-white/50 text-white font-semibold backdrop-blur-md hover:bg-white/10 hover:border-white/70 transition-all duration-500 hover:scale-110"
+              className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-white text-[#0b1220] font-semibold shadow-[0_20px_50px_rgba(15,23,42,0.25)] transition-all duration-500 hover:-translate-y-1"
             >
-              Get a Free Consultation
-              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              Start a Project
+              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
-          </motion.div>
+            <a
+              href="#services"
+              className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full border border-white/40 text-white/90 font-semibold backdrop-blur-md hover:bg-white/10 transition-all duration-500"
+            >
+              View Capabilities
+              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
 
-          {/* Trust badges */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.4, duration: 0.8 }}
-            className="mt-20 flex flex-wrap justify-center gap-8 text-white/80 text-sm uppercase tracking-widest font-medium drop-shadow"
-          >
-            <span>Trusted by 20+ Businesses</span>
-            <span>•</span>
-            <span>100% Client Satisfaction</span>
-            <span>•</span>
-            <span>4+ Years of Excellence</span>
-          </motion.div>
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {stats.map((stat) => (
+              <div key={stat.label} className="shimmer-line rounded-2xl border border-white/15 bg-white/5 px-4 py-3">
+                <div className="text-xl font-semibold text-white">{stat.value}</div>
+                <div className="text-xs uppercase tracking-widest text-white/70 mt-1">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.4 }}
+          className="glass-panel p-5 sm:p-6 text-[var(--foreground)]"
+        >
+          <div className="flex items-center gap-3 text-sm uppercase tracking-[0.18em] text-[var(--button-bg)]">
+            <SparklesIcon className="w-5 h-5" />
+            Why Clients Choose Us
+          </div>
+          <h2 className="text-xl sm:text-2xl font-semibold mt-4">
+            A premium build process with measurable results.
+          </h2>
+          <p className="text-sm text-[var(--foreground)]/80 mt-4">
+            We align strategy, design, and engineering to deliver platforms that are elegant, resilient, and ready for scale.
+          </p>
+
+          <div className="mt-6 space-y-4">
+            {highlights.map((item) => (
+              <div key={item} className="flex items-start gap-3">
+                <div className="mt-1 rounded-full bg-[var(--button-bg)]/10 p-2">
+                  <ShieldCheckIcon className="w-4 h-4 text-[var(--button-bg)]" />
+                </div>
+                <div className="text-sm sm:text-base text-[var(--foreground)]/80">{item}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-7 grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-white/40 bg-white/60 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <CpuChipIcon className="w-4 h-4 text-[var(--button-bg)]" />
+                Engineering Excellence
+              </div>
+              <p className="text-xs text-[var(--foreground)]/70 mt-2">
+                Clean architecture, performance budgets, and enterprise-grade security baked in.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/40 bg-white/60 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <SparklesIcon className="w-4 h-4 text-[var(--button-bg)]" />
+                Visual Craft
+              </div>
+              <p className="text-xs text-[var(--foreground)]/70 mt-2">
+                Premium, glass-inspired UI with brand systems that feel timeless.
+              </p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </motion.section>

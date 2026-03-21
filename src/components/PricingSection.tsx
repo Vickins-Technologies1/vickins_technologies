@@ -1,9 +1,7 @@
-// src/components/PricingSection.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
-import { CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, SparklesIcon } from "@heroicons/react/24/solid";
 
 interface PricingPlan {
   name: string;
@@ -32,6 +30,7 @@ const pricingPlans: PricingPlan[] = [
       "Sales Analytics",
       "24/7 Support",
     ],
+    popular: true,
   },
   {
     name: "POS Systems",
@@ -248,185 +247,135 @@ const pricingPlans: PricingPlan[] = [
 ];
 
 export default function Pricing() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerView, setItemsPerView] = useState(1);
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  // Update items per view on resize (client-side only)
-  useEffect(() => {
-    const updateItems = () => {
-      if (typeof window === "undefined") return;
-      const width = window.innerWidth;
-      if (width >= 1280) return setItemsPerView(4);
-      if (width >= 1024) return setItemsPerView(3);
-      if (width >= 768) return setItemsPerView(2);
-      if (width >= 640) return setItemsPerView(2);
-      setItemsPerView(1);
-    };
-
-    updateItems();
-    window.addEventListener("resize", updateItems);
-    return () => window.removeEventListener("resize", updateItems);
-  }, []);
-
-  const totalSlides = pricingPlans.length;
-  const extendedPlans = [...pricingPlans, ...pricingPlans, ...pricingPlans];
-  const offset = pricingPlans.length;
-
-  const goToPrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % totalSlides);
-  };
-
-  // Optional: Swipe support (touch gestures)
-  useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    let startX = 0;
-    let diffX = 0;
-
-    const onTouchStart = (e: TouchEvent) => {
-      startX = e.touches[0].clientX;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      diffX = e.touches[0].clientX - startX;
-    };
-
-    const onTouchEnd = () => {
-      if (diffX > 50) goToPrev();
-      if (diffX < -50) goToNext();
-      diffX = 0;
-    };
-
-    el.addEventListener("touchstart", onTouchStart);
-    el.addEventListener("touchmove", onTouchMove);
-    el.addEventListener("touchend", onTouchEnd);
-
-    return () => {
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd);
-    };
-  }, []);
-
   return (
     <motion.section
+      id="pricing"
+      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7 }}
-      id="pricing"
-      className="py-12 sm:py-16 lg:py-20 mt-16 sm:mt-20 scroll-mt-[80px]"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4" style={{ color: 'var(--foreground)' }}>
-          Our Pricing Plans
-        </h2>
-        <p className="text-center text-base sm:text-lg mb-8 sm:mb-12 max-w-2xl mx-auto opacity-80" style={{ color: 'var(--foreground)' }}>
-          Professional Solutions Tailored to Your Business Needs
-        </p>
-
-        {/* Carousel Wrapper */}
-        <div className="relative overflow-hidden">
-          {/* Cards */}
-          <motion.div
-            ref={carouselRef}
-            className="flex"
-            animate={{ x: `-${(currentIndex + offset) * (100 / itemsPerView)}%` }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-          >
-            {extendedPlans.map((plan, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 px-2 sm:px-3 md:px-4"
-                style={{ width: `${100 / itemsPerView}%` }}
-              >
-                <motion.div
-                  className={`relative h-full p-5 sm:p-6 rounded-2xl shadow-lg flex flex-col transition-all duration-300 border-2 ${
-                    plan.popular ? "border-[var(--button-bg)] scale-105" : "border-transparent"
-                  } bg-[var(--card-bg)]`}
-                  whileHover={{ scale: 1.03, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {plan.popular && (
-                    <span
-                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-sm font-semibold text-white shadow-md"
-                      style={{ backgroundColor: 'var(--button-bg)' }}
-                    >
-                      Popular Choice
-                    </span>
-                  )}
-
-                  <div className="text-center mb-5">
-                    <h3 className="text-xl sm:text-2xl font-bold mb-1" style={{ color: 'var(--foreground)' }}>
-                      {plan.name}
-                    </h3>
-                    <p className="text-sm sm:text-base opacity-80 mb-3" style={{ color: 'var(--foreground)' }}>
-                      {plan.description}
-                    </p>
-                    <p className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--button-bg)' }}>
-                      From {plan.price}
-                    </p>
-                  </div>
-
-                  <ul className="space-y-2 sm:space-y-3 mb-6 flex-1 text-sm sm:text-base">
-                    {plan.features.slice(0, 8).map((feature) => (
-                      <li key={feature} className="flex items-start gap-2" style={{ color: 'var(--foreground)' }}>
-                        <CheckCircleIcon className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--button-bg)' }} />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                    {plan.features.length > 8 && (
-                      <li className="text-sm opacity-70 italic pl-7">...and more features</li>
-                    )}
-                  </ul>
-
-                  {plan.idealFor && (
-                    <p className="text-center text-sm opacity-80 mt-auto" style={{ color: 'var(--foreground)' }}>
-                      <span className="font-medium">Ideal for:</span> {plan.idealFor}
-                    </p>
-                  )}
-                </motion.div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Navigation Buttons – visible on all screens */}
-          <motion.button
-            onClick={goToPrev}
-            className="absolute left-0 sm:left-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 rounded-full shadow-xl bg-[var(--button-bg)]/90 text-white hover:bg-[var(--button-bg)] transition-all"
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronLeftIcon className="h-6 w-6 sm:h-7 sm:w-7" />
-          </motion.button>
-
-          <motion.button
-            onClick={goToNext}
-            className="absolute right-0 sm:right-4 top-1/2 -translate-y-1/2 z-10 p-3 sm:p-4 rounded-full shadow-xl bg-[var(--button-bg)]/90 text-white hover:bg-[var(--button-bg)] transition-all"
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronRightIcon className="h-6 w-6 sm:h-7 sm:w-7" />
-          </motion.button>
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+          <div className="max-w-2xl">
+            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
+              Pricing
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
+              Premium packages for every stage.
+            </h2>
+            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
+              Transparent scopes with an emphasis on quality, performance, and future-ready support.
+            </p>
+          </div>
+          <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+            Tailored Engagements
+          </div>
         </div>
 
-        {/* Dots Indicator – centered & responsive */}
-        <div className="flex justify-center mt-6 sm:mt-8 space-x-2 sm:space-x-3">
-          {Array.from({ length: totalSlides }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-2.5 sm:h-3 rounded-full transition-all duration-300 ${
-                i === currentIndex ? "bg-[var(--button-bg)] w-6 sm:w-8" : "bg-gray-400/50 w-2.5 sm:w-3"
-              }`}
-            />
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
+          <div className="space-y-5">
+            {pricingPlans.slice(0, 4).map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={`rounded-3xl border border-white/40 bg-white/55 p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
+                  plan.popular ? "ring-1 ring-[var(--button-bg)]" : ""
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+                      {plan.description}
+                    </p>
+                    <h3 className="text-lg sm:text-xl font-semibold mt-2">{plan.name}</h3>
+                    <p className="text-sm text-[var(--foreground)]/70 mt-2">From {plan.price}</p>
+                  </div>
+                  {plan.popular && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--button-bg)]/15 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--button-bg)]">
+                      <SparklesIcon className="h-3 w-3" />
+                      Popular
+                    </span>
+                  )}
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {plan.features.slice(0, 5).map((feature) => (
+                    <span
+                      key={feature}
+                      className="inline-flex items-center gap-1 rounded-full border border-white/50 bg-white/70 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[var(--foreground)]/70"
+                    >
+                      <CheckCircleIcon className="h-3 w-3 text-[var(--button-bg)]" />
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                {plan.idealFor && (
+                  <p className="mt-3 text-xs text-[var(--foreground)]/60">
+                    Ideal for: <span className="font-medium">{plan.idealFor}</span>
+                  </p>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 0.6 }}
+            className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
+                  Signature Plans
+                </p>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
+                  Premium Suite
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold mt-3">Enterprise-grade engagements.</h3>
+              <p className="text-sm text-[var(--foreground)]/75 mt-3">
+                Ideal for teams that need custom engineering, advanced integrations, and dedicated delivery squads.
+              </p>
+
+              <div className="mt-6 space-y-3">
+                {pricingPlans.slice(4, 8).map((plan) => (
+                  <div
+                    key={plan.name}
+                    className="flex items-center justify-between rounded-2xl border border-white/40 bg-white/60 px-4 py-3"
+                  >
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+                        {plan.name}
+                      </p>
+                      <p className="text-xs text-[var(--foreground)]/70 mt-1">From {plan.price}</p>
+                    </div>
+                    <SparklesIcon className="h-4 w-4 text-[var(--button-bg)]" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 rounded-2xl border border-white/50 bg-white/70 p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-[var(--foreground)]/60">Need a custom scope?</p>
+                <p className="text-sm text-[var(--foreground)]/75 mt-2">
+                  We will tailor a package around your timeline, platform requirements, and growth goals.
+                </p>
+                <a
+                  href="#contact"
+                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-white"
+                >
+                  Request Proposal
+                  <SparklesIcon className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </motion.section>

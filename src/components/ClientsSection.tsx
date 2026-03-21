@@ -14,54 +14,107 @@ export default function ClientsSection() {
     { src: "/Jayden.png", alt: "ent", url: "#" },
     { src: "/lovense.png", alt: "Blog", url: "#" },
   ];
+
+  const featured = clients.slice(0, 5);
   const extendedClients = [...clients, ...clients];
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
       id="clients"
-      className="py-8 sm:py-12 lg:py-16 bg-[var(--background)] mt-16 sm:mt-20 scroll-mt-[80px]"
-      style={{ background: 'linear-gradient(to bottom right, var(--background), var(--card-bg))' }}
+      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12" style={{ color: 'var(--foreground)' }}>
-          Our Clients
-        </h2>
-        <div className="overflow-hidden">
-          <motion.div
-            className="flex"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 20,
-            }}
-            style={{ width: "200%" }}
-          >
-            {extendedClients.map((client, index) => (
-              <div
-                key={`${client.alt}-${index}`}
-                className="flex-shrink-0 px-1 sm:px-2 md:px-3 lg:px-4"
-                style={{ width: `${100 / clients.length}%` }}
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+          <div className="max-w-2xl">
+            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
+              Clients
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
+              Trusted partnerships with ambitious brands.
+            </h2>
+            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
+              We collaborate with teams that value premium craft, delivery velocity, and lasting impact.
+            </p>
+          </div>
+          <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+            Featured Clients
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {featured.map((client) => (
+              <a
+                key={client.alt}
+                href={client.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-white/40 bg-white/60 p-4 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
               >
-                <a
-                  href={client.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block relative w-full h-12 sm:h-16 md:h-20 lg:h-24"
-                >
+                <div className="relative h-12 sm:h-14">
                   <Image
                     src={client.src}
                     alt={client.alt}
                     fill
-                    className="object-contain rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
-                    sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 15vw"
+                    className="object-contain grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition"
+                    sizes="160px"
                   />
-                </a>
-              </div>
+                </div>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                  {client.alt}
+                </p>
+              </a>
             ))}
-          </motion.div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
+                  Brand Wall
+                </p>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
+                  Portfolio Partners
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold mt-3">A wider network of client brands.</h3>
+              <p className="text-sm text-[var(--foreground)]/75 mt-3">
+                A scrollable showcase of teams we have supported with strategy, engineering, and design.
+              </p>
+
+              <div className="mt-6 overflow-hidden">
+                <motion.div
+                  className="flex"
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{ repeat: Infinity, ease: "linear", duration: 22 }}
+                  style={{ width: "200%" }}
+                >
+                  {extendedClients.map((client, index) => (
+                    <div
+                      key={`${client.alt}-${index}`}
+                      className="flex-shrink-0 px-3"
+                      style={{ width: `${100 / clients.length}%` }}
+                    >
+                      <div className="relative h-12 sm:h-14">
+                        <Image
+                          src={client.src}
+                          alt={client.alt}
+                          fill
+                          className="object-contain opacity-70"
+                          sizes="120px"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </motion.section>

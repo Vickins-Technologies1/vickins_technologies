@@ -10,6 +10,15 @@ export interface IContact {
   phone?: string;
   services: string[];
   message: string;
+  company?: string;
+  role?: string;
+  website?: string;
+  budget?: string;
+  timeline?: string;
+  contactMethod?: string;
+  referral?: string;
+  discoveryCall?: boolean;
+  nda?: boolean;
   createdAt: Date;
 }
 
@@ -21,36 +30,54 @@ export async function POST(request: NextRequest) {
 
   try {
     // Parse and validate request body
-    const body: IContact = await request.json();
+    const body = (await request.json()) as Partial<IContact> & {
+      services?: unknown;
+    };
 
-    if (!body.name || !body.email || body.services.length === 0 || !body.message) {
+    const name = typeof body.name === 'string' ? body.name.trim() : '';
+    const email = typeof body.email === 'string' ? body.email.trim() : '';
+    const message = typeof body.message === 'string' ? body.message.trim() : '';
+    const services = Array.isArray(body.services)
+      ? body.services.filter((s) => typeof s === 'string' && s.trim().length > 0)
+      : [];
+
+    if (!name || !email || services.length === 0 || !message) {
       console.error('Validation failed:', { body });
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate email format
     const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(body.email)) {
-      console.error('Invalid email format:', { email: body.email });
+    if (!emailRegex.test(email)) {
+      console.error('Invalid email format:', { email });
       return NextResponse.json({ message: 'Please enter a valid email' }, { status: 400 });
     }
 
     // Validate message length
-    if (body.message.length > 500) {
-      console.error('Message too long:', { length: body.message.length });
+    if (message.length > 2000) {
+      console.error('Message too long:', { length: message.length });
       return NextResponse.json(
-        { message: 'Message cannot be more than 500 characters' },
+        { message: 'Message cannot be more than 2000 characters' },
         { status: 400 }
       );
     }
 
     // Prepare contact data
     const contactData: IContact = {
-      name: body.name,
-      email: body.email,
-      phone: body.phone || '',
-      services: body.services,
-      message: body.message,
+      name,
+      email,
+      phone: typeof body.phone === 'string' ? body.phone : '',
+      services,
+      message,
+      company: typeof body.company === 'string' ? body.company : '',
+      role: typeof body.role === 'string' ? body.role : '',
+      website: typeof body.website === 'string' ? body.website : '',
+      budget: typeof body.budget === 'string' ? body.budget : '',
+      timeline: typeof body.timeline === 'string' ? body.timeline : '',
+      contactMethod: typeof body.contactMethod === 'string' ? body.contactMethod : '',
+      referral: typeof body.referral === 'string' ? body.referral : '',
+      discoveryCall: Boolean(body.discoveryCall),
+      nda: Boolean(body.nda),
       createdAt: new Date(),
     };
 
@@ -78,14 +105,23 @@ export async function POST(request: NextRequest) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_RECEIVER,
-      subject: `New Contact Form Submission from ${body.name}`,
+      subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Contact Inquiry</h2>
-        <p><strong>Name:</strong> ${body.name}</p>
-        <p><strong>Email:</strong> ${body.email}</p>
-        <p><strong>Phone:</strong> ${body.phone || 'Not provided'}</p>
-        <p><strong>Services:</strong> ${body.services.join(', ')}</p>
-        <p><strong>Message:</strong> ${body.message}</p>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</p>
+        <p><strong>Company:</strong> ${contactData.company || 'Not provided'}</p>
+        <p><strong>Role:</strong> ${contactData.role || 'Not provided'}</p>
+        <p><strong>Website:</strong> ${contactData.website || 'Not provided'}</p>
+        <p><strong>Budget:</strong> ${contactData.budget || 'Not provided'}</p>
+        <p><strong>Timeline:</strong> ${contactData.timeline || 'Not provided'}</p>
+        <p><strong>Preferred Contact:</strong> ${contactData.contactMethod || 'Not provided'}</p>
+        <p><strong>Referral:</strong> ${contactData.referral || 'Not provided'}</p>
+        <p><strong>Discovery Call:</strong> ${contactData.discoveryCall ? 'Yes' : 'No'}</p>
+        <p><strong>NDA Required:</strong> ${contactData.nda ? 'Yes' : 'No'}</p>
+        <p><strong>Services:</strong> ${services.join(', ')}</p>
+        <p><strong>Message:</strong> ${message}</p>
         <hr>
         <p>Submitted on: ${new Date().toLocaleString()}</p>
       `,

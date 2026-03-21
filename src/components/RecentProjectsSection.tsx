@@ -1,4 +1,3 @@
-// src/components/RecentProjectsSection.tsx
 "use client";
 
 import { useState, useCallback } from "react";
@@ -6,11 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, ExternalLink, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 
-// Fallback images
 const FALLBACK_MAIN = "/images/placeholder-4x3.png";
 const FALLBACK_SQUARE = "/images/placeholder-square.png";
 
-// ── Types ────────────────────────────────────────────────────────────────
 type DevProject = {
   id: number;
   title: string;
@@ -36,7 +33,6 @@ type GraphicProject = {
 
 type ProjectItem = DevProject | GraphicProject;
 
-// ── Featured Projects ───────────────────────────────────────────────────
 const featuredProjects: ProjectItem[] = [
   {
     id: 2,
@@ -70,23 +66,23 @@ const featuredProjects: ProjectItem[] = [
     tags: ["Branding", "Logo Design", "Graphic Design", "Visual Identity"],
     link: "/portfolio",
     isDev: false,
-     subProjects: [
-              { subTitle: "Vickins Brand System", subImage: "/projects/teshlie-cake-main.jpg" },
-              { subTitle: "Social Media Templates", subImage: "/projects/vp.jpg" },
-              { subTitle: "Client Logo Suite", subImage: "/projects/APD-1.jpg" },
-              { subTitle: "Event & Promo Posters", subImage: "/projects/KN-1.jpg" },
-              { subTitle: "Packaging Concepts", subImage: "/projects/TSH-1.jpg" },
-              { subTitle: "Visual Storytelling", subImage: "/projects/MDS-1.jpg" },
-              { subTitle: "Brand Collateral Designs", subImage: "/projects/JDTGE-1.jpg" },
-              { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1" },
-              { subTitle: "Illustrative Graphics", subImage: "/projects/P-XMASS-1.jpg" },
-              { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1" },
-              { subTitle: "Color Palette Studies", subImage: "/projects/CNJ-1.jpg" },
-              { subTitle: "Layout & Composition", subImage: "/projects/BPPN-1.jpg" },
-              { subTitle: "Iconography Sets", subImage: "/projects/J-1.jpg" },
-              { subTitle: "Creative Direction Samples", subImage: "/projects/MDAJ-1.jpg" },
-              { subTitle: "Brand Guidelines Excerpts", subImage: "/projects/MCR-1.jpg" },
-       ],
+    subProjects: [
+      { subTitle: "Vickins Brand System", subImage: "/projects/teshlie-cake-main.jpg" },
+      { subTitle: "Social Media Templates", subImage: "/projects/vp.jpg" },
+      { subTitle: "Client Logo Suite", subImage: "/projects/APD-1.jpg" },
+      { subTitle: "Event & Promo Posters", subImage: "/projects/KN-1.jpg" },
+      { subTitle: "Packaging Concepts", subImage: "/projects/TSH-1.jpg" },
+      { subTitle: "Visual Storytelling", subImage: "/projects/MDS-1.jpg" },
+      { subTitle: "Brand Collateral Designs", subImage: "/projects/JDTGE-1.jpg" },
+      { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1" },
+      { subTitle: "Illustrative Graphics", subImage: "/projects/P-XMASS-1.jpg" },
+      { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1" },
+      { subTitle: "Color Palette Studies", subImage: "/projects/CNJ-1.jpg" },
+      { subTitle: "Layout & Composition", subImage: "/projects/BPPN-1.jpg" },
+      { subTitle: "Iconography Sets", subImage: "/projects/J-1.jpg" },
+      { subTitle: "Creative Direction Samples", subImage: "/projects/MDAJ-1.jpg" },
+      { subTitle: "Brand Guidelines Excerpts", subImage: "/projects/MCR-1.jpg" },
+    ],
   },
 ];
 
@@ -94,22 +90,24 @@ export default function RecentProjectsSection() {
   const [selectedGraphicIndex, setSelectedGraphicIndex] = useState<number | null>(null);
 
   const graphicProject = featuredProjects.find((p) => !p.isDev) as GraphicProject | undefined;
-  const currentSlide = selectedGraphicIndex !== null 
-    ? graphicProject?.subProjects[selectedGraphicIndex] 
+  const devProjects = featuredProjects.filter((p) => p.isDev) as DevProject[];
+
+  const currentSlide = selectedGraphicIndex !== null
+    ? graphicProject?.subProjects[selectedGraphicIndex]
     : null;
 
   const totalSlides = graphicProject?.subProjects.length ?? 0;
 
   const goToPrevious = useCallback(() => {
     if (selectedGraphicIndex === null) return;
-    setSelectedGraphicIndex((prev) => 
+    setSelectedGraphicIndex((prev) =>
       prev === null ? null : prev === 0 ? totalSlides - 1 : prev - 1
     );
   }, [selectedGraphicIndex, totalSlides]);
 
   const goToNext = useCallback(() => {
     if (selectedGraphicIndex === null) return;
-    setSelectedGraphicIndex((prev) => 
+    setSelectedGraphicIndex((prev) =>
       prev === null ? null : prev === totalSlides - 1 ? 0 : prev + 1
     );
   }, [selectedGraphicIndex, totalSlides]);
@@ -127,136 +125,132 @@ export default function RecentProjectsSection() {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-transparent to-[var(--card-bg)]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 md:mb-16">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-[var(--button-bg)] font-medium uppercase tracking-wider text-xs sm:text-sm mb-2 sm:mb-3"
+    <section className="py-10 sm:py-14 lg:py-16">
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+          <div className="max-w-2xl">
+            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
+              Featured Work
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
+              Premium delivery across product and visual design.
+            </h2>
+            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
+              Select engagements highlighting fullstack engineering and brand-forward creative systems.
+            </p>
+          </div>
+          <a
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--button-bg)]"
           >
-            Featured Work
-          </motion.p>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-4"
-          >
-            Recent Projects
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-sm sm:text-base md:text-lg text-[var(--foreground)]/80"
-          >
-            A selection of fullstack solutions and premium graphic & branding work
-          </motion.p>
+            Explore Portfolio
+            <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {featuredProjects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, delay: index * 0.15 }}
-              className={`group relative bg-[var(--card-bg)] rounded-2xl overflow-hidden border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full ${
-                !project.isDev ? "cursor-pointer" : ""
-              }`}
-              onClick={() => !project.isDev && setSelectedGraphicIndex(0)}
-            >
-              {/* ... card content remains the same ... */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={project.isDev ? (project as DevProject).image || FALLBACK_MAIN : (project as GraphicProject).mainImage || FALLBACK_MAIN}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-500" />
-                
-                {!project.isDev && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                    <span className="text-white text-2xl sm:text-3xl font-bold tracking-wide drop-shadow-2xl mb-3">
-                      Graphic Design
-                    </span>
-                    <span className="text-white/90 text-base sm:text-lg font-medium">
-                      Click to explore collection
-                    </span>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
+          <div className="space-y-5">
+            {devProjects.map((project, index) => (
+              <motion.a
+                key={project.id}
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group flex flex-col sm:flex-row gap-4 rounded-3xl border border-white/40 bg-white/50 p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+              >
+                <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden">
+                  <Image
+                    src={project.image || FALLBACK_MAIN}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, 160px"
+                  />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+                      {project.category}
+                    </p>
+                    <ExternalLink className="h-4 w-4 text-[var(--button-bg)] opacity-70 group-hover:opacity-100" />
                   </div>
-                )}
-              </div>
+                  <h3 className="text-lg sm:text-xl font-semibold mt-2 text-[var(--foreground)]">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm text-[var(--foreground)]/75 mt-2 line-clamp-2">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] bg-white/70 text-[var(--foreground)]/70 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.a>
+            ))}
+          </div>
 
-              <div className="p-5 sm:p-6 md:p-7 flex flex-col flex-1">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-xs font-medium bg-black/40 backdrop-blur-md text-white rounded-full border border-white/20"
-                    >
-                      {tag}
-                    </span>
+          {graphicProject && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.6 }}
+              className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+              <div className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
+                    Graphic Design
+                  </p>
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
+                    Curated Collection
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold mt-3">
+                  {graphicProject.title}
+                </h3>
+                <p className="text-sm text-[var(--foreground)]/75 mt-3">
+                  {graphicProject.description}
+                </p>
+
+                <div className="mt-6 grid grid-cols-3 gap-2">
+                  {graphicProject.subProjects.slice(0, 6).map((item) => (
+                    <div key={item.subTitle} className="relative h-20 sm:h-24 rounded-2xl overflow-hidden">
+                      <Image
+                        src={item.subImage || FALLBACK_SQUARE}
+                        alt={item.subTitle}
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
+                    </div>
                   ))}
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold mb-3 group-hover:text-[var(--button-bg)] transition-colors line-clamp-2">
-                  {project.title}
-                </h3>
-
-                <p className="text-sm sm:text-base text-[var(--foreground)]/80 mb-5 line-clamp-3 flex-1">
-                  {project.description}
-                </p>
-
-                {project.isDev ? (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[var(--button-bg)] font-medium hover:underline mt-auto text-sm sm:text-base"
-                  >
-                    View Project
-                    <ExternalLink size={18} />
-                  </a>
-                ) : (
-                  <div className="inline-flex items-center gap-2 text-[var(--button-bg)] font-medium mt-auto text-sm sm:text-base group-hover:underline">
-                    Explore Collection
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </div>
-                )}
+                <button
+                  onClick={() => setSelectedGraphicIndex(0)}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-white transition"
+                >
+                  Open Gallery
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </motion.div>
-          ))}
-        </div>
-
-        {/* View All Button */}
-        <div className="text-center mt-12 sm:mt-16 md:mt-20">
-          <motion.a
-            href="/portfolio"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-[var(--button-bg)] text-white font-semibold rounded-full hover:bg-opacity-90 transition-all duration-300 shadow-lg hover:shadow-2xl text-base sm:text-lg group"
-          >
-            View All Projects
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
-          </motion.a>
+          )}
         </div>
       </div>
 
-      {/* ── Very Compact Premium Modal ──────────────────────────────────────── */}
       <AnimatePresence>
         {selectedGraphicIndex !== null && graphicProject && (
           <motion.div
@@ -276,7 +270,6 @@ export default function RecentProjectsSection() {
               className="relative w-full max-w-5xl h-[75vh] sm:h-[84vh] lg:h-[88vh] bg-gradient-to-b from-gray-900/95 to-black/95 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* ── Very small close button ── */}
               <button
                 onClick={() => setSelectedGraphicIndex(null)}
                 className="absolute top-2 right-2 sm:top-4 sm:right-4 z-30 p-2 bg-black/70 backdrop-blur-xl rounded-full text-white hover:bg-black/90 transition-all duration-300 shadow-md hover:scale-110"
@@ -285,7 +278,6 @@ export default function RecentProjectsSection() {
                 <X size={18} />
               </button>
 
-              {/* Full image */}
               <div className="relative w-full h-full">
                 <AnimatePresence initial={false} mode="wait">
                   <motion.div
@@ -308,7 +300,6 @@ export default function RecentProjectsSection() {
                 </AnimatePresence>
               </div>
 
-              {/* ── Very small navigation arrows ── */}
               <button
                 onClick={goToPrevious}
                 className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 p-2 sm:p-3 bg-black/70 backdrop-blur-xl rounded-full text-white hover:bg-black/90 transition-all duration-300 shadow-md hover:scale-110"
@@ -325,16 +316,13 @@ export default function RecentProjectsSection() {
                 <ChevronRight size={18} />
               </button>
 
-              {/* Bottom bar – with very compact Full Size button */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent pb-5 sm:pb-8 pt-14 px-5 sm:px-8">
                 <div className="flex items-center justify-between max-w-5xl mx-auto">
                   <div>
-                    <h3 className="text-lg sm:text-2xl font-bold text-white drop-shadow-lg mb-0.5 sm:mb-1">
+                    <h3 className="text-lg sm:text-2xl font-semibold text-white drop-shadow-lg mb-0.5 sm:mb-1">
                       {graphicProject.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-white/90">
-                      {currentSlide?.subTitle}
-                    </p>
+                    <p className="text-xs sm:text-sm text-white/90">{currentSlide?.subTitle}</p>
                   </div>
 
                   <div className="flex items-center gap-2 sm:gap-4">
@@ -342,7 +330,6 @@ export default function RecentProjectsSection() {
                       {selectedGraphicIndex + 1} / {totalSlides}
                     </div>
 
-                    {/* ── Very small Full Size button ── */}
                     <button
                       onClick={openFullImage}
                       className="p-2 bg-black/70 backdrop-blur-xl rounded-full text-white hover:bg-black/90 transition-all duration-300 shadow-md hover:scale-110"

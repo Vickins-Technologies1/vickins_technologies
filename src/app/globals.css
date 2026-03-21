@@ -1,25 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff; /* Pure white background */
-  --foreground: #111827; /* Dark gray text (gray-900) */
-  --navbar-bg: #ffffff; /* White for navbar */
-  --navbar-text: #002f5e; /* Dark blue text */
-  --button-bg: #3b82f6; /* Blue for buttons (blue-500) */
-  --card-bg: #f9fafb; /* Slightly off-white for cards (gray-50) */
-  --font-sans: 'Roboto', Arial, Helvetica, sans-serif;
-  --font-mono: 'Roboto Mono', monospace;
+  --background: #f4f7fb;
+  --foreground: #0b1220;
+  --navbar-bg: rgba(255, 255, 255, 0.7);
+  --navbar-text: #0b1220;
+  --button-bg: #1b5cff;
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-solid: #ffffff;
+  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --accent: #14b8a6;
+  --accent-2: #38bdf8;
+  --shadow-soft: 0 28px 70px rgba(15, 23, 42, 0.18);
+  --shadow-tight: 0 12px 32px rgba(15, 23, 42, 0.16);
+  --radius: 24px;
+  --font-sans: var(--font-manrope);
+  --page-bg: radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.22), transparent 60%),
+    radial-gradient(900px 600px at 90% 10%, rgba(99, 102, 241, 0.16), transparent 55%),
+    linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%);
+  --page-grid: linear-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
 }
 
-/* Dark theme variables */
 :root[data-theme="dark"] {
-  --background: #111827; /* Dark background (gray-900) */
-  --foreground: #f9fafb; /* Light text (gray-50) */
-  --navbar-bg: #1f2937; /* Darker gray for navbar (gray-800) */
-  --navbar-text: #f9fafb; /* Light text */
-  --button-bg: #1d4ed8; /* Darker blue (blue-700) */
-  --card-bg: #1f2937; /* Dark cards (gray-800) */
+  --background: #0a0f1d;
+  --foreground: #f3f6ff;
+  --navbar-bg: rgba(12, 18, 34, 0.75);
+  --navbar-text: #f3f6ff;
+  --button-bg: #2a6bff;
+  --card-bg: rgba(13, 20, 38, 0.72);
+  --card-solid: #0f172a;
+  --glass-border: rgba(148, 163, 184, 0.25);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --accent: #2dd4bf;
+  --accent-2: #60a5fa;
+  --shadow-soft: 0 28px 70px rgba(0, 0, 0, 0.5);
+  --shadow-tight: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --page-bg: radial-gradient(1200px 600px at 10% -10%, rgba(59, 130, 246, 0.18), transparent 60%),
+    radial-gradient(900px 600px at 90% 10%, rgba(45, 212, 191, 0.16), transparent 55%),
+    linear-gradient(180deg, #0a0f1d 0%, #0b1328 100%);
+  --page-grid: linear-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.18) 1px, transparent 1px);
+}
+
+/* Dark mode readability overrides for light glass utilities */
+:root[data-theme="dark"] .bg-white\/70 {
+  background-color: rgba(15, 23, 42, 0.78) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/60 {
+  background-color: rgba(15, 23, 42, 0.72) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/55 {
+  background-color: rgba(15, 23, 42, 0.68) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/50 {
+  background-color: rgba(15, 23, 42, 0.64) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/45 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/40 {
+  background-color: rgba(15, 23, 42, 0.56) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/35 {
+  background-color: rgba(15, 23, 42, 0.52) !important;
+}
+
+:root[data-theme="dark"] .bg-white\/30 {
+  background-color: rgba(15, 23, 42, 0.48) !important;
+}
+
+/* Dark mode - phone input country selector */
+:root[data-theme="dark"] .PhoneInputCountry {
+  color: var(--foreground);
+}
+
+:root[data-theme="dark"] .PhoneInputCountrySelect {
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  color: var(--foreground) !important;
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
+:root[data-theme="dark"] .PhoneInputCountrySelectArrow {
+  color: var(--foreground) !important;
+  opacity: 0.8;
+}
+
+:root[data-theme="dark"] .PhoneInputCountryIcon {
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.35);
 }
 
 @theme {
@@ -29,9 +104,101 @@
   --font-mono: var(--font-mono);
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--color-background);
+  background: var(--page-bg);
   color: var(--color-foreground);
   font-family: var(--font-sans);
   margin: 0;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--page-grid);
+  background-size: 32px 32px;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+.glass-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(18px) saturate(1.2);
+  border-radius: var(--radius);
+}
+
+.glass-chip {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 999px;
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.7;
+}
+
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-16px) translateX(8px) scale(1.04);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+.float-slow {
+  animation: floatSlow 12s ease-in-out infinite;
+}
+
+.float-slower {
+  animation: floatSlow 16s ease-in-out infinite;
+}
+
+.shimmer-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  opacity: 0.6;
+  animation: shimmer 5s ease-in-out infinite;
 }
