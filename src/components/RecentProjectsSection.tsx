@@ -42,7 +42,7 @@ const featuredProjects: ProjectItem[] = [
       "Secure client portal with real-time dashboards, authentication and business management features.",
     image: "/projects/scr.png",
     tags: ["TypeScript", "React", "Dashboard", "Fullstack"],
-    link: "https://smartchoicerentalmanagement.com",
+    link: "https://soranapropertymanagers.com",
     isDev: true,
   },
   {
@@ -74,9 +74,9 @@ const featuredProjects: ProjectItem[] = [
       { subTitle: "Packaging Concepts", subImage: "/projects/TSH-1.jpg" },
       { subTitle: "Visual Storytelling", subImage: "/projects/MDS-1.jpg" },
       { subTitle: "Brand Collateral Designs", subImage: "/projects/JDTGE-1.jpg" },
-      { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1" },
+      { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1.jpg" },
       { subTitle: "Illustrative Graphics", subImage: "/projects/P-XMASS-1.jpg" },
-      { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1" },
+      { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1.jpg" },
       { subTitle: "Color Palette Studies", subImage: "/projects/CNJ-1.jpg" },
       { subTitle: "Layout & Composition", subImage: "/projects/BPPN-1.jpg" },
       { subTitle: "Iconography Sets", subImage: "/projects/J-1.jpg" },
@@ -292,7 +292,7 @@ export default function RecentProjectsSection() {
                       src={currentSlide?.subImage || FALLBACK_SQUARE}
                       alt={currentSlide?.subTitle || "Graphic design work"}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       priority
                       quality={92}
                     />

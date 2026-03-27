@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
+import FloatingActions from "../components/FloatingActions";
 
 const manrope = Manrope({
   weight: ["300", "400", "500", "600", "700"],
@@ -103,7 +104,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable} ${playfair.variable} w-full h-full scroll-smooth`}>
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
-        <ThemePreloaderProvider>{children}</ThemePreloaderProvider>
+        <ThemePreloaderProvider>
+          {children}
+          <FloatingActions />
+        </ThemePreloaderProvider>
       </body>
     </html>
   );
