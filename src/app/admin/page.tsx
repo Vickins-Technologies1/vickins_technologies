@@ -9,7 +9,7 @@ export default function AdminDashboard() {
   // Optional: Show loading state
   if (isPending) {
     return (
-      <div className="p-8 text-center">
+      <div className="p-4 sm:p-8 text-center">
         <p>Loading dashboard...</p>
       </div>
     );
@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   // Optional: Redirect or show message if not logged in / not admin
   if (!session?.user || session.user.role !== "admin") {
     return (
-      <div className="p-8 text-center">
+      <div className="p-4 sm:p-8 text-center">
         <p className="text-red-500">
           Access denied. You must be an admin to view this page.
         </p>
@@ -27,8 +27,8 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">
+    <div className="p-4 sm:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-8">
         Welcome back, {session.user.name || session.user.email}!
       </h1>
 

@@ -11,6 +11,7 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight, 
+  Menu,
   Sun, 
   Moon, 
   LogOut,
@@ -25,6 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Theme toggle with persistence
   const toggleTheme = () => {
@@ -44,6 +46,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       document.documentElement.setAttribute("data-theme", "dark");
       setIsDarkMode(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarOpen(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Auth check – redirect if not authenticated or not admin
@@ -91,13 +106,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased">
+      {isMobile && sidebarOpen && (
+        <button
+          type="button"
+          aria-label="Close sidebar"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       {/* Sidebar */}
       <aside
         className={`
           ${sidebarOpen ? "w-64" : "w-20"} 
+          ${isMobile ? "fixed left-0 top-0 z-40 h-screen" : "sticky top-0 h-screen"}
+          ${isMobile ? (sidebarOpen ? "translate-x-0" : "-translate-x-full") : "translate-x-0"}
           transition-all duration-300 ease-in-out
           bg-[var(--sidebar-bg)] border-r border-[var(--border)]
-          flex flex-col h-screen sticky top-0 overflow-hidden
+          flex flex-col overflow-hidden
           shadow-lg
         `}
       >
@@ -169,12 +194,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="h-16 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-6 sticky top-0 z-10 shadow-sm">
-          <h2 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">
-            Admin Panel
-          </h2>
+        <header className="h-16 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 shadow-sm">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              className="lg:hidden p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--foreground)] transition-colors"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={20} />
+            </button>
+            <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
+              Admin Panel
+            </h2>
+          </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -185,8 +219,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
 
             {/* User Info & Logout */}
-            <div className="flex items-center gap-4">
-              <div className="text-right">
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden md:block">
                 <p className="font-medium text-[var(--foreground)]">
                   {session.user.email}
                 </p>
@@ -197,20 +231,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <button
                 onClick={handleSignOut}
                 className="
-                  flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 
+                  flex items-center gap-2 px-3 sm:px-4 py-2 bg-red-600 hover:bg-red-700 
                   text-white text-sm font-medium rounded-lg 
                   transition-colors shadow-sm
                 "
               >
                 <LogOut size={16} />
-                Logout
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
           </div>
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-gradient-to-br from-[var(--background)] to-[var(--background)]/90">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-gradient-to-br from-[var(--background)] to-[var(--background)]/90">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

@@ -68,7 +68,7 @@ export default function Quotations() {
   };
 
   return (
-    <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-md">
+    <div className="bg-[var(--card-bg)] p-4 sm:p-6 rounded-xl shadow-md">
       <h1 className="text-2xl font-bold mb-6 text-[var(--foreground)]">Create Quotation</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -94,13 +94,16 @@ export default function Quotations() {
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Items</label>
           {items.map((item, index) => (
-            <div key={index} className="flex gap-4 mb-4">
+            <div
+              key={index}
+              className="grid grid-cols-1 md:grid-cols-[1fr_120px_140px_auto] gap-3 items-center mb-4"
+            >
               <input
                 type="text"
                 placeholder="Description"
                 value={item.description}
                 onChange={(e) => updateItem(index, 'description', e.target.value)}
-                className="flex-1 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
+                className="w-full px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
                 required
               />
               <input
@@ -108,7 +111,7 @@ export default function Quotations() {
                 placeholder="Quantity"
                 value={item.quantity}
                 onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
-                className="w-24 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
+                className="w-full md:w-24 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
                 required
               />
               <input
@@ -116,13 +119,13 @@ export default function Quotations() {
                 placeholder="Price"
                 value={item.price}
                 onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value))}
-                className="w-32 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
+                className="w-full md:w-32 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
                 required
               />
               <button
                 type="button"
                 onClick={() => removeItem(index)}
-                className="px-3 py-2 bg-red-600 text-white rounded-lg"
+                className="w-full md:w-auto px-3 py-2 bg-red-600 text-white rounded-lg"
               >
                 Remove
               </button>
@@ -131,7 +134,7 @@ export default function Quotations() {
           <button
             type="button"
             onClick={addItem}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg"
           >
             Add Item
           </button>
@@ -145,13 +148,13 @@ export default function Quotations() {
             rows={4}
           />
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <p className="text-lg font-semibold">Total: ${calculateTotal()}</p>
         </div>
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-3 bg-green-600 text-white rounded-lg disabled:opacity-50"
+          className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg disabled:opacity-50"
         >
           {isLoading ? 'Processing...' : 'Generate & Send Quotation'}
         </button>
