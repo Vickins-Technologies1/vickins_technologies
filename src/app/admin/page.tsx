@@ -1,8 +1,10 @@
 // src/app/admin/page.tsx
 "use client";
 
+import { useEffect, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import type { AdminConfig, DashboardStat } from "@/lib/admin-config";
 import {
   ArrowRight,
   Sparkles,
@@ -59,6 +61,10 @@ function DashboardSkeleton() {
 
 export default function AdminDashboard() {
   const { data: session, isPending } = authClient.useSession();
+  const [dashboardConfig, setDashboardConfig] = useState<AdminConfig["dashboard"] | null>(null);
+  const [dashboardStats, setDashboardStats] = useState<Record<string, number>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   if (isPending) {
     return <DashboardSkeleton />;
@@ -74,26 +80,64 @@ export default function AdminDashboard() {
     );
   }
 
-  const quickLinks = [
-    {
-      href: "/admin/inventory",
-      title: "Inventory & Sales",
-      description: "Track stock, record sales, and monitor item performance.",
-      icon: Boxes,
-    },
-    {
-      href: "/admin/finance",
-      title: "Expenses & Cash",
-      description: "Log expenses, manage cash flow, and view balances.",
-      icon: Wallet,
-    },
-    {
-      href: "/admin/quotations",
-      title: "Quotations",
-      description: "Generate polished quotes for your clients.",
-      icon: FileText,
-    },
-  ];
+  useEffect(() => {
+    if (!session?.user || session.user.role !== "admin") return;
+    let isMounted = true;
+    const loadDashboard = async () => {
+      setIsLoading(true);
+      setLoadError("");
+      try {
+        const response = await fetch("/api/admin/dashboard", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error || "Failed to load dashboard data.");
+        }
+        if (isMounted) {
+          setDashboardConfig(data.config?.dashboard ?? null);
+          setDashboardStats(data.stats ?? {});
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError(error instanceof Error ? error.message : "Unable to load dashboard.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadDashboard();
+    return () => {
+      isMounted = false;
+    };
+  }, [session?.user]);
+
+  if (isLoading || !dashboardConfig) {
+    return <DashboardSkeleton />;
+  }
+
+  const iconMap: Record<string, ComponentType<{ size?: number; className?: string }>> = {
+    Boxes,
+    Wallet,
+    FileText,
+    ShieldCheck,
+    TrendingUp,
+  };
+
+  const tagline = dashboardConfig.tagline?.trim() || "Admin Dashboard";
+  const title = dashboardConfig.title?.trim() || "Welcome back,";
+  const subtitle =
+    dashboardConfig.subtitle?.trim() ||
+    "Add your first hustle in Inventory to start tracking performance.";
+
+  const formatStatValue = (stat: DashboardStat, value: number | undefined) => {
+    if (value === undefined || value === null) return "--";
+    if (stat.format === "currency") {
+      return `$${value.toFixed(2)}`;
+    }
+    return `${value}`;
+  };
 
   return (
     <div className="space-y-8">
@@ -103,60 +147,75 @@ export default function AdminDashboard() {
           <div>
             <p className="inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.3em] text-[var(--button-bg)]">
               <Sparkles size={16} />
-              Admin Command Center
+              {tagline}
             </p>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Welcome back, {session.user.name || session.user.email}.
+              {title} {session.user.name || session.user.email}.
             </h1>
             <p className="text-sm sm:text-base text-[var(--muted)] mt-3 max-w-2xl">
-              Keep every side hustle running like a premium brand. Track inventory, sales, expenses, and cash
-              in one clean, professional workspace.
+              {subtitle}
             </p>
+            {loadError && (
+              <p className="mt-3 text-sm text-rose-500">
+                {loadError}
+              </p>
+            )}
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/admin/inventory"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/60 text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--hover-bg)] transition"
-            >
-              Open Inventory
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/admin/finance"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
-            >
-              View Cash Flow
-              <ArrowRight size={16} />
-            </Link>
+            {dashboardConfig.ctas.map((cta) => (
+              <Link
+                key={cta.href}
+                href={cta.href}
+                className={
+                  cta.variant === "primary"
+                    ? "inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
+                    : "inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/60 text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--hover-bg)] transition"
+                }
+              >
+                {cta.label}
+                <ArrowRight size={16} />
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {[
-          { label: "Active Hustles", value: "3", icon: ShieldCheck },
-          { label: "Stock Items Tracked", value: "28", icon: Boxes },
-          { label: "Cash Runway", value: "62 days", icon: TrendingUp },
-        ].map((stat) => (
-          <div key={stat.label} className="glass-panel p-5 sm:p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-[var(--muted)] uppercase tracking-[0.2em]">{stat.label}</p>
-              <stat.icon size={18} className="text-[var(--button-bg)]" />
-            </div>
-            <p className="text-2xl sm:text-3xl font-semibold mt-3">{stat.value}</p>
-            <p className="text-xs text-[var(--muted)] mt-2">
-              Live metrics update as you log sales and expenses.
-            </p>
+        {dashboardConfig.stats.length === 0 && (
+          <div className="glass-panel p-5 sm:p-6 md:col-span-3">
+            <p className="text-sm text-[var(--muted)]">No dashboard metrics configured yet.</p>
           </div>
-        ))}
+        )}
+        {dashboardConfig.stats.map((stat) => {
+          const Icon = iconMap[stat.icon] ?? ShieldCheck;
+          return (
+            <div key={stat.id} className="glass-panel p-5 sm:p-6">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-[var(--muted)] uppercase tracking-[0.2em]">{stat.label}</p>
+                <Icon size={18} className="text-[var(--button-bg)]" />
+              </div>
+              <p className="text-2xl sm:text-3xl font-semibold mt-3">
+                {formatStatValue(stat, dashboardStats[stat.metric])}
+              </p>
+              <p className="text-xs text-[var(--muted)] mt-2">
+                Live metrics update as you log sales and expenses.
+              </p>
+            </div>
+          );
+        })}
       </section>
 
       <section className="glass-panel p-6 sm:p-7">
         <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Quick Actions</p>
         <h2 className="text-xl sm:text-2xl font-semibold mt-2 mb-6">Jump into the work</h2>
         <div className="space-y-4">
-          {quickLinks.map((link) => {
-            const Icon = link.icon;
+          {dashboardConfig.quickLinks.length === 0 && (
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--muted)]">
+              No quick actions configured yet.
+            </div>
+          )}
+          {dashboardConfig.quickLinks.map((link) => {
+            const Icon = iconMap[link.icon] ?? ShieldCheck;
             return (
               <Link
                 key={link.title}

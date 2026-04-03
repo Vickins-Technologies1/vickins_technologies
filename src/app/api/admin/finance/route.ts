@@ -1,34 +1,14 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
-import {
-  getDefaultFinanceState,
-  type FinanceState,
-  type Hustle,
-  type InventoryState,
-} from "@/lib/admin-data";
+import { getDefaultFinanceState, type FinanceState } from "@/lib/admin-data";
 
 const COLLECTION = "admin_finance";
-const INVENTORY_COLLECTION = "admin_inventory";
 const STATE_KEY = "default";
 
 type FinanceDoc = {
   key: string;
   state: FinanceState;
   updatedAt: Date;
-};
-
-type InventoryDoc = {
-  key: string;
-  state: InventoryState;
-  updatedAt: Date;
-};
-
-const getSeedHustles = (inventory?: InventoryState): Hustle[] | undefined => {
-  if (!inventory?.hustles?.length) return undefined;
-  return inventory.hustles.map((hustle) => ({
-    id: hustle.id,
-    name: hustle.name,
-  }));
 };
 
 export async function GET() {
@@ -38,18 +18,7 @@ export async function GET() {
     const doc = await collection.findOne({ key: STATE_KEY });
 
     if (!doc) {
-      const inventoryCollection = db.collection<InventoryDoc>(INVENTORY_COLLECTION);
-      const inventoryDoc = await inventoryCollection.findOne({ key: STATE_KEY });
-      const seededHustles = getSeedHustles(inventoryDoc?.state);
-      const state = getDefaultFinanceState(seededHustles);
-
-      await collection.insertOne({
-        key: STATE_KEY,
-        state,
-        updatedAt: new Date(),
-      });
-
-      return NextResponse.json({ state });
+      return NextResponse.json({ state: getDefaultFinanceState() });
     }
 
     return NextResponse.json({ state: doc.state ?? getDefaultFinanceState() });

@@ -18,13 +18,7 @@ export async function GET() {
     const doc = await collection.findOne({ key: STATE_KEY });
 
     if (!doc) {
-      const state = getDefaultInventoryState();
-      await collection.insertOne({
-        key: STATE_KEY,
-        state,
-        updatedAt: new Date(),
-      });
-      return NextResponse.json({ state });
+      return NextResponse.json({ state: getDefaultInventoryState() });
     }
 
     return NextResponse.json({ state: doc.state ?? getDefaultInventoryState() });
