@@ -1,6 +1,27 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
+export async function GET() {
+  try {
+    const context = await auth.$context;
+    const adapter = context.internalAdapter as unknown as {
+      countTotalUsers: (
+        where?: Array<{ field: string; operator: string; value: string }>
+      ) => Promise<number>;
+    };
+    const adminCount = await adapter.countTotalUsers?.([
+      { field: "role", operator: "contains", value: "admin" },
+    ]);
+
+    return NextResponse.json({ adminExists: (adminCount ?? 0) > 0 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Unable to verify admin signup status." },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const { email, password, name } = body as {
