@@ -19,8 +19,18 @@ export const auth = betterAuth({
   ],
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "https://your-production-domain.com" // ← CHANGE TO YOUR DOMAIN
+      ? process.env.NEXT_PUBLIC_SITE_URL ||
+        process.env.BETTER_AUTH_BASE_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
+        "https://vickins-technologies.vercel.app"
       : "http://localhost:3000",
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://vickins-technologies.vercel.app",
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.BETTER_AUTH_BASE_URL,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+  ].filter(Boolean) as string[],
   // Optional: enable if deploying on Vercel/Netlify/etc.
   // trustHost: true,
 });
