@@ -10,64 +10,12 @@ import {
   Plus,
   Receipt,
 } from "lucide-react";
-
-type Hustle = {
-  id: string;
-  name: string;
-};
-
-type CashAccount = {
-  id: string;
-  name: string;
-  type: string;
-  openingBalance: number;
-};
-
-type CashEntry = {
-  id: string;
-  hustleId: string;
-  accountId: string;
-  direction: "in" | "out";
-  amount: number;
-  note: string;
-  date: string;
-};
-
-type Expense = {
-  id: string;
-  hustleId: string;
-  category: string;
-  vendor: string;
-  amount: number;
-  accountId: string;
-  date: string;
-  status: "paid" | "pending";
-};
-
-type FinanceState = {
-  hustles: Hustle[];
-  accounts: CashAccount[];
-  entries: CashEntry[];
-  expenses: Expense[];
-};
-
-const STORAGE_KEY = "vt_admin_finance_v1";
-const INVENTORY_KEY = "vt_admin_inventory_v1";
-
-const defaultState: FinanceState = {
-  hustles: [
-    { id: "h1", name: "Creative Studio" },
-    { id: "h2", name: "Retail Corner" },
-    { id: "h3", name: "Consulting Desk" },
-  ],
-  accounts: [
-    { id: "a1", name: "Cash", type: "Cash", openingBalance: 500 },
-    { id: "a2", name: "Bank", type: "Bank", openingBalance: 2200 },
-    { id: "a3", name: "M-Pesa", type: "Mobile", openingBalance: 650 },
-  ],
-  entries: [],
-  expenses: [],
-};
+import {
+  getDefaultFinanceState,
+  type CashEntry,
+  type Expense,
+  type FinanceState,
+} from "@/lib/admin-data";
 
 const createId = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id_${Date.now()}`);
 
@@ -75,21 +23,23 @@ const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
 export default function FinancePage() {
-  const [state, setState] = useState<FinanceState>(defaultState);
-  const [activeHustleId, setActiveHustleId] = useState(defaultState.hustles[0]?.id ?? "");
+  const [state, setState] = useState<FinanceState>(() => getDefaultFinanceState());
+  const [activeHustleId, setActiveHustleId] = useState(state.hustles[0]?.id ?? "");
   const [message, setMessage] = useState("");
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
   const [expenseForm, setExpenseForm] = useState({
     category: "Supplies",
     vendor: "",
     amount: "",
-    accountId: defaultState.accounts[0]?.id ?? "",
+    accountId: state.accounts[0]?.id ?? "",
     date: new Date().toISOString().slice(0, 10),
     status: "paid",
   });
 
   const [cashForm, setCashForm] = useState({
-    accountId: defaultState.accounts[0]?.id ?? "",
+    accountId: state.accounts[0]?.id ?? "",
     direction: "in",
     amount: "",
     note: "Sales deposit",
@@ -97,27 +47,58 @@ export default function FinancePage() {
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as FinanceState;
-      setState(parsed);
-      setActiveHustleId(parsed.hustles[0]?.id ?? "");
-      return;
-    }
-    const inventoryData = localStorage.getItem(INVENTORY_KEY);
-    if (inventoryData) {
-      const parsedInventory = JSON.parse(inventoryData) as { hustles?: Hustle[] };
-      const hustles = parsedInventory.hustles ?? [];
-      if (hustles.length) {
-        setState((prev) => ({ ...prev, hustles }));
-        setActiveHustleId(hustles[0].id);
+    let isMounted = true;
+    const loadState = async () => {
+      try {
+        const response = await fetch("/api/admin/finance", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error || "Failed to load finance data.");
+        }
+        if (isMounted && data?.state) {
+          setState(data.state as FinanceState);
+          setActiveHustleId(data.state.hustles?.[0]?.id ?? "");
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError(error instanceof Error ? error.message : "Unable to load finance.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsHydrated(true);
+        }
       }
-    }
+    };
+
+    loadState();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (!isHydrated) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      try {
+        await fetch("/api/admin/finance", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state }),
+          signal: controller.signal,
+        });
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          setMessage("Unable to sync finance changes.");
+        }
+      }
+    }, 500);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [state, isHydrated]);
 
   const balances = useMemo(() => {
     return state.accounts.map((account) => {
@@ -128,6 +109,31 @@ export default function FinancePage() {
       return { ...account, balance: account.openingBalance + flow };
     });
   }, [state.entries, state.accounts]);
+
+  useEffect(() => {
+    if (state.hustles.length === 0) {
+      setActiveHustleId("");
+      return;
+    }
+    if (!state.hustles.some((hustle) => hustle.id === activeHustleId)) {
+      setActiveHustleId(state.hustles[0].id);
+    }
+  }, [state.hustles, activeHustleId]);
+
+  useEffect(() => {
+    if (!state.accounts.some((account) => account.id === expenseForm.accountId)) {
+      setExpenseForm((prev) => ({
+        ...prev,
+        accountId: state.accounts[0]?.id ?? "",
+      }));
+    }
+    if (!state.accounts.some((account) => account.id === cashForm.accountId)) {
+      setCashForm((prev) => ({
+        ...prev,
+        accountId: state.accounts[0]?.id ?? "",
+      }));
+    }
+  }, [state.accounts, expenseForm.accountId, cashForm.accountId]);
 
   const activeEntries = state.entries.filter((entry) => entry.hustleId === activeHustleId);
   const activeExpenses = state.expenses.filter((expense) => expense.hustleId === activeHustleId);
@@ -185,6 +191,11 @@ export default function FinancePage() {
             <p className="text-sm text-[var(--muted)] mt-3 max-w-2xl">
               Capture every expense, payout, and deposit so you always know your exact cash position.
             </p>
+            {loadError && (
+              <p className="mt-3 text-sm text-rose-500">
+                {loadError}
+              </p>
+            )}
           </div>
           <div className="glass-chip px-4 py-2 text-xs sm:text-sm text-[var(--foreground)]/80">
             {state.expenses.length} expenses logged

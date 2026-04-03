@@ -10,84 +10,14 @@ import {
   ArrowUpRight,
   BadgeDollarSign,
 } from "lucide-react";
-
-type Hustle = {
-  id: string;
-  name: string;
-  color: string;
-};
-
-type Item = {
-  id: string;
-  hustleId: string;
-  name: string;
-  sku: string;
-  unit: string;
-  price: number;
-  stock: number;
-  reorderLevel: number;
-};
-
-type Sale = {
-  id: string;
-  hustleId: string;
-  itemId: string;
-  quantity: number;
-  price: number;
-  channel: string;
-  date: string;
-};
-
-type StockMove = {
-  id: string;
-  hustleId: string;
-  itemId: string;
-  quantity: number;
-  direction: "in" | "out";
-  note: string;
-  date: string;
-};
-
-type InventoryState = {
-  hustles: Hustle[];
-  items: Item[];
-  sales: Sale[];
-  stockMoves: StockMove[];
-};
-
-const STORAGE_KEY = "vt_admin_inventory_v1";
-
-const defaultState: InventoryState = {
-  hustles: [
-    { id: "h1", name: "Creative Studio", color: "#38bdf8" },
-    { id: "h2", name: "Retail Corner", color: "#22c55e" },
-    { id: "h3", name: "Consulting Desk", color: "#a855f7" },
-  ],
-  items: [
-    {
-      id: "i1",
-      hustleId: "h1",
-      name: "Brand Strategy Session",
-      sku: "CS-STRAT-01",
-      unit: "session",
-      price: 250,
-      stock: 6,
-      reorderLevel: 2,
-    },
-    {
-      id: "i2",
-      hustleId: "h2",
-      name: "Wireless Headset",
-      sku: "RC-WH-21",
-      unit: "pcs",
-      price: 48,
-      stock: 32,
-      reorderLevel: 10,
-    },
-  ],
-  sales: [],
-  stockMoves: [],
-};
+import {
+  getDefaultInventoryState,
+  type Hustle,
+  type InventoryState,
+  type Item,
+  type Sale,
+  type StockMove,
+} from "@/lib/admin-data";
 
 const createId = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id_${Date.now()}`);
 
@@ -95,10 +25,12 @@ const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
 export default function InventoryPage() {
-  const [state, setState] = useState<InventoryState>(defaultState);
-  const [activeHustleId, setActiveHustleId] = useState(defaultState.hustles[0]?.id ?? "");
+  const [state, setState] = useState<InventoryState>(() => getDefaultInventoryState());
+  const [activeHustleId, setActiveHustleId] = useState(state.hustles[0]?.id ?? "");
   const [newHustle, setNewHustle] = useState("");
   const [message, setMessage] = useState("");
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
   const [productForm, setProductForm] = useState({
     name: "",
@@ -126,20 +58,71 @@ export default function InventoryPage() {
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as InventoryState;
-      setState(parsed);
-      setActiveHustleId(parsed.hustles[0]?.id ?? "");
-    }
+    let isMounted = true;
+    const loadState = async () => {
+      try {
+        const response = await fetch("/api/admin/inventory", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error || "Failed to load inventory data.");
+        }
+        if (isMounted && data?.state) {
+          setState(data.state as InventoryState);
+          setActiveHustleId(data.state.hustles?.[0]?.id ?? "");
+        }
+      } catch (error) {
+        if (isMounted) {
+          setLoadError(error instanceof Error ? error.message : "Unable to load inventory.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsHydrated(true);
+        }
+      }
+    };
+
+    loadState();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    if (!isHydrated) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      try {
+        await fetch("/api/admin/inventory", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state }),
+          signal: controller.signal,
+        });
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          setMessage("Unable to sync inventory changes.");
+        }
+      }
+    }, 500);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [state, isHydrated]);
 
   const activeHustle = state.hustles.find((h) => h.id === activeHustleId) ?? state.hustles[0];
   const filteredItems = state.items.filter((item) => item.hustleId === activeHustleId);
+
+  useEffect(() => {
+    if (state.hustles.length === 0) {
+      setActiveHustleId("");
+      return;
+    }
+    if (!state.hustles.some((hustle) => hustle.id === activeHustleId)) {
+      setActiveHustleId(state.hustles[0].id);
+    }
+  }, [state.hustles, activeHustleId]);
 
   const summary = useMemo(() => {
     const stockValue = filteredItems.reduce((sum, item) => sum + item.price * item.stock, 0);
@@ -264,6 +247,11 @@ export default function InventoryPage() {
             <p className="text-sm text-[var(--muted)] mt-3 max-w-2xl">
               Record sales, update stock, and keep visibility on reorder levels so every hustle stays profitable.
             </p>
+            {loadError && (
+              <p className="mt-3 text-sm text-rose-500">
+                {loadError}
+              </p>
+            )}
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="glass-chip px-4 py-2 text-xs sm:text-sm text-[var(--foreground)]/80">

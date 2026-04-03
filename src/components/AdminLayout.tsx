@@ -18,7 +18,6 @@ import {
   Copyright,
   Mail,
   FileText,
-  Compass,
   Boxes,
   Wallet
 } from "lucide-react";
@@ -97,7 +96,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/walkthrough", label: "Walkthrough", icon: Compass },
     { href: "/admin/inventory", label: "Inventory", icon: Boxes },
     { href: "/admin/finance", label: "Expenses & Cash", icon: Wallet },
     { href: "/admin/quotations", label: "Quotations", icon: FileText },

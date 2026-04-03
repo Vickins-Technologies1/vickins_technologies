@@ -13,15 +13,55 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <section className="glass-panel p-6 sm:p-8">
+        <div className="space-y-4">
+          <div className="h-3 w-36 rounded-full bg-[var(--border)]/60" />
+          <div className="h-8 w-2/3 rounded-full bg-[var(--border)]/60" />
+          <div className="h-4 w-full rounded-full bg-[var(--border)]/50" />
+          <div className="h-4 w-5/6 rounded-full bg-[var(--border)]/50" />
+          <div className="flex flex-wrap gap-3 pt-2">
+            <div className="h-10 w-36 rounded-full bg-[var(--border)]/60" />
+            <div className="h-10 w-32 rounded-full bg-[var(--border)]/50" />
+          </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {[0, 1, 2].map((item) => (
+          <div key={item} className="glass-panel p-5 sm:p-6 space-y-3">
+            <div className="h-3 w-28 rounded-full bg-[var(--border)]/50" />
+            <div className="h-8 w-24 rounded-full bg-[var(--border)]/60" />
+            <div className="h-3 w-40 rounded-full bg-[var(--border)]/40" />
+          </div>
+        ))}
+      </section>
+
+      <section className="glass-panel p-6 sm:p-7">
+        <div className="space-y-4">
+          <div className="h-3 w-32 rounded-full bg-[var(--border)]/60" />
+          <div className="h-7 w-1/2 rounded-full bg-[var(--border)]/60" />
+          <div className="space-y-3">
+            {[0, 1, 2].map((item) => (
+              <div
+                key={item}
+                className="h-16 w-full rounded-2xl border border-[var(--glass-border)] bg-white/60"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
-    return (
-      <div className="p-4 sm:p-8 text-center">
-        <p>Loading dashboard...</p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!session?.user || session.user.role !== "admin") {
@@ -55,34 +95,6 @@ export default function AdminDashboard() {
     },
   ];
 
-  const steps = [
-    {
-      title: "Add your side hustles",
-      description: "Create each hustle so inventory and cash stay separate.",
-      href: "/admin/inventory",
-    },
-    {
-      title: "Load your inventory",
-      description: "Add products, set prices, and define reorder points.",
-      href: "/admin/inventory",
-    },
-    {
-      title: "Record sales and stock updates",
-      description: "Track sales, restocks, and live stock counts.",
-      href: "/admin/inventory",
-    },
-    {
-      title: "Capture expenses and cash moves",
-      description: "Log payments, payouts, and balances by account.",
-      href: "/admin/finance",
-    },
-    {
-      title: "Deliver professional quotations",
-      description: "Send sleek quotes directly to clients.",
-      href: "/admin/quotations",
-    },
-  ];
-
   return (
     <div className="space-y-8">
       <section className="glass-panel p-6 sm:p-8 relative overflow-hidden">
@@ -103,17 +115,17 @@ export default function AdminDashboard() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/admin/walkthrough"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
-            >
-              Start Walkthrough
-              <ArrowRight size={16} />
-            </Link>
-            <Link
               href="/admin/inventory"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/60 text-[var(--foreground)] text-sm font-semibold hover:bg-[var(--hover-bg)] transition"
             >
               Open Inventory
+              <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/admin/finance"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
+            >
+              View Cash Flow
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -139,64 +151,29 @@ export default function AdminDashboard() {
         ))}
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
-        <div className="glass-panel p-6 sm:p-7">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Walkthrough</p>
-              <h2 className="text-xl sm:text-2xl font-semibold mt-2">Your admin flow in 5 steps</h2>
-            </div>
-            <Link
-              href="/admin/walkthrough"
-              className="text-sm font-semibold text-[var(--button-bg)] hover:underline"
-            >
-              View full tour
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {steps.map((step, index) => (
+      <section className="glass-panel p-6 sm:p-7">
+        <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Quick Actions</p>
+        <h2 className="text-xl sm:text-2xl font-semibold mt-2 mb-6">Jump into the work</h2>
+        <div className="space-y-4">
+          {quickLinks.map((link) => {
+            const Icon = link.icon;
+            return (
               <Link
-                key={step.title}
-                href={step.href}
-                className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-2xl border border-[var(--glass-border)] bg-white/60 hover:bg-[var(--hover-bg)] transition"
+                key={link.title}
+                href={link.href}
+                className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--glass-border)] bg-white/60 hover:bg-[var(--hover-bg)] transition"
               >
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[var(--button-bg)]/10 text-[var(--button-bg)] font-semibold">
-                  {index + 1}
+                <div className="p-3 rounded-xl bg-[var(--button-bg)]/10 text-[var(--button-bg)]">
+                  <Icon size={20} />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold">{step.title}</p>
-                  <p className="text-sm text-[var(--muted)]">{step.description}</p>
+                  <p className="font-semibold">{link.title}</p>
+                  <p className="text-sm text-[var(--muted)]">{link.description}</p>
                 </div>
                 <ArrowRight size={16} className="text-[var(--muted)]" />
               </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass-panel p-6 sm:p-7">
-          <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Quick Actions</p>
-          <h2 className="text-xl sm:text-2xl font-semibold mt-2 mb-6">Jump into the work</h2>
-          <div className="space-y-4">
-            {quickLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.title}
-                  href={link.href}
-                  className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--glass-border)] bg-white/60 hover:bg-[var(--hover-bg)] transition"
-                >
-                  <div className="p-3 rounded-xl bg-[var(--button-bg)]/10 text-[var(--button-bg)]">
-                    <Icon size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold">{link.title}</p>
-                    <p className="text-sm text-[var(--muted)]">{link.description}</p>
-                  </div>
-                  <ArrowRight size={16} className="text-[var(--muted)]" />
-                </Link>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
       </section>
     </div>

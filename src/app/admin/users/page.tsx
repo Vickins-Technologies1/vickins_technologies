@@ -1,14 +1,50 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Users, ShieldCheck, Mail } from "lucide-react";
 
-const users = [
-  { name: "Vickins Admin", email: "admin@vickins.com", role: "Admin", status: "Active" },
-  { name: "Sales Lead", email: "sales@vickins.com", role: "Manager", status: "Active" },
-  { name: "Support Desk", email: "support@vickins.com", role: "Staff", status: "Pending" },
-];
+type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+};
 
 export default function AdminUsersPage() {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadUsers = async () => {
+      try {
+        const response = await fetch("/api/admin/users", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error || "Failed to load users.");
+        }
+        if (isMounted) {
+          setUsers(data.users ?? []);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Unable to load users.");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadUsers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <section className="glass-panel p-6 sm:p-8">
@@ -29,6 +65,11 @@ export default function AdminUsersPage() {
             Team Members
           </h2>
         </div>
+        {error && (
+          <p className="mb-4 text-sm text-rose-500">
+            {error}
+          </p>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-[var(--muted)]">
@@ -40,17 +81,31 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {users.map((user) => (
-                <tr key={user.email}>
+              {isLoading && (
+                <tr>
+                  <td className="py-4 text-[var(--muted)]" colSpan={4}>
+                    Loading users...
+                  </td>
+                </tr>
+              )}
+              {!isLoading && users.map((user) => (
+                <tr key={user.id}>
                   <td className="py-3 font-medium">{user.name}</td>
                   <td className="py-3 text-[var(--muted)] flex items-center gap-2">
                     <Mail size={14} />
                     {user.email}
                   </td>
-                  <td className="py-3">{user.role}</td>
+                  <td className="py-3 capitalize">{user.role}</td>
                   <td className="py-3">{user.status}</td>
                 </tr>
               ))}
+              {!isLoading && users.length === 0 && !error && (
+                <tr>
+                  <td className="py-4 text-[var(--muted)]" colSpan={4}>
+                    No users found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
