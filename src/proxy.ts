@@ -9,7 +9,10 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check for active Better Auth session cookie
-  const hasSession = request.cookies.has("better-auth.session_token");
+  const hasSession =
+    request.cookies.has("better-auth.session_token") ||
+    request.cookies.has("__Secure-better-auth.session_token") ||
+    request.cookies.has("__Host-better-auth.session_token");
 
   // Protected routes requiring authentication
   const protectedPaths = ["/dashboard", "/admin"];
