@@ -13,7 +13,7 @@ export function proxy(request: NextRequest) {
 
   // Protected routes requiring authentication
   const protectedPaths = ["/dashboard", "/admin"];
-  const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
+  const isProtected = protectedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
   // Redirect unauthenticated users from protected routes to login
   if (isProtected && !hasSession) {
