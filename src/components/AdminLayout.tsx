@@ -17,7 +17,10 @@ import {
   LogOut,
   Copyright,
   Mail,
-  FileText
+  FileText,
+  Compass,
+  Boxes,
+  Wallet
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -42,9 +45,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (savedTheme) {
       document.documentElement.setAttribute("data-theme", savedTheme);
       setIsDarkMode(savedTheme === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.setAttribute("data-theme", "dark");
-      setIsDarkMode(true);
+    } else {
+      document.documentElement.setAttribute("data-theme", "light");
+      setIsDarkMode(false);
     }
   }, []);
 
@@ -94,10 +97,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/admin/walkthrough", label: "Walkthrough", icon: Compass },
+    { href: "/admin/inventory", label: "Inventory", icon: Boxes },
+    { href: "/admin/finance", label: "Expenses & Cash", icon: Wallet },
     { href: "/admin/quotations", label: "Quotations", icon: FileText },
+    { href: "/admin/users", label: "Users", icon: Users },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
+
+  const activeNav = navItems.find((item) => item.href === pathname);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -194,7 +202,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="h-16 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 shadow-sm">
+        <header className="h-16 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20 shadow-sm">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen((prev) => !prev)}
@@ -203,9 +211,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <Menu size={20} />
             </button>
-            <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
-              Admin Panel
-            </h2>
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                Admin Panel
+              </p>
+              <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
+                {activeNav?.label ?? "Dashboard"}
+              </h2>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-6">
@@ -244,8 +257,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto bg-gradient-to-br from-[var(--background)] to-[var(--background)]/90">
-          <div className="max-w-7xl mx-auto">
+        <main className="relative flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div
+              className="glow-orb float-slow"
+              style={{
+                top: "-10%",
+                right: "-8%",
+                width: "320px",
+                height: "320px",
+                background: "rgba(56, 189, 248, 0.22)",
+              }}
+            />
+            <div
+              className="glow-orb float-slower"
+              style={{
+                bottom: "-15%",
+                left: "-10%",
+                width: "360px",
+                height: "360px",
+                background: "rgba(99, 102, 241, 0.18)",
+              }}
+            />
+          </div>
+          <div className="relative z-10 max-w-7xl mx-auto">
             {children}
           </div>
         </main>

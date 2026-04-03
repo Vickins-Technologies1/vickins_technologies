@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "echo \"No automated tests configured yet.\"",
+    "test:watch": "pnpm run test",
+    "test:ci": "pnpm run test"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",

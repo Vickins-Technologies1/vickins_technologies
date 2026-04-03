@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { FileText, Plus, Send } from 'lucide-react';
 
 interface Item {
   description: string;
@@ -16,7 +16,6 @@ export default function Quotations() {
   const [notes, setNotes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const router = useRouter();
 
   const addItem = () => {
     setItems([...items, { description: '', quantity: 1, price: 0 }]);
@@ -67,75 +66,93 @@ export default function Quotations() {
     }
   };
 
+  const inputClass =
+    "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+
   return (
-    <div className="bg-[var(--card-bg)] p-4 sm:p-6 rounded-xl shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-[var(--foreground)]">Create Quotation</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Client Name</label>
-          <input
-            type="text"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Client Email</label>
-          <input
-            type="email"
-            value={clientEmail}
-            onChange={(e) => setClientEmail(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
-            required
-          />
+    <div className="glass-panel p-6 sm:p-8">
+      <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
+        <FileText size={16} />
+        Quotations
+      </div>
+      <h1 className="text-2xl sm:text-3xl font-semibold mt-3 text-[var(--foreground)]">
+        Create premium quotations.
+      </h1>
+      <p className="text-sm text-[var(--muted)] mt-2">
+        Build client-ready quotes with clean formatting and polished totals.
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Client Name</label>
+            <input
+              type="text"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              className={inputClass}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Client Email</label>
+            <input
+              type="email"
+              value={clientEmail}
+              onChange={(e) => setClientEmail(e.target.value)}
+              className={inputClass}
+              required
+            />
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Items</label>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-1 md:grid-cols-[1fr_120px_140px_auto] gap-3 items-center mb-4"
-            >
-              <input
-                type="text"
-                placeholder="Description"
-                value={item.description}
-                onChange={(e) => updateItem(index, 'description', e.target.value)}
-                className="w-full px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Quantity"
-                value={item.quantity}
-                onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
-                className="w-full md:w-24 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                value={item.price}
-                onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value))}
-                className="w-full md:w-32 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => removeItem(index)}
-                className="w-full md:w-auto px-3 py-2 bg-red-600 text-white rounded-lg"
+          <div className="space-y-3">
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-[1fr_120px_140px_auto] gap-3 items-center"
               >
-                Remove
-              </button>
-            </div>
-          ))}
+                <input
+                  type="text"
+                  placeholder="Description"
+                  value={item.description}
+                  onChange={(e) => updateItem(index, 'description', e.target.value)}
+                  className={inputClass}
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  value={item.quantity}
+                  onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
+                  className={inputClass}
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Price"
+                  value={item.price}
+                  onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value))}
+                  className={inputClass}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="w-full md:w-auto px-3 py-2 rounded-full border border-rose-200 text-rose-500 text-sm font-semibold hover:bg-rose-50"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
           <button
             type="button"
             onClick={addItem}
-            className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
           >
+            <Plus size={16} />
             Add Item
           </button>
         </div>
@@ -144,7 +161,7 @@ export default function Quotations() {
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]"
+            className={inputClass}
             rows={4}
           />
         </div>
@@ -154,8 +171,9 @@ export default function Quotations() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-lg disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--button-bg)] text-white font-semibold disabled:opacity-50"
         >
+          <Send size={16} />
           {isLoading ? 'Processing...' : 'Generate & Send Quotation'}
         </button>
       </form>

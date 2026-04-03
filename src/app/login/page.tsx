@@ -118,6 +118,13 @@ export default function LoginPage() {
             {isSignup ? "Log In" : "Sign Up"}
           </button>
         </p>
+
+        <p className="text-center mt-3 text-[var(--muted)] text-xs">
+          Need a temporary admin bootstrap?{" "}
+          <a href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
+            Use admin signup
+          </a>
+        </p>
       </div>
     </div>
   );
