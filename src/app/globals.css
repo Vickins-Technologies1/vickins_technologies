@@ -12,6 +12,12 @@
   --glass-highlight: rgba(255, 255, 255, 0.9);
   --accent: #14b8a6;
   --accent-2: #38bdf8;
+  --primary: var(--button-bg);
+  --border: rgba(15, 23, 42, 0.12);
+  --hover-bg: rgba(15, 23, 42, 0.06);
+  --muted: #5a6882;
+  --sidebar-bg: rgba(255, 255, 255, 0.85);
+  --sidebar-text: var(--foreground);
   --shadow-soft: 0 28px 70px rgba(15, 23, 42, 0.18);
   --shadow-tight: 0 12px 32px rgba(15, 23, 42, 0.16);
   --radius: 24px;
@@ -35,6 +41,12 @@
   --glass-highlight: rgba(255, 255, 255, 0.08);
   --accent: #2dd4bf;
   --accent-2: #60a5fa;
+  --primary: var(--button-bg);
+  --border: rgba(148, 163, 184, 0.22);
+  --hover-bg: rgba(148, 163, 184, 0.12);
+  --muted: #9aa7bf;
+  --sidebar-bg: rgba(11, 18, 36, 0.9);
+  --sidebar-text: var(--foreground);
   --shadow-soft: 0 28px 70px rgba(0, 0, 0, 0.5);
   --shadow-tight: 0 12px 32px rgba(0, 0, 0, 0.45);
   --page-bg: radial-gradient(1200px 600px at 10% -10%, rgba(59, 130, 246, 0.18), transparent 60%),
