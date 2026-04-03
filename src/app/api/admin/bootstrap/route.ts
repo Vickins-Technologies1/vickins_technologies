@@ -3,25 +3,33 @@ import { auth } from "@/lib/auth";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
-  const { token, email, password, name } = body as {
-    token?: string;
+  const { email, password, name } = body as {
     email?: string;
     password?: string;
     name?: string;
   };
 
-  const bootstrapToken = process.env.ADMIN_BOOTSTRAP_TOKEN;
-  if (!bootstrapToken) {
-    return NextResponse.json(
-      { error: "Admin signup is disabled." },
-      { status: 403 }
-    );
-  }
+  try {
+    const context = await auth.$context;
+    const adapter = context.internalAdapter as unknown as {
+      countTotalUsers: (
+        where?: Array<{ field: string; operator: string; value: string }>
+      ) => Promise<number>;
+    };
+    const adminCount = await adapter.countTotalUsers?.([
+      { field: "role", operator: "contains", value: "admin" },
+    ]);
 
-  if (!token || token !== bootstrapToken) {
+    if (adminCount && adminCount > 0) {
+      return NextResponse.json(
+        { error: "Admin signup is closed. An admin already exists." },
+        { status: 403 }
+      );
+    }
+  } catch (error) {
     return NextResponse.json(
-      { error: "Invalid admin signup code." },
-      { status: 401 }
+      { error: "Unable to verify admin signup status." },
+      { status: 500 }
     );
   }
 

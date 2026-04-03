@@ -12,7 +12,6 @@ export default function AdminSignupPage() {
     name: "",
     email: "",
     password: "",
-    token: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -47,14 +46,14 @@ export default function AdminSignupPage() {
       <div className="glass-panel w-full max-w-xl p-6 sm:p-8">
         <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
           <ShieldCheck size={16} />
-          Temporary Admin Signup
+          One-Time Admin Signup
         </div>
         <h1 className="text-2xl sm:text-3xl font-semibold mt-3">
           Bootstrap your admin access securely.
         </h1>
         <p className="text-sm text-[var(--muted)] mt-3">
-          This signup is guarded by a temporary admin code. Remove the code after onboarding to disable
-          public admin creation.
+          This signup is available only until the first admin account is created. After that, it closes
+          automatically.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -79,13 +78,6 @@ export default function AdminSignupPage() {
             placeholder="Password"
             value={form.password}
             onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
-            required
-          />
-          <input
-            className={inputClass}
-            placeholder="Admin signup code"
-            value={form.token}
-            onChange={(event) => setForm((prev) => ({ ...prev, token: event.target.value }))}
             required
           />
           <button
