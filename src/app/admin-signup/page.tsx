@@ -25,7 +25,10 @@ export default function AdminSignupPage() {
       const response = await fetch("/api/admin/bootstrap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          email: form.email.trim().toLowerCase(),
+        }),
       });
 
       const data = await response.json();

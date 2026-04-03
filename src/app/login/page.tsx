@@ -49,8 +49,9 @@ function LoginContent() {
     setError("");
     setLoading(true);
 
+    const normalizedEmail = email.trim().toLowerCase();
     const { error: signinError } = await authClient.signIn.email({
-      email,
+      email: normalizedEmail,
       password,
     });
 

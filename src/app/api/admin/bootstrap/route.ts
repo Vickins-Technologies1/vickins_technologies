@@ -62,17 +62,23 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await auth.api.createUser({
+    const result = await auth.api.signUpEmail({
       body: {
-        email,
+        email: email.trim().toLowerCase(),
         password,
         name,
-        role: "admin",
       },
     });
 
-    const user = "user" in result ? result.user : result;
-    return NextResponse.json({ user });
+    const createdUser =
+      result && typeof result === "object" && "user" in result ? result.user : result;
+
+    const context = await auth.$context;
+    await context.internalAdapter.updateUser(createdUser.id, {
+      role: "admin",
+    });
+
+    return NextResponse.json({ user: { ...createdUser, role: "admin" } });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to create admin user.";
