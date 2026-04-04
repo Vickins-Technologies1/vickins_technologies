@@ -13,6 +13,9 @@ import {
   Wallet,
   FileText,
   ShieldCheck,
+  Briefcase,
+  ListChecks,
+  DollarSign,
 } from "lucide-react";
 
 function DashboardSkeleton() {
@@ -123,6 +126,9 @@ export default function AdminDashboard() {
     FileText,
     ShieldCheck,
     TrendingUp,
+    Briefcase,
+    ListChecks,
+    DollarSign,
   };
 
   const tagline = dashboardConfig.tagline?.trim() || "Admin Dashboard";

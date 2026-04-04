@@ -70,11 +70,24 @@ export type Expense = {
   status: "paid" | "pending";
 };
 
+export type IncomeEntry = {
+  id: string;
+  hustleId?: string;
+  projectId?: string;
+  client: string;
+  amount: number;
+  date: string;
+  status: "invoiced" | "paid" | "overdue";
+  method: string;
+  notes: string;
+};
+
 export type FinanceState = {
   hustles: Hustle[];
   accounts: CashAccount[];
   entries: CashEntry[];
   expenses: Expense[];
+  income: IncomeEntry[];
 };
 
 export const getDefaultInventoryState = (): InventoryState => ({
@@ -90,4 +103,19 @@ export const getDefaultFinanceState = (hustlesOverride?: Hustle[]): FinanceState
   accounts: [],
   entries: [],
   expenses: [],
+  income: [],
 });
+
+export const mergeFinanceState = (state?: FinanceState | null): FinanceState => {
+  const defaults = getDefaultFinanceState(state?.hustles);
+  if (!state) return defaults;
+  return {
+    ...defaults,
+    ...state,
+    hustles: state.hustles ?? defaults.hustles,
+    accounts: state.accounts ?? defaults.accounts,
+    entries: state.entries ?? defaults.entries,
+    expenses: state.expenses ?? defaults.expenses,
+    income: state.income ?? defaults.income,
+  };
+};

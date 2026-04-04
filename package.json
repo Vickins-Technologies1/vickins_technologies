@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "echo \"No automated tests configured yet.\"",
-    "test:watch": "pnpm run test",
-    "test:ci": "pnpm run test"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
@@ -44,6 +44,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.2"
   }
 }

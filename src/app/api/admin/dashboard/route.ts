@@ -8,13 +8,20 @@ import {
 import {
   getDefaultFinanceState,
   getDefaultInventoryState,
+  mergeFinanceState,
   type FinanceState,
   type InventoryState,
 } from "@/lib/admin-data";
+import {
+  getDefaultWorkState,
+  mergeWorkState,
+  type WorkState,
+} from "@/lib/admin-work";
 
 const CONFIG_COLLECTION = "admin_config";
 const INVENTORY_COLLECTION = "admin_inventory";
 const FINANCE_COLLECTION = "admin_finance";
+const WORK_COLLECTION = "admin_work";
 const STATE_KEY = "default";
 
 type ConfigDoc = {
@@ -32,6 +39,12 @@ type InventoryDoc = {
 type FinanceDoc = {
   key: string;
   state: FinanceState;
+  updatedAt: Date;
+};
+
+type WorkDoc = {
+  key: string;
+  state: WorkState;
   updatedAt: Date;
 };
 
@@ -53,17 +66,32 @@ export async function GET() {
 
     const inventoryCollection = db.collection<InventoryDoc>(INVENTORY_COLLECTION);
     const financeCollection = db.collection<FinanceDoc>(FINANCE_COLLECTION);
+    const workCollection = db.collection<WorkDoc>(WORK_COLLECTION);
 
     const inventoryDoc = await inventoryCollection.findOne({ key: STATE_KEY });
     const financeDoc = await financeCollection.findOne({ key: STATE_KEY });
+    const workDoc = await workCollection.findOne({ key: STATE_KEY });
 
     const inventoryState = inventoryDoc?.state ?? getDefaultInventoryState();
-    const financeState = financeDoc?.state ?? getDefaultFinanceState();
+    const financeState = mergeFinanceState(financeDoc?.state ?? getDefaultFinanceState());
+    const workState = mergeWorkState(workDoc?.state ?? getDefaultWorkState());
 
+    const today = new Date();
+    const currentMonthKey = today.toISOString().slice(0, 7);
     const stats = {
       activeHustles: inventoryState.hustles.length,
       stockItems: inventoryState.items.length,
       totalCash: getTotalCash(financeState),
+      openTasks: workState.tasks.filter((task) => task.status !== "done").length,
+      activeProjects: workState.projects.filter((project) => project.status === "active").length,
+      monthRevenue: financeState.income.reduce((sum, entry) => {
+        if (!entry.date || entry.status !== "paid") return sum;
+        if (entry.date.slice(0, 7) === currentMonthKey) {
+          return sum + entry.amount;
+        }
+        return sum;
+      }, 0),
+      overdueInvoices: financeState.income.filter((entry) => entry.status === "overdue").length,
     };
 
     return NextResponse.json({

@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState, type ComponentType } from "react";
-import { Settings, Bell, Palette, Lock, Globe } from "lucide-react";
+import {
+  Settings,
+  Bell,
+  Palette,
+  Lock,
+  Globe,
+  Sparkles,
+  Wallet,
+  Briefcase,
+} from "lucide-react";
 import type { SettingsCard } from "@/lib/admin-config";
 
 export default function AdminSettingsPage() {
@@ -43,6 +52,9 @@ export default function AdminSettingsPage() {
     Palette,
     Lock,
     Globe,
+    Sparkles,
+    Wallet,
+    Briefcase,
   };
 
   return (

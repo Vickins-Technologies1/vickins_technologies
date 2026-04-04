@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import {
   getDefaultFinanceState,
+  mergeFinanceState,
   type CashEntry,
   type Expense,
   type FinanceState,
@@ -56,7 +57,7 @@ export default function FinancePage() {
           throw new Error(data?.error || "Failed to load finance data.");
         }
         if (isMounted && data?.state) {
-          setState(data.state as FinanceState);
+          setState(mergeFinanceState(data.state as FinanceState));
           setActiveHustleId(data.state.hustles?.[0]?.id ?? "");
         }
       } catch (error) {

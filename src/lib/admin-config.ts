@@ -15,7 +15,15 @@ export type DashboardQuickLink = {
 export type DashboardStat = {
   id: string;
   label: string;
-  metric: "activeHustles" | "stockItems" | "totalCash";
+  metric:
+    | "activeHustles"
+    | "stockItems"
+    | "totalCash"
+    | "openTasks"
+    | "activeProjects"
+    | "weeklyHours"
+    | "monthRevenue"
+    | "overdueInvoices";
   format: "number" | "currency";
   icon: string;
 };
@@ -47,15 +55,87 @@ export type AdminConfig = {
 export const getDefaultAdminConfig = (): AdminConfig => ({
   key: "default",
   dashboard: {
-    tagline: "",
-    title: "",
-    subtitle: "",
-    ctas: [],
-    quickLinks: [],
-    stats: [],
+    tagline: "Work Command Center",
+    title: "Welcome back",
+    subtitle: "Unify software, design, and business operations into one organized command center.",
+    ctas: [
+      { href: "/admin/work", label: "Open Work Hub", variant: "primary" },
+      { href: "/admin/quotations", label: "Send Quotation", variant: "secondary" },
+    ],
+    quickLinks: [
+      {
+        id: "work-tasks",
+        href: "/admin/work?tab=tasks",
+        title: "Manage tasks",
+        description: "Prioritize today’s work and due dates.",
+        icon: "ListChecks",
+      },
+      {
+        id: "work-projects",
+        href: "/admin/work?tab=projects",
+        title: "Track projects",
+        description: "Keep milestones and delivery on schedule.",
+        icon: "Briefcase",
+      },
+      {
+        id: "work-earnings",
+        href: "/admin/work?tab=earnings",
+        title: "Track earnings",
+        description: "Record invoices, retainers, and paid revenue.",
+        icon: "DollarSign",
+      },
+    ],
+    stats: [
+      {
+        id: "openTasks",
+        label: "Open Tasks",
+        metric: "openTasks",
+        format: "number",
+        icon: "ListChecks",
+      },
+      {
+        id: "activeProjects",
+        label: "Active Projects",
+        metric: "activeProjects",
+        format: "number",
+        icon: "Briefcase",
+      },
+      {
+        id: "monthRevenue",
+        label: "Monthly Earnings",
+        metric: "monthRevenue",
+        format: "currency",
+        icon: "DollarSign",
+      },
+    ],
   },
   settings: {
-    cards: [],
+    cards: [
+      {
+        id: "focus",
+        title: "Focus Blocks",
+        description: "Define weekly deep-work sessions for coding, design, and business.",
+        icon: "Sparkles",
+      },
+      {
+        id: "rates",
+        title: "Rates & Retainers",
+        description: "Set default pricing, payment terms, and renewal reminders.",
+        icon: "Wallet",
+      },
+      {
+        id: "brand",
+        title: "Brand Assets",
+        description: "Keep design systems, fonts, and templates easy to access.",
+        icon: "Palette",
+      },
+      {
+        id: "ops",
+        title: "Business Operations",
+        description: "Track legal docs, vendors, and operational checklists.",
+        icon: "Briefcase",
+      },
+    ],
   },
 });
 
