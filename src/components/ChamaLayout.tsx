@@ -129,7 +129,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
       )}
       <aside
         className={`
-          ${sidebarOpen ? "w-64" : "w-20"}
+          ${sidebarOpen ? "w-60" : "w-20"}
           ${isMobile ? "fixed left-0 top-0 z-40 h-screen" : "sticky top-0 h-screen"}
           ${isMobile ? (sidebarOpen ? "translate-x-0" : "-translate-x-full") : "translate-x-0"}
           transition-all duration-300 ease-in-out
@@ -196,7 +196,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
       </aside>
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="h-16 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20 shadow-sm">
+        <header className="h-14 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-5 sticky top-0 z-20 shadow-sm">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen((prev) => !prev)}
@@ -232,7 +232,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        <main className="relative flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+        <main className="relative flex-1 p-4 sm:p-5 md:p-6 overflow-y-auto">
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
             <div
               className="glow-orb float-slow"
@@ -255,7 +255,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
               }}
             />
           </div>
-          <div className="relative z-10 max-w-7xl mx-auto">{children}</div>
+          <div className="relative z-10 max-w-6xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

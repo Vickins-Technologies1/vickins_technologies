@@ -114,7 +114,7 @@ export default function ChamaHubAdminPage() {
       if (!response.ok) {
         throw new Error(data?.error || "Unable to update group.");
       }
-      setActionMessage("Update saved.");
+      setActionMessage(data?.message ?? "Update saved.");
       await loadData();
     } catch (err) {
       setActionMessage(err instanceof Error ? err.message : "Unable to update group.");
@@ -310,30 +310,54 @@ export default function ChamaHubAdminPage() {
                                 <p className="text-xs text-[var(--muted)]">
                                   {member.email || "No email"} • {member.role}
                                 </p>
-                                {member.userId && (
-                                  <span className="inline-flex items-center mt-2 text-[10px] uppercase tracking-[0.2em] bg-emerald-100 text-emerald-600 px-2 py-1 rounded-full">
-                                    Invite accepted
-                                  </span>
-                                )}
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                  {member.userId && (
+                                    <span className="inline-flex items-center text-[10px] uppercase tracking-[0.2em] bg-emerald-100 text-emerald-600 px-2 py-1 rounded-full">
+                                      Invite accepted
+                                    </span>
+                                  )}
+                                  {member.userId && member.userId === group.createdBy && (
+                                    <span className="inline-flex items-center text-[10px] uppercase tracking-[0.2em] bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                                      Current moderator
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                               <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                                 {member.status}
                               </span>
-                              {member.userId && member.status === "active" && (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    updateGroup({
-                                      action: "make-moderator",
-                                      groupId: group.id,
-                                      memberId: member.id,
-                                    })
-                                  }
-                                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--glass-border)] bg-white/80 text-xs font-semibold"
-                                >
-                                  Make moderator
-                                </button>
-                              )}
+                              <div className="flex flex-wrap gap-2">
+                                {member.userId && member.status === "active" && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateGroup({
+                                        action: "make-moderator",
+                                        groupId: group.id,
+                                        memberId: member.id,
+                                      })
+                                    }
+                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--glass-border)] bg-white/80 text-xs font-semibold"
+                                  >
+                                    Make moderator
+                                  </button>
+                                )}
+                                {member.userId && member.userId === group.createdBy && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateGroup({
+                                        action: "revoke-moderator",
+                                        groupId: group.id,
+                                        memberId: member.id,
+                                      })
+                                    }
+                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--glass-border)] bg-white/80 text-xs font-semibold"
+                                  >
+                                    Revoke moderator
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -414,6 +438,27 @@ export default function ChamaHubAdminPage() {
                       </div>
                       <p className="text-xs text-[var(--muted)]">
                         Use this to attach a member by email, even if they haven’t accepted an invite.
+                      </p>
+                    </div>
+
+                    <div className="border-t border-[var(--glass-border)] pt-4 space-y-3">
+                      <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                        Invite reminders
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateGroup({
+                            action: "send-reminders",
+                            groupId: group.id,
+                          })
+                        }
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold"
+                      >
+                        Send reminder emails
+                      </button>
+                      <p className="text-xs text-[var(--muted)]">
+                        Sends reminders to invited members without linked accounts.
                       </p>
                     </div>
                   </div>

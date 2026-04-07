@@ -6,6 +6,7 @@ import ChamaRoundModel from "@/lib/models/chama-round";
 import ChamaContributionModel from "@/lib/models/chama-contribution";
 import { auth } from "@/lib/auth";
 import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
+import transporter from "@/lib/nodemailer";
 
 export async function GET() {
   try {
@@ -150,7 +151,14 @@ export async function GET() {
 export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
   const { action, groupId, memberId, email } = body as {
-    action?: "archive" | "activate" | "transfer" | "force-join" | "make-moderator";
+    action?:
+      | "archive"
+      | "activate"
+      | "transfer"
+      | "force-join"
+      | "make-moderator"
+      | "revoke-moderator"
+      | "send-reminders";
     groupId?: string;
     memberId?: string;
     email?: string;
@@ -239,6 +247,65 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
+    if (action === "send-reminders") {
+      const members = await ChamaMemberModel.find({
+        groupId: group._id,
+        status: { $ne: "rejected" },
+        email: { $exists: true, $ne: "" },
+        $or: [{ userId: { $exists: false } }, { userId: null }, { userId: "" }],
+      }).lean();
+
+      const baseUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        process.env.BETTER_AUTH_BASE_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+        "http://localhost:3000";
+
+      const sendResults = await Promise.all(
+        members.map(async (member) => {
+          const recipient = member.email?.toLowerCase();
+          if (!recipient) return false;
+          const inviteLink = `${baseUrl}/member-signup?email=${encodeURIComponent(
+            recipient
+          )}&groupName=${encodeURIComponent(group.name ?? "ChamaHub group")}`;
+
+          try {
+            await transporter.sendMail({
+              from: process.env.EMAIL_USER,
+              to: recipient,
+              subject: `Reminder: join ${group.name ?? "your ChamaHub group"}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0b1220;">
+                  <h2 style="margin: 0 0 12px;">ChamaHub reminder</h2>
+                  <p>You’ve been invited to join <strong>${group.name ?? "a ChamaHub group"}</strong>.</p>
+                  <p>Create your member account to view contributions, payments, and payout schedules.</p>
+                  <p style="margin-top: 18px;">
+                    <a href="${inviteLink}" style="background:#1b5cff;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:600;">
+                      Accept invite
+                    </a>
+                  </p>
+                  <p style="font-size: 12px; color: #5a6882; margin-top: 16px;">
+                    If the button doesn't work, copy and paste this link into your browser:
+                    <br/>
+                    ${inviteLink}
+                  </p>
+                </div>
+              `,
+            });
+            return true;
+          } catch {
+            return false;
+          }
+        })
+      );
+
+      const sentCount = sendResults.filter(Boolean).length;
+      return NextResponse.json({
+        ok: true,
+        message: `Sent ${sentCount} reminder${sentCount === 1 ? "" : "s"}.`,
+      });
+    }
+
     if (action === "make-moderator") {
       if (!memberId) {
         return NextResponse.json(
@@ -292,6 +359,66 @@ export async function PATCH(request: Request) {
       await group.save();
 
       return NextResponse.json({ ok: true });
+    }
+
+    if (action === "revoke-moderator") {
+      if (!memberId) {
+        return NextResponse.json(
+          { error: "memberId is required to revoke a moderator." },
+          { status: 400 }
+        );
+      }
+
+      const member = await ChamaMemberModel.findById(memberId);
+      if (!member || String(member.groupId) !== String(group._id)) {
+        return NextResponse.json({ error: "Member not found in this group." }, { status: 404 });
+      }
+
+      if (!member.userId) {
+        return NextResponse.json(
+          { error: "Member must have a linked account to revoke moderator." },
+          { status: 400 }
+        );
+      }
+
+      const context = await auth.$context;
+      const adapter = context.internalAdapter as unknown as {
+        listUsers: (
+          limit?: number,
+          offset?: number,
+          sortBy?: { field: string; direction: "asc" | "desc" }
+        ) => Promise<Array<{ id: string; email?: string | null; role?: string | null }>>;
+        updateUser: (id: string, data: { role?: string | null }) => Promise<void>;
+      };
+
+      const users = await adapter.listUsers(500, 0, {
+        field: "createdAt",
+        direction: "desc",
+      });
+      const targetUser = users.find((item) => item.id === member.userId);
+      const currentRole = targetUser?.role ?? "user";
+      const roleList = currentRole
+        .split(",")
+        .map((value) => value.trim())
+        .filter((value) => value && value !== "moderator");
+      if (roleList.length === 0) {
+        roleList.push("member");
+      }
+      const nextRole = roleList.join(",");
+      await adapter.updateUser(member.userId, { role: nextRole });
+
+      member.role = "member";
+      await member.save();
+
+      if (group.createdBy === member.userId) {
+        group.createdBy = user.id;
+        await group.save();
+      }
+
+      return NextResponse.json({
+        ok: true,
+        message: "Moderator access revoked. Group ownership moved to admin.",
+      });
     }
 
     if (action === "transfer") {
