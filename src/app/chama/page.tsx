@@ -10,6 +10,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type DashboardSummary = {
   activeGroups: number;
@@ -39,6 +40,7 @@ const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
 export default function ChamaDashboardPage() {
+  const { data: session } = authClient.useSession();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,13 @@ export default function ChamaDashboardPage() {
       }),
     []
   );
+
+  const isModerator =
+    session?.user?.role?.split(",").map((value: string) => value.trim()).includes("moderator") ??
+    false;
+  const isAdmin =
+    session?.user?.role?.split(",").map((value: string) => value.trim()).includes("admin") ??
+    false;
 
   const loadDashboard = async () => {
     setLoading(true);
@@ -100,7 +109,7 @@ export default function ChamaDashboardPage() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to create group.");
-      setMessage("Chama created successfully.");
+      setMessage("ChamaHub group created successfully.");
       setForm((prev) => ({ ...prev, name: "", description: "" }));
       await loadDashboard();
     } catch (err) {
@@ -129,7 +138,7 @@ export default function ChamaDashboardPage() {
           <div>
             <p className="inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.3em] text-[var(--accent)]">
               <Sparkles size={16} />
-              Chama Dashboard
+              ChamaHub Dashboard
             </p>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
               Keep your merry-go-round contributions flowing.
@@ -158,7 +167,7 @@ export default function ChamaDashboardPage() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
-            label: "Active Chamas",
+            label: "Active Chama groups",
             value: summary?.activeGroups ?? 0,
             icon: Users,
           },
@@ -202,7 +211,7 @@ export default function ChamaDashboardPage() {
           <div className="space-y-4">
             {groups.length === 0 && (
               <p className="text-sm text-[var(--muted)]">
-                You have not joined any Chama groups yet.
+                You have not joined any ChamaHub groups yet.
               </p>
             )}
             {groups.map((group) => (
@@ -246,71 +255,89 @@ export default function ChamaDashboardPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Create group
             </p>
-            <h2 className="text-xl font-semibold mt-2">Start a new Chama</h2>
+            <h2 className="text-xl font-semibold mt-2">Start a new Chama group</h2>
             <p className="text-sm text-[var(--muted)] mt-2">
-              Set your contribution amount, schedule, and invite members later.
+              Each ChamaHub lease is per group. Set the contribution amount, schedule, and invite members later.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              className={inputClass}
-              placeholder="Group name"
-              value={form.name}
-              onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
-            />
-            <input
-              className={inputClass}
-              placeholder="Description (optional)"
-              value={form.description}
-              onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Contribution amount (KES)"
-                value={form.contributionAmount}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, contributionAmount: event.target.value }))
-                }
-              />
-              <select
-                className={inputClass}
-                value={form.frequency}
-                onChange={(event) => setForm((prev) => ({ ...prev, frequency: event.target.value }))}
+
+          {(isModerator || isAdmin) ? (
+            <>
+              <div className="grid grid-cols-1 gap-4">
+                <input
+                  className={inputClass}
+                  placeholder="Group name"
+                  value={form.name}
+                  onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Description (optional)"
+                  value={form.description}
+                  onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input
+                    className={inputClass}
+                    type="number"
+                    placeholder="Contribution amount (KES)"
+                    value={form.contributionAmount}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, contributionAmount: event.target.value }))
+                    }
+                  />
+                  <select
+                    className={inputClass}
+                    value={form.frequency}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, frequency: event.target.value }))
+                    }
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="bi-weekly">Bi-weekly</option>
+                    <option value="monthly">Monthly</option>
+                  </select>
+                  <input
+                    className={inputClass}
+                    type="number"
+                    placeholder="Expected members"
+                    value={form.numberOfMembers}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, numberOfMembers: event.target.value }))
+                    }
+                  />
+                  <input
+                    className={inputClass}
+                    type="date"
+                    value={form.startDate}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, startDate: event.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCreateGroup}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
               >
-                <option value="weekly">Weekly</option>
-                <option value="bi-weekly">Bi-weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Expected members"
-                value={form.numberOfMembers}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, numberOfMembers: event.target.value }))
-                }
-              />
-              <input
-                className={inputClass}
-                type="date"
-                value={form.startDate}
-                onChange={(event) => setForm((prev) => ({ ...prev, startDate: event.target.value }))}
-              />
+                <Plus size={16} />
+                Create Chama group
+              </button>
+              <p className="text-xs text-[var(--muted)]">
+                Tip: You can add members later by email or phone. Karibu!
+              </p>
+            </>
+          ) : (
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--muted)]">
+              Only ChamaHub moderators can create a new group. Ask your moderator to
+              invite you, or{" "}
+              <Link href="/moderator-signup" className="text-[var(--button-bg)] font-semibold">
+                sign up as a moderator
+              </Link>{" "}
+              to start one.
             </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleCreateGroup}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            <Plus size={16} />
-            Create Chama
-          </button>
-          <p className="text-xs text-[var(--muted)]">
-            Tip: You can add members later by email or phone. Karibu!
-          </p>
+          )}
         </div>
       </section>
     </div>

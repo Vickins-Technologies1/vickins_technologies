@@ -4,5 +4,5 @@ export interface DbUser {
   email: string;
   password: string; 
   name?: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'moderator' | 'member';
 }

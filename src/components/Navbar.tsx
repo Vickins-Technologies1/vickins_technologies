@@ -39,7 +39,7 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
 
           <div className="flex items-center gap-2">
             <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/40 bg-white/45 px-1 py-1">
-              {["Process", "About", "Services", "Portfolio", "Pricing", "Clients"].map((item) => (
+              {["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients"].map((item) => (
                 <motion.li
                   key={item}
                   whileHover={{ y: -1 }}

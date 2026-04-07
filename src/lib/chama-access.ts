@@ -27,6 +27,22 @@ export const isSiteAdmin = (user: SessionUser | null) => {
     .includes("admin");
 };
 
+export const isModerator = (user: SessionUser | null) => {
+  if (!user?.role) return false;
+  return user.role
+    .split(",")
+    .map((value) => value.trim())
+    .includes("moderator");
+};
+
+export const isMemberUser = (user: SessionUser | null) => {
+  if (!user?.role) return false;
+  return user.role
+    .split(",")
+    .map((value) => value.trim())
+    .some((role) => role === "member" || role === "user");
+};
+
 export const getGroupMember = async (groupId: string, user: SessionUser) => {
   if (!Types.ObjectId.isValid(groupId)) return null;
   const orConditions: Record<string, unknown>[] = [{ userId: user.id }];

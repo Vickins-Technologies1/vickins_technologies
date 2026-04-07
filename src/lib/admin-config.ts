@@ -55,14 +55,21 @@ export type AdminConfig = {
 export const getDefaultAdminConfig = (): AdminConfig => ({
   key: "default",
   dashboard: {
-    tagline: "Work Command Center",
+    tagline: "ChamaHub Command Center",
     title: "Welcome back",
-    subtitle: "Unify software, design, and business operations into one organized command center.",
+    subtitle: "Manage ChamaHub groups, contributions, and member activity in one organized command center.",
     ctas: [
-      { href: "/admin/work", label: "Open Work Hub", variant: "primary" },
-      { href: "/admin/quotations", label: "Send Quotation", variant: "secondary" },
+      { href: "/admin/chamahub", label: "ChamaHub Analytics", variant: "primary" },
+      { href: "/admin/work", label: "Open Work Hub", variant: "secondary" },
     ],
     quickLinks: [
+      {
+        id: "chamahub-overview",
+        href: "/admin/chamahub",
+        title: "ChamaHub overview",
+        description: "Review group leases, members, and payout flow.",
+        icon: "Sparkles",
+      },
       {
         id: "work-tasks",
         href: "/admin/work?tab=tasks",

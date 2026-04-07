@@ -5,13 +5,21 @@ import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import ChamaRoundModel from "@/lib/models/chama-round";
 import { calculatePotAmount, normalizeFrequency } from "@/lib/chama-utils";
-import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
+import { getSessionUser, isModerator, isSiteAdmin } from "@/lib/chama-access";
 
 export async function GET() {
   try {
     const user = await getSessionUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const canCreate = isSiteAdmin(user) || isModerator(user);
+    if (!canCreate) {
+      return NextResponse.json(
+        { error: "Only ChamaHub moderators can create groups." },
+        { status: 403 }
+      );
     }
 
     await connectMongoose();

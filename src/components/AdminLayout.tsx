@@ -20,7 +20,8 @@ import {
   FileText,
   Boxes,
   Wallet,
-  Briefcase
+  Briefcase,
+  Sparkles
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -84,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-[var(--foreground)] font-medium">Loading admin panel...</p>
+          <p className="text-[var(--foreground)] font-medium">Loading ChamaHub admin panel...</p>
         </div>
       </div>
     );
@@ -97,6 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/chamahub", label: "ChamaHub", icon: Sparkles },
     { href: "/admin/work", label: "Work Hub", icon: Briefcase },
     { href: "/admin/inventory", label: "Inventory", icon: Boxes },
     { href: "/admin/finance", label: "Expenses & Cash", icon: Wallet },
@@ -142,7 +144,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ${!sidebarOpen && "hidden"}
             `}
           >
-            Admin
+            ChamaHub Admin
           </h1>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -213,7 +215,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-                Admin Panel
+                ChamaHub Admin Panel
               </p>
               <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
                 {activeNav?.label ?? "Dashboard"}

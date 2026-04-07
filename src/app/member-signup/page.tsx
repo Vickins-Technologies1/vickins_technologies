@@ -1,13 +1,15 @@
+// src/app/member-signup/page.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight } from "lucide-react";
+import { ArrowRight, Users } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
-export default function AdminSignupPage() {
+export default function MemberSignupPage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -22,7 +24,7 @@ export default function AdminSignupPage() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/admin/bootstrap", {
+      const response = await fetch("/api/chama/member-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -33,11 +35,20 @@ export default function AdminSignupPage() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data?.error ?? "Failed to create admin.");
+        throw new Error(data?.error ?? "Failed to create member account.");
+      }
+
+      const { error } = await authClient.signIn.email({
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+      });
+      if (error) {
+        throw new Error("Account created, but sign-in failed. Please log in.");
       }
 
       setStatus("success");
-      setMessage("Admin account created. You can now log in.");
+      setMessage("Member account created. Redirecting...");
+      window.location.href = "/chama";
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
@@ -48,15 +59,14 @@ export default function AdminSignupPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="glass-panel w-full max-w-xl p-6 sm:p-8">
         <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
-          <ShieldCheck size={16} />
-          One-Time ChamaHub Admin Signup
+          <Users size={16} />
+          Member Signup
         </div>
         <h1 className="text-2xl sm:text-3xl font-semibold mt-3">
-          Bootstrap your ChamaHub admin access securely.
+          Create your ChamaHub member profile.
         </h1>
         <p className="text-sm text-[var(--muted)] mt-3">
-          This signup is available only until the first admin account is created. After that, it closes
-          automatically.
+          Use the same email you received your group invite with to automatically link to your chama.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -88,7 +98,7 @@ export default function AdminSignupPage() {
             disabled={status === "loading"}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
           >
-            {status === "loading" ? "Creating admin..." : "Create Admin Account"}
+            {status === "loading" ? "Creating account..." : "Create member account"}
             <ArrowRight size={16} />
           </button>
         </form>
@@ -106,8 +116,8 @@ export default function AdminSignupPage() {
         )}
 
         <div className="mt-6 text-sm text-[var(--muted)]">
-          Already have an admin?{" "}
-          <Link href="/login" className="text-[var(--button-bg)] font-semibold hover:underline">
+          Already a member?{" "}
+          <Link href="/member-login" className="text-[var(--button-bg)] font-semibold hover:underline">
             Log in
           </Link>
         </div>

@@ -95,7 +95,7 @@ export default function LedgerPage() {
           Transaction history
         </h1>
         <p className="text-sm text-[var(--muted)] mt-2">
-          Review contribution records across your Chamas.
+          Review contribution records across your ChamaHub groups.
         </p>
       </section>
 
@@ -105,7 +105,7 @@ export default function LedgerPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group</p>
-            <h2 className="text-xl font-semibold mt-2">Select a Chama</h2>
+            <h2 className="text-xl font-semibold mt-2">Select a Chama group</h2>
           </div>
           <select
             className={inputClass}

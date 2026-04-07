@@ -1,51 +1,31 @@
-// src/app/login/page.tsx
+// src/app/moderator-login/page.tsx
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
-function LoginContent() {
+function ModeratorLoginContent() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [adminExists, setAdminExists] = useState<boolean | null>(null);
 
-  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/admin", [searchParams]);
+  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/chama", [searchParams]);
   const safeCallback = useMemo(() => {
-    if (!callbackUrl.startsWith("/")) return "/admin";
-    if (callbackUrl.startsWith("/admin-signup") || callbackUrl.startsWith("/login")) {
-      return "/admin";
-    }
+    if (!callbackUrl.startsWith("/")) return "/chama";
+    if (callbackUrl.startsWith("/admin")) return "/chama";
     return callbackUrl;
   }, [callbackUrl]);
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = await fetch("/api/admin/bootstrap");
-        const data = await response.json();
-        if (response.ok && typeof data?.adminExists === "boolean") {
-          setAdminExists(data.adminExists);
-        } else {
-          setAdminExists(null);
-        }
-      } catch {
-        setAdminExists(null);
-      }
-    };
-
-    checkAdmin();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError("");
     setLoading(true);
 
@@ -56,7 +36,7 @@ function LoginContent() {
     });
 
     if (signinError) {
-      setError("Invalid email or password");
+      setError("Invalid email or password.");
       setLoading(false);
       return;
     }
@@ -67,11 +47,12 @@ function LoginContent() {
         ? sessionResult.data
         : sessionResult;
     const role = session?.user?.role ?? "";
-    const isAdmin = role.split(",").map((value: string) => value.trim()).includes("admin");
+    const roleList = role.split(",").map((value: string) => value.trim());
+    const isModerator = roleList.includes("moderator");
 
-    if (!isAdmin) {
+    if (!isModerator) {
       await authClient.signOut();
-      setError("Admin access only. Use the one-time admin signup if no admin exists.");
+      setError("This login is for ChamaHub moderators only.");
       setLoading(false);
       return;
     }
@@ -90,7 +71,7 @@ function LoginContent() {
             left: "-8%",
             width: "320px",
             height: "320px",
-            background: "rgba(56, 189, 248, 0.22)",
+            background: "rgba(27, 92, 255, 0.22)",
           }}
         />
         <div
@@ -100,35 +81,22 @@ function LoginContent() {
             right: "-6%",
             width: "360px",
             height: "360px",
-            background: "rgba(99, 102, 241, 0.18)",
+            background: "rgba(20, 184, 166, 0.18)",
           }}
         />
       </div>
 
       <div className="relative z-10 w-full max-w-lg glass-panel p-6 sm:p-8">
         <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
-          <ShieldCheck size={16} />
-          ChamaHub Admin Login
+          <Sparkles size={16} />
+          Moderator Login
         </div>
         <h2 className="text-2xl sm:text-3xl font-semibold mt-3 text-[var(--foreground)]">
-          Secure access to your ChamaHub command center.
+          Run your ChamaHub group with confidence.
         </h2>
         <p className="text-sm text-[var(--muted)] mt-3">
-          Log in with your admin credentials to manage ChamaHub data, groups, and platform operations.
+          Manage members, contributions, and payouts from your moderator command center.
         </p>
-
-        {adminExists === false && (
-          <div className="mt-5 rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--foreground)]">
-            No admin account exists yet. Use the one-time signup to create the first admin.
-            <a
-              href="/admin-signup"
-              className="mt-3 inline-flex items-center gap-2 text-[var(--button-bg)] font-semibold hover:underline"
-            >
-              Go to one-time signup
-              <ArrowRight size={16} />
-            </a>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5 mt-6">
           <input
@@ -154,7 +122,7 @@ function LoginContent() {
             disabled={loading}
             className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-full transition disabled:opacity-70"
           >
-            {loading ? "Processing..." : "Login"}
+            {loading ? "Signing in..." : "Login"}
           </button>
 
           {error && (
@@ -164,42 +132,32 @@ function LoginContent() {
           )}
         </form>
 
-        {adminExists !== false && (
-          <p className="text-center mt-6 text-[var(--muted)] text-xs">
-            First admin setup?{" "}
-            <a href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
-              Use one-time admin signup
-            </a>
-          </p>
-        )}
-
-        <div className="mt-4 text-center text-[var(--muted)] text-xs">
-          Not an admin?{" "}
-          <a href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
-            Moderator login
-          </a>{" "}
-          or{" "}
-          <a href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
+        <div className="mt-6 text-sm text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Link href="/moderator-signup" className="text-[var(--button-bg)] font-semibold hover:underline">
+            Create a moderator account
+          </Link>
+          <Link href="/member-login" className="inline-flex items-center gap-2 hover:underline">
             Member login
-          </a>
+            <ArrowRight size={14} />
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default function LoginPage() {
+export default function ModeratorLoginPage() {
   return (
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="glass-panel w-full max-w-md p-6 sm:p-8 text-center">
-            Loading login...
+            Loading moderator login...
           </div>
         </div>
       }
     >
-      <LoginContent />
+      <ModeratorLoginContent />
     </Suspense>
   );
 }

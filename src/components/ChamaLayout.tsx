@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import {
   LayoutDashboard,
@@ -58,7 +59,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-[var(--foreground)] font-medium">Loading your Chama space...</p>
+          <p className="text-[var(--foreground)] font-medium">Loading your ChamaHub space...</p>
         </div>
       </div>
     );
@@ -70,18 +71,26 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
         <div className="glass-panel p-6 sm:p-8 max-w-lg text-center space-y-4">
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">
             <Sparkles size={16} />
-            Chama Access
+            ChamaHub Access
           </div>
-          <h2 className="text-2xl font-semibold">Sign in to manage your Merry Go Round</h2>
+          <h2 className="text-2xl font-semibold">Sign in to manage your ChamaHub group</h2>
           <p className="text-sm text-[var(--muted)]">
-            Please log in to view your Chama dashboard and member activity.
+            Please log in to view your ChamaHub dashboard and member activity.
           </p>
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            Go to login
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/member-login"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              Member login
+            </Link>
+            <Link
+              href="/moderator-login"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+            >
+              Moderator login
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -97,7 +106,9 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    window.location.href = "/login";
+    const role = session?.user?.role ?? "";
+    const isModerator = role.split(",").map((value) => value.trim()).includes("moderator");
+    window.location.href = isModerator ? "/moderator-login" : "/member-login";
   };
 
   return (
@@ -122,9 +133,16 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
         `}
       >
         <div className="p-4 flex items-center justify-between border-b border-[var(--border)]">
-          <h1 className={`font-bold text-xl tracking-tight ${!sidebarOpen && "hidden"}`}>
-            Chama
-          </h1>
+          <div className={`flex items-center gap-2 ${!sidebarOpen && "hidden"}`}>
+            <Image
+              src="/chamahub-mark.svg"
+              alt="ChamaHub logo"
+              width={28}
+              height={28}
+              className="h-7 w-7"
+            />
+            <h1 className="font-bold text-xl tracking-tight">ChamaHub</h1>
+          </div>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--sidebar-text)] transition-colors"
@@ -183,7 +201,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
             </button>
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-                Merry Go Round
+                ChamaHub Workspace
               </p>
               <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
                 {activeNav?.label ?? "Dashboard"}
@@ -201,7 +219,9 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
             </button>
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold">{session.user.name || session.user.email}</p>
-              <p className="text-xs text-[var(--muted)]">Member</p>
+              <p className="text-xs text-[var(--muted)]">
+                {session.user.role?.includes("moderator") ? "Moderator" : "Member"}
+              </p>
             </div>
           </div>
         </header>

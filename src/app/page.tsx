@@ -13,6 +13,7 @@ import ClientsSection from "../components/ClientsSection";
 import PricingSection from "../components/PricingSection";
 import ContactSection from "../components/ContactSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
+import ChamaHubSection from "../components/ChamaHubSection";
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -54,6 +55,7 @@ export default function Home() {
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
+        <ChamaHubSection />
         {/* ← Add here – preferably after Services or Technology */}
         <RecentProjectsSection />
         <TechnologySection />

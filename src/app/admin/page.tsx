@@ -129,6 +129,7 @@ export default function AdminDashboard() {
     Briefcase,
     ListChecks,
     DollarSign,
+    Sparkles,
   };
 
   const tagline = dashboardConfig.tagline?.trim() || "Admin Dashboard";

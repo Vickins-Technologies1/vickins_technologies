@@ -56,7 +56,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           </motion.button>
 
           <ul className="mt-6 space-y-2.5 relative z-10">
-            {["Process", "About", "Services", "Portfolio", "Pricing", "Clients", "Contact"].map((item, index) => (
+            {["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients", "Contact"].map((item, index) => (
               <motion.li
                 key={item}
                 initial={{ x: -20, opacity: 0 }}
