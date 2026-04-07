@@ -4,9 +4,19 @@ import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import ChamaRoundModel from "@/lib/models/chama-round";
 import ChamaContributionModel from "@/lib/models/chama-contribution";
+import { auth } from "@/lib/auth";
+import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
 
 export async function GET() {
   try {
+    const user = await getSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+    if (!isSiteAdmin(user)) {
+      return NextResponse.json({ error: "Access denied." }, { status: 403 });
+    }
+
     await connectMongoose();
 
     const [totalGroups, activeGroups, totalMembers, activeMembers, openRounds] =
@@ -95,6 +105,14 @@ export async function GET() {
         createdBy: group.createdBy,
         membersCount: groupMembers.length,
         activeMembers: activeCount,
+        members: groupMembers.map((member) => ({
+          id: String(member._id),
+          userId: member.userId ?? null,
+          name: member.name,
+          email: member.email,
+          role: member.role,
+          status: member.status,
+        })),
         openRound: openRound
           ? {
               roundNumber: openRound.roundNumber,
@@ -124,6 +142,197 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json(
       { error: "Unable to load ChamaHub analytics." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  const body = await request.json().catch(() => ({}));
+  const { action, groupId, memberId, email } = body as {
+    action?: "archive" | "activate" | "transfer" | "force-join" | "make-moderator";
+    groupId?: string;
+    memberId?: string;
+    email?: string;
+  };
+
+  if (!action || !groupId) {
+    return NextResponse.json(
+      { error: "Action and groupId are required." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const user = await getSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+    if (!isSiteAdmin(user)) {
+      return NextResponse.json({ error: "Access denied." }, { status: 403 });
+    }
+
+    await connectMongoose();
+
+    const group = await ChamaGroupModel.findById(groupId);
+    if (!group) {
+      return NextResponse.json({ error: "Group not found." }, { status: 404 });
+    }
+
+    if (action === "archive" || action === "activate") {
+      group.status = action === "archive" ? "archived" : "active";
+      await group.save();
+      return NextResponse.json({ ok: true });
+    }
+
+    if (action === "force-join") {
+      if (!email) {
+        return NextResponse.json({ error: "Email is required to force-join." }, { status: 400 });
+      }
+
+      const normalizedEmail = email.trim().toLowerCase();
+
+      const context = await auth.$context;
+      const adapter = context.internalAdapter as unknown as {
+        listUsers: (
+          limit?: number,
+          offset?: number,
+          sortBy?: { field: string; direction: "asc" | "desc" }
+        ) => Promise<Array<{ id: string; email?: string | null }>>;
+      };
+      const users = await adapter.listUsers(500, 0, {
+        field: "createdAt",
+        direction: "desc",
+      });
+      const matchedUser = users.find((item) => item.email?.toLowerCase() === normalizedEmail);
+
+      const existingMember = await ChamaMemberModel.findOne({
+        groupId: group._id,
+        email: normalizedEmail,
+      });
+
+      if (existingMember) {
+        existingMember.userId = matchedUser?.id ?? existingMember.userId;
+        existingMember.status = "active";
+        await existingMember.save();
+      } else {
+        await ChamaMemberModel.create({
+          groupId: group._id,
+          email: normalizedEmail,
+          role: "member",
+          status: "active",
+          userId: matchedUser?.id,
+          invitedBy: user.id,
+          joinedAt: matchedUser ? new Date() : undefined,
+        });
+      }
+
+      const activeCount = await ChamaMemberModel.countDocuments({
+        groupId: group._id,
+        status: { $ne: "rejected" },
+      });
+      await ChamaGroupModel.updateOne(
+        { _id: group._id },
+        { $set: { numberOfMembers: activeCount } }
+      );
+
+      return NextResponse.json({ ok: true });
+    }
+
+    if (action === "make-moderator") {
+      if (!memberId) {
+        return NextResponse.json(
+          { error: "memberId is required to promote a moderator." },
+          { status: 400 }
+        );
+      }
+
+      const member = await ChamaMemberModel.findById(memberId);
+      if (!member || String(member.groupId) !== String(group._id)) {
+        return NextResponse.json({ error: "Member not found in this group." }, { status: 404 });
+      }
+
+      if (!member.userId) {
+        return NextResponse.json(
+          { error: "Member must have a linked account to become moderator." },
+          { status: 400 }
+        );
+      }
+
+      const context = await auth.$context;
+      const adapter = context.internalAdapter as unknown as {
+        listUsers: (
+          limit?: number,
+          offset?: number,
+          sortBy?: { field: string; direction: "asc" | "desc" }
+        ) => Promise<Array<{ id: string; email?: string | null; role?: string | null }>>;
+        updateUser: (id: string, data: { role?: string | null }) => Promise<void>;
+      };
+
+      const users = await adapter.listUsers(500, 0, {
+        field: "createdAt",
+        direction: "desc",
+      });
+      const targetUser = users.find((item) => item.id === member.userId);
+      const currentRole = targetUser?.role ?? "user";
+      const roleList = currentRole
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean);
+      if (!roleList.includes("moderator")) {
+        roleList.push("moderator");
+      }
+      const nextRole = roleList.join(",");
+      await adapter.updateUser(member.userId, { role: nextRole });
+
+      member.role = "admin";
+      member.status = "active";
+      await member.save();
+      group.createdBy = member.userId;
+      await group.save();
+
+      return NextResponse.json({ ok: true });
+    }
+
+    if (action === "transfer") {
+      if (!memberId) {
+        return NextResponse.json(
+          { error: "memberId is required to transfer ownership." },
+          { status: 400 }
+        );
+      }
+
+      const member = await ChamaMemberModel.findById(memberId);
+      if (!member || String(member.groupId) !== String(group._id)) {
+        return NextResponse.json({ error: "Member not found in this group." }, { status: 404 });
+      }
+
+      if (!member.userId) {
+        return NextResponse.json(
+          { error: "Member must have a linked account to become moderator." },
+          { status: 400 }
+        );
+      }
+
+      group.createdBy = member.userId;
+      await group.save();
+
+      await ChamaMemberModel.updateMany(
+        { groupId: group._id, role: "admin" },
+        { $set: { role: "member" } }
+      );
+      await ChamaMemberModel.updateOne(
+        { _id: member._id },
+        { $set: { role: "admin", status: "active" } }
+      );
+
+      return NextResponse.json({ ok: true });
+    }
+
+    return NextResponse.json({ error: "Unsupported action." }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Unable to update ChamaHub group." },
       { status: 500 }
     );
   }

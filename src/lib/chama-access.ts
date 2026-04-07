@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { Types } from "mongoose";
 import { auth } from "@/lib/auth";
 import ChamaMemberModel from "@/lib/models/chama-member";
+import { connectMongoose } from "@/lib/mongoose";
 
 export type SessionUser = {
   id: string;
@@ -70,4 +71,21 @@ export const hasGroupRole = (
 ) => {
   if (!member?.role) return false;
   return roles.includes(member.role as "admin" | "treasurer" | "secretary");
+};
+
+export const linkMemberToUser = async (user: SessionUser | null) => {
+  if (!user?.id || !user.email) return;
+  try {
+    await connectMongoose();
+    const normalizedEmail = user.email.toLowerCase();
+    await ChamaMemberModel.updateMany(
+      {
+        email: normalizedEmail,
+        $or: [{ userId: { $exists: false } }, { userId: null }, { userId: "" }],
+      },
+      { $set: { userId: user.id } }
+    );
+  } catch {
+    // Ignore linking failures to avoid breaking requests.
+  }
 };

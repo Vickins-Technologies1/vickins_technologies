@@ -13,6 +13,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import RotationWheel from "@/components/chama/RotationWheel";
+import { authClient } from "@/lib/auth-client";
 
 type GroupDetail = {
   id: string;
@@ -31,6 +32,7 @@ type GroupDetail = {
 
 type Member = {
   id: string;
+  userId?: string;
   name?: string;
   email?: string;
   phone?: string;
@@ -67,6 +69,7 @@ const inputClass =
 export default function ChamaGroupPage() {
   const params = useParams();
   const groupId = params?.groupId as string;
+  const { data: session } = authClient.useSession();
 
   const [group, setGroup] = useState<GroupDetail | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
@@ -343,6 +346,45 @@ export default function ChamaGroupPage() {
     return members.map((member) => member.id);
   }, [group?.rotationOrder, members]);
 
+  const sessionRoleList = session?.user?.role
+    ? session.user.role.split(",").map((value: string) => value.trim())
+    : [];
+  const isSiteAdmin = sessionRoleList.includes("admin");
+  const isModerator = sessionRoleList.includes("moderator");
+  const myMember = members.find(
+    (member) =>
+      member.userId === session?.user?.id ||
+      (session?.user?.email && member.email === session.user.email.toLowerCase())
+  );
+  const hasGroupPrivileges =
+    isSiteAdmin ||
+    isModerator ||
+    ["admin", "treasurer", "secretary"].includes(myMember?.role ?? "");
+  const isGroupAdmin = isSiteAdmin || isModerator || myMember?.role === "admin";
+
+  const tabs = useMemo(() => {
+    if (hasGroupPrivileges) {
+      return [
+        { id: "overview", label: "Overview" },
+        { id: "members", label: "Members" },
+        { id: "contributions", label: "Contributions" },
+        { id: "settings", label: "Settings" },
+      ];
+    }
+    return [
+      { id: "overview", label: "Overview" },
+      { id: "contributions", label: "Contributions" },
+    ];
+  }, [hasGroupPrivileges]);
+
+  const [activeTab, setActiveTab] = useState("overview");
+
+  useEffect(() => {
+    if (!tabs.find((tab) => tab.id === activeTab)) {
+      setActiveTab(tabs[0]?.id ?? "overview");
+    }
+  }, [tabs, activeTab]);
+
   if (loading || !group) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -381,31 +423,53 @@ export default function ChamaGroupPage() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={handleMarkReceived}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-            >
-              <CheckCircle2 size={16} />
-              Mark recipient paid
-            </button>
-            <button
-              type="button"
-              onClick={handleAdvanceRound}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-            >
-              <ArrowRight size={16} />
-              Move to next round
-            </button>
-          </div>
+          {hasGroupPrivileges && (
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={handleMarkReceived}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+              >
+                <CheckCircle2 size={16} />
+                Mark recipient paid
+              </button>
+              <button
+                type="button"
+                onClick={handleAdvanceRound}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+              >
+                <ArrowRight size={16} />
+                Move to next round
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
       {error && <div className="glass-panel p-4 text-sm text-rose-500">{error}</div>}
       {message && <div className="glass-panel p-4 text-sm">{message}</div>}
 
-      <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
+      <section className="glass-panel p-4 sm:p-5">
+        <div className="flex flex-wrap gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition ${
+                activeTab === tab.id
+                  ? "bg-[var(--button-bg)] text-white border-transparent"
+                  : "border-[var(--glass-border)] bg-white/70 text-[var(--foreground)] hover:bg-[var(--hover-bg)]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {activeTab === "overview" && (
+        <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         <div className="glass-panel p-6 sm:p-7 space-y-6">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Current round</p>
@@ -442,227 +506,269 @@ export default function ChamaGroupPage() {
           </div>
         </div>
 
-        <div className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Rotation order</p>
-            <h2 className="text-xl font-semibold mt-2">Update payout sequence</h2>
-          </div>
-          <div className="space-y-3">
-            {rotationMembers.map((member, index) => (
-              <div
-                key={member.id}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--glass-border)] bg-white/60 p-3"
-              >
-                <div>
-                  <p className="text-sm font-semibold">{member.name || member.email || "Member"}</p>
-                  <p className="text-xs text-[var(--muted)] capitalize">{member.role}</p>
+        {isGroupAdmin ? (
+          <div className="glass-panel p-6 sm:p-7 space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Rotation order</p>
+              <h2 className="text-xl font-semibold mt-2">Update payout sequence</h2>
+            </div>
+            <div className="space-y-3">
+              {rotationMembers.map((member, index) => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--glass-border)] bg-white/60 p-3"
+                >
+                  <div>
+                    <p className="text-sm font-semibold">{member.name || member.email || "Member"}</p>
+                    <p className="text-xs text-[var(--muted)] capitalize">{member.role}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!rotationOrder.length) return;
+                        const next = [...rotationOrder];
+                        if (index === 0) return;
+                        [next[index - 1], next[index]] = [next[index], next[index - 1]];
+                        updateRotationOrder(next);
+                      }}
+                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
+                    >
+                      <ChevronUp size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!rotationOrder.length) return;
+                        const next = [...rotationOrder];
+                        if (index === next.length - 1) return;
+                        [next[index + 1], next[index]] = [next[index], next[index + 1]];
+                        updateRotationOrder(next);
+                      }}
+                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
+                    >
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!rotationOrder.length) return;
-                      const next = [...rotationOrder];
-                      if (index === 0) return;
-                      [next[index - 1], next[index]] = [next[index], next[index - 1]];
-                      updateRotationOrder(next);
-                    }}
-                    className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
-                  >
-                    <ChevronUp size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!rotationOrder.length) return;
-                      const next = [...rotationOrder];
-                      if (index === next.length - 1) return;
-                      [next[index + 1], next[index]] = [next[index], next[index + 1]];
-                      updateRotationOrder(next);
-                    }}
-                    className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
-                  >
-                    <ChevronDown size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => updateRotationOrder(rotationOrder, true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+            >
+              <RefreshCcw size={16} />
+              Shuffle order
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => updateRotationOrder(rotationOrder, true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-          >
-            <RefreshCcw size={16} />
-            Shuffle order
-          </button>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
-        <div className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
+        ) : (
+          <div className="glass-panel p-6 sm:p-7 space-y-3">
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-              Members & roles
+              Rotation order
             </p>
-            <h2 className="text-xl font-semibold mt-2">Manage contributors</h2>
+            <h2 className="text-xl font-semibold">Moderator tools hidden</h2>
+            <p className="text-sm text-[var(--muted)]">
+              Only moderators can update the payout sequence.
+            </p>
           </div>
-          <div className="space-y-3">
-            {members.map((member) => (
-              <div
-                key={member.id}
-                className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        )}
+        </section>
+      )}
+
+      {activeTab === "members" && (
+        <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
+        {hasGroupPrivileges ? (
+          <div className="glass-panel p-6 sm:p-7 space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                Members & roles
+              </p>
+              <h2 className="text-xl font-semibold mt-2">Manage contributors</h2>
+            </div>
+            <div className="space-y-3">
+              {members.map((member) => (
+                <div
+                  key={member.id}
+                  className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="font-semibold">{member.name || member.email || "Member"}</p>
                     <p className="text-xs text-[var(--muted)] mt-1">
                       {member.email || member.phone || "No contact"} •{" "}
                       {member.status}
                     </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <select
-                      className="text-xs border border-[var(--glass-border)] rounded-full px-2 py-1 bg-white/70"
-                      value={member.role}
-                      onChange={(event) =>
-                        handleUpdateMember(member.id, { role: event.target.value })
-                      }
-                    >
-                      {["admin", "treasurer", "secretary", "member"].map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </select>
-                    {member.status !== "active" && (
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateMember(member.id, { status: "active" })}
-                        className="text-xs px-3 py-1 rounded-full bg-[var(--button-bg)]/10 text-[var(--button-bg)]"
-                      >
-                        Accept
-                      </button>
-                    )}
-                    {member.status !== "rejected" && (
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateMember(member.id, { status: "rejected" })}
-                        className="text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600"
-                      >
-                        Reject
-                      </button>
+                    {member.userId && (
+                      <span className="inline-flex items-center mt-2 text-[10px] uppercase tracking-[0.2em] bg-emerald-100 text-emerald-600 px-2 py-1 rounded-full">
+                        Invite accepted
+                      </span>
                     )}
                   </div>
+                    <div className="flex flex-wrap gap-2">
+                      <select
+                        className="text-xs border border-[var(--glass-border)] rounded-full px-2 py-1 bg-white/70"
+                        value={member.role}
+                        onChange={(event) =>
+                          handleUpdateMember(member.id, { role: event.target.value })
+                        }
+                      >
+                        {["admin", "treasurer", "secretary", "member"].map((role) => (
+                          <option key={role} value={role}>
+                            {role}
+                          </option>
+                        ))}
+                      </select>
+                      {member.status !== "active" && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateMember(member.id, { status: "active" })}
+                          className="text-xs px-3 py-1 rounded-full bg-[var(--button-bg)]/10 text-[var(--button-bg)]"
+                        >
+                          Accept
+                        </button>
+                      )}
+                      {member.status !== "rejected" && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateMember(member.id, { status: "rejected" })}
+                          className="text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600"
+                        >
+                          Reject
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[var(--muted)] mt-2">
+                    Contribution this round: {currencyFormatter.format(member.contributionTotal)}
+                  </p>
                 </div>
-                <p className="text-xs text-[var(--muted)] mt-2">
-                  Contribution this round: {currencyFormatter.format(member.contributionTotal)}
-                </p>
+              ))}
+            </div>
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 space-y-4">
+              <div className="flex items-center gap-2">
+                <UserPlus size={18} />
+                <h3 className="font-semibold text-lg">Invite member</h3>
               </div>
-            ))}
-          </div>
-          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <UserPlus size={18} />
-              <h3 className="font-semibold text-lg">Invite member</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                className={inputClass}
-                placeholder="Full name"
-                value={memberForm.name}
-                onChange={(event) => setMemberForm((prev) => ({ ...prev, name: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={memberForm.role}
-                onChange={(event) => setMemberForm((prev) => ({ ...prev, role: event.target.value }))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input
+                  className={inputClass}
+                  placeholder="Full name"
+                  value={memberForm.name}
+                  onChange={(event) => setMemberForm((prev) => ({ ...prev, name: event.target.value }))}
+                />
+                <select
+                  className={inputClass}
+                  value={memberForm.role}
+                  onChange={(event) => setMemberForm((prev) => ({ ...prev, role: event.target.value }))}
+                >
+                  {["member", "secretary", "treasurer", "admin"].map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  className={inputClass}
+                  placeholder="Email"
+                  value={memberForm.email}
+                  onChange={(event) => setMemberForm((prev) => ({ ...prev, email: event.target.value }))}
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Phone"
+                  value={memberForm.phone}
+                  onChange={(event) => setMemberForm((prev) => ({ ...prev, phone: event.target.value }))}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAddMember}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
               >
-                {["member", "secretary", "treasurer", "admin"].map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-              <input
-                className={inputClass}
-                placeholder="Email"
-                value={memberForm.email}
-                onChange={(event) => setMemberForm((prev) => ({ ...prev, email: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="Phone"
-                value={memberForm.phone}
-                onChange={(event) => setMemberForm((prev) => ({ ...prev, phone: event.target.value }))}
-              />
+                <Plus size={16} />
+                Send invite
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleAddMember}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-            >
-              <Plus size={16} />
-              Send invite
-            </button>
           </div>
-        </div>
+        ) : (
+          <div className="glass-panel p-6 sm:p-7 space-y-3">
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+              Members & roles
+            </p>
+            <h2 className="text-xl font-semibold">Moderator tools hidden</h2>
+            <p className="text-sm text-[var(--muted)]">
+              Only moderators can manage members and roles.
+            </p>
+          </div>
+        )}
+        </section>
+      )}
 
-        <div className="glass-panel p-6 sm:p-7 space-y-5">
+      {activeTab === "contributions" && (
+        <section className="glass-panel p-6 sm:p-7 space-y-5">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Contribution log
             </p>
             <h2 className="text-xl font-semibold mt-2">Record contributions</h2>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <select
-              className={inputClass}
-              value={contributionForm.memberId}
-              onChange={(event) =>
-                setContributionForm((prev) => ({ ...prev, memberId: event.target.value }))
-              }
-            >
-              {members.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {member.name || member.email || "Member"}
-                </option>
-              ))}
-            </select>
-            <input
-              className={inputClass}
-              type="number"
-              placeholder="Amount (KES)"
-              value={contributionForm.amount}
-              onChange={(event) =>
-                setContributionForm((prev) => ({ ...prev, amount: event.target.value }))
-              }
-            />
-            <input
-              className={inputClass}
-              placeholder="Method (manual / mpesa)"
-              value={contributionForm.method}
-              onChange={(event) =>
-                setContributionForm((prev) => ({ ...prev, method: event.target.value }))
-              }
-            />
-            <input
-              className={inputClass}
-              placeholder="Reference (optional)"
-              value={contributionForm.reference}
-              onChange={(event) =>
-                setContributionForm((prev) => ({ ...prev, reference: event.target.value }))
-              }
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleRecordContribution}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-          >
-            <Plus size={16} />
-            Record contribution
-          </button>
+          {hasGroupPrivileges ? (
+            <>
+              <div className="grid grid-cols-1 gap-4">
+                <select
+                  className={inputClass}
+                  value={contributionForm.memberId}
+                  onChange={(event) =>
+                    setContributionForm((prev) => ({ ...prev, memberId: event.target.value }))
+                  }
+                >
+                  {members.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name || member.email || "Member"}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  className={inputClass}
+                  type="number"
+                  placeholder="Amount (KES)"
+                  value={contributionForm.amount}
+                  onChange={(event) =>
+                    setContributionForm((prev) => ({ ...prev, amount: event.target.value }))
+                  }
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Method (manual / mpesa)"
+                  value={contributionForm.method}
+                  onChange={(event) =>
+                    setContributionForm((prev) => ({ ...prev, method: event.target.value }))
+                  }
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Reference (optional)"
+                  value={contributionForm.reference}
+                  onChange={(event) =>
+                    setContributionForm((prev) => ({ ...prev, reference: event.target.value }))
+                  }
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleRecordContribution}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+              >
+                <Plus size={16} />
+                Record contribution
+              </button>
+            </>
+          ) : (
+            <p className="text-sm text-[var(--muted)]">
+              Contributions can be recorded by moderators only.
+            </p>
+          )}
 
           <div className="space-y-3">
             {contributions.map((contribution) => {
@@ -689,74 +795,76 @@ export default function ChamaGroupPage() {
               <p className="text-sm text-[var(--muted)]">No contributions logged yet.</p>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="glass-panel p-6 sm:p-7 space-y-5">
-        <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group settings</p>
-          <h2 className="text-xl font-semibold mt-2">Update core details</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input
-            className={inputClass}
-            placeholder="Group name"
-            value={groupForm.name}
-            onChange={(event) => setGroupForm((prev) => ({ ...prev, name: event.target.value }))}
-          />
-          <input
-            className={inputClass}
-            placeholder="Description"
-            value={groupForm.description}
-            onChange={(event) =>
-              setGroupForm((prev) => ({ ...prev, description: event.target.value }))
-            }
-          />
-          <input
-            className={inputClass}
-            type="number"
-            placeholder="Contribution amount"
-            value={groupForm.contributionAmount}
-            onChange={(event) =>
-              setGroupForm((prev) => ({ ...prev, contributionAmount: event.target.value }))
-            }
-          />
-          <select
-            className={inputClass}
-            value={groupForm.frequency}
-            onChange={(event) =>
-              setGroupForm((prev) => ({ ...prev, frequency: event.target.value }))
-            }
+      {activeTab === "settings" && hasGroupPrivileges && (
+        <section className="glass-panel p-6 sm:p-7 space-y-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group settings</p>
+            <h2 className="text-xl font-semibold mt-2">Update core details</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Group name"
+              value={groupForm.name}
+              onChange={(event) => setGroupForm((prev) => ({ ...prev, name: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              placeholder="Description"
+              value={groupForm.description}
+              onChange={(event) =>
+                setGroupForm((prev) => ({ ...prev, description: event.target.value }))
+              }
+            />
+            <input
+              className={inputClass}
+              type="number"
+              placeholder="Contribution amount"
+              value={groupForm.contributionAmount}
+              onChange={(event) =>
+                setGroupForm((prev) => ({ ...prev, contributionAmount: event.target.value }))
+              }
+            />
+            <select
+              className={inputClass}
+              value={groupForm.frequency}
+              onChange={(event) =>
+                setGroupForm((prev) => ({ ...prev, frequency: event.target.value }))
+              }
+            >
+              <option value="weekly">Weekly</option>
+              <option value="bi-weekly">Bi-weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+            <input
+              className={inputClass}
+              type="date"
+              value={groupForm.startDate}
+              onChange={(event) =>
+                setGroupForm((prev) => ({ ...prev, startDate: event.target.value }))
+              }
+            />
+            <input
+              className={inputClass}
+              placeholder="Currency"
+              value={groupForm.currency}
+              onChange={(event) =>
+                setGroupForm((prev) => ({ ...prev, currency: event.target.value }))
+              }
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleGroupUpdate}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
           >
-            <option value="weekly">Weekly</option>
-            <option value="bi-weekly">Bi-weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-          <input
-            className={inputClass}
-            type="date"
-            value={groupForm.startDate}
-            onChange={(event) =>
-              setGroupForm((prev) => ({ ...prev, startDate: event.target.value }))
-            }
-          />
-          <input
-            className={inputClass}
-            placeholder="Currency"
-            value={groupForm.currency}
-            onChange={(event) =>
-              setGroupForm((prev) => ({ ...prev, currency: event.target.value }))
-            }
-          />
-        </div>
-        <button
-          type="button"
-          onClick={handleGroupUpdate}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-        >
-          Save changes
-        </button>
-      </section>
+            Save changes
+          </button>
+        </section>
+      )}
     </div>
   );
 }

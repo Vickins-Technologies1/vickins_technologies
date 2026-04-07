@@ -11,6 +11,7 @@ import {
   isSiteAdmin,
 } from "@/lib/chama-access";
 import ChamaGroupModel from "@/lib/models/chama-group";
+import transporter from "@/lib/nodemailer";
 
 type Params = { params: Promise<{ groupId: string }> };
 
@@ -54,6 +55,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     return NextResponse.json({
       members: members.map((item) => ({
         id: String(item._id),
+        userId: item.userId,
         name: item.name,
         email: item.email,
         phone: item.phone,
@@ -119,6 +121,47 @@ export async function POST(request: NextRequest, { params }: Params) {
       { _id: groupId },
       { $set: { numberOfMembers: activeCount } }
     );
+
+    if (email) {
+      try {
+        const group = (await ChamaGroupModel.findById(groupId).lean()) as
+          | { name?: string }
+          | null;
+        const baseUrl =
+          process.env.NEXT_PUBLIC_SITE_URL ||
+          process.env.BETTER_AUTH_BASE_URL ||
+          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+          "http://localhost:3000";
+        const inviteLink = `${baseUrl}/member-signup?email=${encodeURIComponent(
+          email.trim().toLowerCase()
+        )}&groupName=${encodeURIComponent(group?.name ?? "ChamaHub group")}`;
+
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: email.trim().toLowerCase(),
+          subject: `You're invited to join ${group?.name ?? "a ChamaHub group"}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0b1220;">
+              <h2 style="margin: 0 0 12px;">Welcome to ChamaHub</h2>
+              <p>You have been invited to join <strong>${group?.name ?? "a ChamaHub group"}</strong>.</p>
+              <p>Create your member account to view contributions, payments, and payout schedules.</p>
+              <p style="margin-top: 18px;">
+                <a href="${inviteLink}" style="background:#1b5cff;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:600;">
+                  Accept invite
+                </a>
+              </p>
+              <p style="font-size: 12px; color: #5a6882; margin-top: 16px;">
+                If the button doesn't work, copy and paste this link into your browser:
+                <br/>
+                ${inviteLink}
+              </p>
+            </div>
+          `,
+        });
+      } catch (mailError) {
+        // Avoid blocking member creation if email fails.
+      }
+    }
 
     return NextResponse.json({ memberId: String(newMember._id) }, { status: 201 });
   } catch (error) {

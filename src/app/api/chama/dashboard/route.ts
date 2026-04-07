@@ -5,7 +5,7 @@ import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import ChamaRoundModel from "@/lib/models/chama-round";
 import ChamaContributionModel from "@/lib/models/chama-contribution";
-import { getSessionUser } from "@/lib/chama-access";
+import { getSessionUser, linkMemberToUser } from "@/lib/chama-access";
 import { calculatePotAmount } from "@/lib/chama-utils";
 
 export async function GET() {
@@ -15,6 +15,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
+    await linkMemberToUser(user);
     await connectMongoose();
 
     const orConditions: Record<string, unknown>[] = [{ userId: user.id }];

@@ -5,7 +5,7 @@ import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import ChamaRoundModel from "@/lib/models/chama-round";
 import { calculatePotAmount, normalizeFrequency } from "@/lib/chama-utils";
-import { getSessionUser, isModerator, isSiteAdmin } from "@/lib/chama-access";
+import { getSessionUser, isModerator, isSiteAdmin, linkMemberToUser } from "@/lib/chama-access";
 
 export async function GET() {
   try {
@@ -14,14 +14,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
-    const canCreate = isSiteAdmin(user) || isModerator(user);
-    if (!canCreate) {
-      return NextResponse.json(
-        { error: "Only ChamaHub moderators can create groups." },
-        { status: 403 }
-      );
-    }
-
+    await linkMemberToUser(user);
     await connectMongoose();
 
     const isAdmin = isSiteAdmin(user);
@@ -110,6 +103,14 @@ export async function POST(request: Request) {
     const user = await getSessionUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const canCreate = isSiteAdmin(user) || isModerator(user);
+    if (!canCreate) {
+      return NextResponse.json(
+        { error: "Only ChamaHub moderators can create groups." },
+        { status: 403 }
+      );
     }
 
     const body = await request.json().catch(() => ({}));

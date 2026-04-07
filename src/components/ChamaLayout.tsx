@@ -102,7 +102,13 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
     { href: "/chama/ledger", label: "Contributions", icon: CalendarCheck },
   ];
 
-  const activeNav = navItems.find((item) => pathname?.startsWith(item.href));
+  const roleList = session?.user?.role
+    ? session.user.role.split(",").map((value: string) => value.trim())
+    : [];
+  const isModerator = roleList.includes("moderator") || roleList.includes("admin");
+  const filteredNav = isModerator ? navItems : navItems.filter((item) => item.href !== "/chama/groups");
+
+  const activeNav = filteredNav.find((item) => pathname?.startsWith(item.href));
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -154,7 +160,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
 
         <nav className="flex-1 px-2 py-4 overflow-y-auto">
           <ul className="space-y-1">
-            {navItems.map((item) => {
+            {filteredNav.map((item) => {
               const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
               const Icon = item.icon;
               return (

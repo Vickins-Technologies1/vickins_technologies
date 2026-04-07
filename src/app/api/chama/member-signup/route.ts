@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { linkMemberToUser } from "@/lib/chama-access";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -30,6 +31,13 @@ export async function POST(request: Request) {
 
     const context = await auth.$context;
     await context.internalAdapter.updateUser(createdUser.id, {
+      role: "member",
+    });
+
+    await linkMemberToUser({
+      id: createdUser.id,
+      email: createdUser.email,
+      name: createdUser.name,
       role: "member",
     });
 

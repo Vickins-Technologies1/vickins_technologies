@@ -1,18 +1,23 @@
 // src/app/member-signup/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Users } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
-export default function MemberSignupPage() {
+function MemberSignupContent() {
+  const searchParams = useSearchParams();
+  const prefillEmail = searchParams.get("email") ?? "";
+  const groupName = searchParams.get("groupName");
+
   const [form, setForm] = useState({
     name: "",
-    email: "",
+    email: prefillEmail,
     password: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -68,6 +73,11 @@ export default function MemberSignupPage() {
         <p className="text-sm text-[var(--muted)] mt-3">
           Use the same email you received your group invite with to automatically link to your chama.
         </p>
+        {groupName && (
+          <div className="mt-4 rounded-2xl border border-[var(--glass-border)] bg-white/60 px-4 py-3 text-sm text-[var(--foreground)]">
+            You are joining <span className="font-semibold">{groupName}</span>.
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <input
@@ -123,5 +133,21 @@ export default function MemberSignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MemberSignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center px-4">
+          <div className="glass-panel w-full max-w-md p-6 sm:p-8 text-center">
+            Loading member signup...
+          </div>
+        </div>
+      }
+    >
+      <MemberSignupContent />
+    </Suspense>
   );
 }

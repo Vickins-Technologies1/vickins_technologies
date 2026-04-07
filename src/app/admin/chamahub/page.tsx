@@ -26,6 +26,14 @@ type GroupRow = {
   createdBy: string;
   membersCount: number;
   activeMembers: number;
+  members: Array<{
+    id: string;
+    userId?: string | null;
+    name?: string;
+    email?: string;
+    role?: string;
+    status?: string;
+  }>;
   openRound?: {
     roundNumber: number;
     dueDate?: string;
@@ -45,35 +53,34 @@ export default function ChamaHubAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
+  const [transferSelection, setTransferSelection] = useState<Record<string, string>>({});
+  const [forceJoinEmail, setForceJoinEmail] = useState<Record<string, string>>({});
+  const [actionMessage, setActionMessage] = useState("");
+
+  const loadData = async (signal?: AbortSignal) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/admin/chamahub", { cache: "no-store", signal });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || "Unable to load ChamaHub analytics.");
+      }
+      setMetrics(data.metrics ?? null);
+      setGroups(data.groups ?? []);
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      setError(err instanceof Error ? err.message : "Unable to load analytics.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let isMounted = true;
-    const loadData = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch("/api/admin/chamahub", { cache: "no-store" });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data?.error || "Unable to load ChamaHub analytics.");
-        }
-        if (isMounted) {
-          setMetrics(data.metrics ?? null);
-          setGroups(data.groups ?? []);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : "Unable to load analytics.");
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadData();
-    return () => {
-      isMounted = false;
-    };
+    const controller = new AbortController();
+    loadData(controller.signal);
+    return () => controller.abort();
   }, []);
 
   const filteredGroups = useMemo(() => {
@@ -92,6 +99,25 @@ export default function ChamaHubAdminPage() {
       }).format(amount);
     } catch {
       return `${currency} ${amount.toLocaleString()}`;
+    }
+  };
+
+  const updateGroup = async (payload: Record<string, string>) => {
+    setActionMessage("");
+    try {
+      const response = await fetch("/api/admin/chamahub", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || "Unable to update group.");
+      }
+      setActionMessage("Update saved.");
+      await loadData();
+    } catch (err) {
+      setActionMessage(err instanceof Error ? err.message : "Unable to update group.");
     }
   };
 
@@ -131,6 +157,9 @@ export default function ChamaHubAdminPage() {
       </section>
 
       {error && <div className="glass-panel p-4 text-sm text-rose-500">{error}</div>}
+      {actionMessage && (
+        <div className="glass-panel p-4 text-sm text-[var(--foreground)]">{actionMessage}</div>
+      )}
 
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         {[
@@ -197,35 +226,198 @@ export default function ChamaHubAdminPage() {
             {filteredGroups.map((group) => (
               <div
                 key={group.id}
-                className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+                className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 sm:p-5 space-y-4"
               >
-                <div>
-                  <p className="font-semibold text-lg">{group.name}</p>
-                  <p className="text-xs text-[var(--muted)] mt-1">
-                    {group.frequency} • {group.status} • {group.membersCount} members
-                  </p>
-                  <p className="text-xs text-[var(--muted)] mt-1">
-                    Contribution: {formatMoney(group.contributionAmount, group.currency)} • Total collected:{" "}
-                    {formatMoney(group.totalCollected, group.currency)}
-                  </p>
-                  {group.openRound && (
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div>
+                    <p className="font-semibold text-lg">{group.name}</p>
                     <p className="text-xs text-[var(--muted)] mt-1">
-                      Open round #{group.openRound.roundNumber} • Due{" "}
-                      {group.openRound.dueDate
-                        ? new Date(group.openRound.dueDate).toLocaleDateString()
-                        : "TBD"}
+                      {group.frequency} • {group.status} • {group.membersCount} members
                     </p>
-                  )}
+                    <p className="text-xs text-[var(--muted)] mt-1">
+                      Contribution: {formatMoney(group.contributionAmount, group.currency)} • Total collected:{" "}
+                      {formatMoney(group.totalCollected, group.currency)}
+                    </p>
+                    {group.openRound && (
+                      <p className="text-xs text-[var(--muted)] mt-1">
+                        Open round #{group.openRound.roundNumber} • Due{" "}
+                        {group.openRound.dueDate
+                          ? new Date(group.openRound.dueDate).toLocaleDateString()
+                          : "TBD"}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Link
+                      href={`/chama/groups/${group.id}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold"
+                    >
+                      View group
+                      <ArrowRight size={14} />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedGroupId((prev) => (prev === group.id ? null : group.id))
+                      }
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold"
+                    >
+                      {expandedGroupId === group.id ? "Hide controls" : "Manage"}
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    href={`/chama/groups/${group.id}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold"
-                  >
-                    View group
-                    <ArrowRight size={14} />
-                  </Link>
-                </div>
+
+                {expandedGroupId === group.id && (
+                  <div className="rounded-2xl border border-[var(--glass-border)] bg-white/70 p-4 sm:p-5 space-y-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                          Group controls
+                        </p>
+                        <p className="text-sm text-[var(--muted)] mt-2">
+                          Deactivate a lease or transfer moderator ownership.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateGroup({
+                            action: group.status === "archived" ? "activate" : "archive",
+                            groupId: group.id,
+                          })
+                        }
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+                      >
+                        {group.status === "archived" ? "Activate group" : "Deactivate group"}
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-4">
+                      <div className="space-y-2">
+                        <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                          Members
+                        </p>
+                        <div className="space-y-2">
+                          {group.members.map((member) => (
+                            <div
+                              key={member.id}
+                              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-2xl border border-[var(--glass-border)] bg-white/80 px-3 py-2"
+                            >
+                              <div>
+                                <p className="text-sm font-semibold">
+                                  {member.name || member.email || "Member"}
+                                </p>
+                                <p className="text-xs text-[var(--muted)]">
+                                  {member.email || "No email"} • {member.role}
+                                </p>
+                                {member.userId && (
+                                  <span className="inline-flex items-center mt-2 text-[10px] uppercase tracking-[0.2em] bg-emerald-100 text-emerald-600 px-2 py-1 rounded-full">
+                                    Invite accepted
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                                {member.status}
+                              </span>
+                              {member.userId && member.status === "active" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    updateGroup({
+                                      action: "make-moderator",
+                                      groupId: group.id,
+                                      memberId: member.id,
+                                    })
+                                  }
+                                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--glass-border)] bg-white/80 text-xs font-semibold"
+                                >
+                                  Make moderator
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                          Transfer moderator
+                        </p>
+                        <select
+                          className={inputClass}
+                          value={transferSelection[group.id] ?? ""}
+                          onChange={(event) =>
+                            setTransferSelection((prev) => ({
+                              ...prev,
+                              [group.id]: event.target.value,
+                            }))
+                          }
+                        >
+                          <option value="">Select member</option>
+                          {group.members
+                            .filter((member) => member.userId && member.status === "active")
+                            .map((member) => (
+                              <option key={member.id} value={member.id}>
+                                {member.name || member.email}
+                              </option>
+                            ))}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateGroup({
+                              action: "transfer",
+                              groupId: group.id,
+                              memberId: transferSelection[group.id],
+                            })
+                          }
+                          disabled={!transferSelection[group.id]}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold disabled:opacity-60"
+                        >
+                          Transfer ownership
+                        </button>
+                        <p className="text-xs text-[var(--muted)]">
+                          Only active members with a linked account can become moderator.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-[var(--glass-border)] pt-4 space-y-3">
+                      <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                        Force-join member
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          className={inputClass}
+                          placeholder="member@email.com"
+                          value={forceJoinEmail[group.id] ?? ""}
+                          onChange={(event) =>
+                            setForceJoinEmail((prev) => ({
+                              ...prev,
+                              [group.id]: event.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateGroup({
+                              action: "force-join",
+                              groupId: group.id,
+                              email: forceJoinEmail[group.id],
+                            })
+                          }
+                          disabled={!forceJoinEmail[group.id]}
+                          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/80 text-sm font-semibold disabled:opacity-60"
+                        >
+                          Attach member
+                        </button>
+                      </div>
+                      <p className="text-xs text-[var(--muted)]">
+                        Use this to attach a member by email, even if they haven’t accepted an invite.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             {filteredGroups.length === 0 && (

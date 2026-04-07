@@ -73,6 +73,30 @@ export default function ChamaDashboardPage() {
     session?.user?.role?.split(",").map((value: string) => value.trim()).includes("admin") ??
     false;
 
+  const tabs = useMemo(() => {
+    if (isModerator || isAdmin) {
+      return [
+        { id: "overview", label: "Overview" },
+        { id: "groups", label: "Groups" },
+        { id: "create", label: "Create Group" },
+        { id: "payments", label: "Payments" },
+      ];
+    }
+    return [
+      { id: "overview", label: "Overview" },
+      { id: "groups", label: "My Groups" },
+      { id: "payments", label: "Payments" },
+    ];
+  }, [isModerator, isAdmin]);
+
+  const [activeTab, setActiveTab] = useState("overview");
+
+  useEffect(() => {
+    if (!tabs.find((tab) => tab.id === activeTab)) {
+      setActiveTab(tabs[0]?.id ?? "overview");
+    }
+  }, [tabs, activeTab]);
+
   const loadDashboard = async () => {
     setLoading(true);
     setError("");
@@ -164,7 +188,27 @@ export default function ChamaDashboardPage() {
         <div className="glass-panel p-4 text-sm text-[var(--foreground)]">{message}</div>
       )}
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="glass-panel p-4 sm:p-5">
+        <div className="flex flex-wrap gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition ${
+                activeTab === tab.id
+                  ? "bg-[var(--button-bg)] text-white border-transparent"
+                  : "border-[var(--glass-border)] bg-white/70 text-[var(--foreground)] hover:bg-[var(--hover-bg)]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {activeTab === "overview" && (
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
             label: "Active Chama groups",
@@ -200,9 +244,11 @@ export default function ChamaDashboardPage() {
             <p className="text-lg sm:text-xl font-semibold mt-3">{stat.value}</p>
           </div>
         ))}
-      </section>
+        </section>
+      )}
 
-      <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
+      {(activeTab === "overview" || activeTab === "groups" || activeTab === "create") && (
+        <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         <div className="glass-panel p-6 sm:p-7 space-y-5">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Your groups</p>
@@ -250,7 +296,8 @@ export default function ChamaDashboardPage() {
           </div>
         </div>
 
-        <div className="glass-panel p-6 sm:p-7 space-y-5">
+        {(activeTab === "overview" || activeTab === "create") && (
+          <div className="glass-panel p-6 sm:p-7 space-y-5">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Create group
@@ -338,8 +385,29 @@ export default function ChamaDashboardPage() {
               to start one.
             </div>
           )}
-        </div>
-      </section>
+          </div>
+        )}
+        </section>
+      )}
+
+      {activeTab === "payments" && (
+        <section className="glass-panel p-6 sm:p-7 space-y-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Payments</p>
+            <h2 className="text-xl font-semibold mt-2">Member contribution ledger</h2>
+            <p className="text-sm text-[var(--muted)] mt-2">
+              Review contributions and upcoming dues in your ChamaHub ledger.
+            </p>
+          </div>
+          <Link
+            href="/chama/ledger"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+          >
+            Open ledger
+            <ArrowRight size={16} />
+          </Link>
+        </section>
+      )}
     </div>
   );
 }
