@@ -40,6 +40,9 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--button-bg)]" />
               Premium Studio
             </div>
+            <div className="mt-3 rounded-2xl bg-white/60 px-3 py-2 text-[10px] uppercase tracking-[0.26em] text-[var(--navbar-text)]/70">
+              ChamaHub • Groups • Payments
+            </div>
           </motion.div>
 
           <motion.button
@@ -76,13 +79,36 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
             ))}
           </ul>
 
-          <a
-            href="#contact"
-            onClick={toggleSidebar}
-            className="mt-8 inline-flex items-center justify-center w-full px-4 py-3 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg relative z-10"
-          >
-            Book a Call
-          </a>
+          <div className="mt-7 space-y-3 relative z-10">
+            <div className="rounded-2xl border border-white/35 bg-white/55 px-4 py-3 text-[10px] uppercase tracking-[0.24em] text-[var(--navbar-text)]/70">
+              ChamaHub Access
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+              <Link
+                href="/moderator-signup"
+                onClick={toggleSidebar}
+                className="inline-flex items-center justify-between rounded-2xl border border-white/35 bg-white/65 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--navbar-text)]/80"
+              >
+                Become a Moderator
+                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
+              </Link>
+              <Link
+                href="/member-login"
+                onClick={toggleSidebar}
+                className="inline-flex items-center justify-between rounded-2xl border border-white/35 bg-white/65 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--navbar-text)]/80"
+              >
+                Member Login
+                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
+              </Link>
+            </div>
+            <a
+              href="#contact"
+              onClick={toggleSidebar}
+              className="inline-flex items-center justify-center w-full px-4 py-3 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg"
+            >
+              Book a Call
+            </a>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

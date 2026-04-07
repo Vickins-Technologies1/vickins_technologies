@@ -22,7 +22,8 @@ import {
   Wallet,
   Briefcase,
   Sparkles,
-  SlidersHorizontal
+  SlidersHorizontal,
+  ArrowRight
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -174,7 +175,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-2 py-4 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+          <div className={`${!sidebarOpen && "hidden"} rounded-2xl bg-white/55 p-3`}>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              Workspace
+            </p>
+            <p className="text-sm font-semibold mt-2 text-[var(--foreground)]">
+              ChamaHub Command
+            </p>
+            <p className="text-xs text-[var(--muted)] mt-1">
+              Oversee groups, members, and payments.
+            </p>
+          </div>
           <ul className="space-y-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -203,10 +215,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
           </ul>
+          <div className={`${!sidebarOpen && "hidden"} space-y-2`}>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              Quick Actions
+            </p>
+            <Link
+              href="/admin/chamahub"
+              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+            >
+              Open ChamaHub
+              <ArrowRight size={14} />
+            </Link>
+            <Link
+              href="/moderator-signup"
+              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+            >
+              Add Moderator
+              <ArrowRight size={14} />
+            </Link>
+          </div>
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4">
+        <div className="p-4 space-y-3">
           <div className={`flex items-center gap-3 text-xs text-[var(--muted)] ${!sidebarOpen && "justify-center"}`}>
             <Copyright size={14} />
             <span className={`${!sidebarOpen && "hidden"}`}>
@@ -214,11 +245,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </span>
           </div>
           {sidebarOpen && (
-            <div className="mt-3 flex items-center gap-2 text-xs text-[var(--muted)]">
-              <Mail size={14} />
-              <a href="mailto:support@vickins.com" className="hover:text-[var(--primary)] transition-colors">
-                support@vickins.com
-              </a>
+            <div className="rounded-2xl bg-white/60 px-3 py-2 text-xs text-[var(--muted)]">
+              <div className="flex items-center gap-2">
+                <Mail size={14} />
+                <a href="mailto:support@vickins.com" className="hover:text-[var(--primary)] transition-colors">
+                  support@vickins.com
+                </a>
+              </div>
+              <p className="mt-2 text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+                Priority Support
+              </p>
             </div>
           )}
         </div>

@@ -17,6 +17,7 @@ import {
   LogOut,
   Sparkles,
   SlidersHorizontal,
+  ArrowRight,
 } from "lucide-react";
 
 export default function ChamaLayout({ children }: { children: React.ReactNode }) {
@@ -178,7 +179,18 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
 
-        <nav className="flex-1 px-2 py-4 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+          <div className={`${!sidebarOpen && "hidden"} rounded-2xl bg-white/55 p-3`}>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              ChamaHub Space
+            </p>
+            <p className="text-sm font-semibold mt-2 text-[var(--foreground)]">
+              {session.user.name || session.user.email}
+            </p>
+            <p className="text-xs text-[var(--muted)] mt-1">
+              {session.user.role?.includes("moderator") ? "Moderator" : "Member"} access
+            </p>
+          </div>
           <ul className="space-y-1">
             {filteredNav.map((item) => {
               const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
@@ -207,9 +219,30 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
               );
             })}
           </ul>
+          <div className={`${!sidebarOpen && "hidden"} space-y-2`}>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+              Quick Actions
+            </p>
+            <Link
+              href="/chama/ledger"
+              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+            >
+              Open Ledger
+              <ArrowRight size={14} />
+            </Link>
+            {isModerator && (
+              <Link
+                href="/chama"
+                className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+              >
+                Create Group
+                <ArrowRight size={14} />
+              </Link>
+            )}
+          </div>
         </nav>
 
-        <div className="p-4">
+        <div className="p-4 space-y-3">
           <button
             onClick={handleSignOut}
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-600 text-white text-sm font-semibold ${!sidebarOpen && "justify-center"}`}
@@ -217,6 +250,11 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
             <LogOut size={16} />
             <span className={`${!sidebarOpen && "hidden"}`}>Logout</span>
           </button>
+          {sidebarOpen && (
+            <div className="rounded-2xl bg-white/60 px-3 py-2 text-xs text-[var(--muted)]">
+              Secure access for members and moderators.
+            </div>
+          )}
         </div>
       </aside>
 
