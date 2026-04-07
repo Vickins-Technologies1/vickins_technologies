@@ -1,25 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Sora, Space_Grotesk, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActions from "../components/FloatingActions";
 
-const manrope = Manrope({
+const sora = Sora({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-manrope",
+  variable: "--font-sora",
 });
 
-const playfair = Playfair_Display({
-  weight: ["500", "600", "700"],
+const spaceGrotesk = Space_Grotesk({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-display",
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  weight: ["300", "400", "500", "600", "700"],
+const instrumentSans = Instrument_Sans({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-dashboard",
@@ -111,7 +111,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${playfair.variable} ${plusJakarta.variable} w-full h-full scroll-smooth`}
+      className={`${sora.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full scroll-smooth`}
     >
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>

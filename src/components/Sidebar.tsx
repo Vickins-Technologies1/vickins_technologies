@@ -17,7 +17,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-100%", opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)]/95 text-[var(--navbar-text)] z-50 p-6 shadow-[12px_0_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl border-r border-white/30 lg:hidden"
+          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)]/92 text-[var(--navbar-text)] z-50 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.22)] backdrop-blur-2xl lg:hidden"
         >
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/40 via-transparent to-transparent" />
           <motion.div

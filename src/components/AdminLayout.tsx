@@ -151,13 +151,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ${isMobile ? "fixed left-0 top-0 z-40 h-screen" : "sticky top-0 h-screen"}
           ${isMobile ? (sidebarOpen ? "translate-x-0" : "-translate-x-full") : "translate-x-0"}
           transition-all duration-300 ease-in-out
-          bg-[var(--sidebar-bg)] border-r border-[var(--border)]
+          bg-[var(--sidebar-bg)]
           flex flex-col overflow-hidden
-          shadow-lg
+          shadow-[0_18px_40px_rgba(15,23,42,0.22)]
         `}
       >
         {/* Header */}
-        <div className="p-4 flex items-center justify-between border-b border-[var(--border)]">
+        <div className="p-4 flex items-center justify-between">
           <div className={`flex items-center gap-2 ${!sidebarOpen && "hidden"}`}>
             <span className="h-2 w-2 rounded-full bg-[var(--button-bg)]" />
             <h1 className="font-semibold text-lg tracking-tight text-[var(--sidebar-text)]">
@@ -206,7 +206,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="border-t border-[var(--border)] p-4">
+        <div className="p-4">
           <div className={`flex items-center gap-3 text-xs text-[var(--muted)] ${!sidebarOpen && "justify-center"}`}>
             <Copyright size={14} />
             <span className={`${!sidebarOpen && "hidden"}`}>
@@ -227,7 +227,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Header */}
-        <header className="h-14 bg-[var(--card-bg)]/80 backdrop-blur-md border-b border-[var(--border)] flex items-center justify-between px-4 sm:px-5 sticky top-0 z-20 shadow-sm">
+        <header className="h-14 bg-[var(--card-bg)]/80 backdrop-blur-md flex items-center justify-between px-4 sm:px-5 sticky top-0 z-20 shadow-[0_10px_30px_rgba(15,23,42,0.12)]">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen((prev) => !prev)}
