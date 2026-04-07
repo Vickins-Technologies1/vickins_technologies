@@ -17,9 +17,9 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-100%", opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed top-0 left-0 h-full w-64 bg-[var(--navbar-bg)]/95 text-[var(--navbar-text)] z-50 p-6 shadow-[12px_0_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl border-r border-white/30 lg:hidden"
+          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)]/95 text-[var(--navbar-text)] z-50 p-6 shadow-[12px_0_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl border-r border-white/30 lg:hidden"
         >
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/35 via-transparent to-transparent" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/40 via-transparent to-transparent" />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
               >
                 <Link
                   href={item === "Portfolio" ? "/portfolio" : `#${item.toLowerCase()}`}
-                  className="flex items-center justify-between rounded-full border border-white/30 bg-white/40 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
+                  className="flex items-center justify-between rounded-2xl border border-white/35 bg-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
                   onClick={toggleSidebar}
                 >
                   {item}

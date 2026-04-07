@@ -10,10 +10,12 @@ interface NavbarProps {
 }
 
 export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: NavbarProps) {
+  const navItems = ["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients"];
+
   return (
     <nav className="sticky top-0 z-50">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mt-4 mb-3 flex items-center justify-between rounded-2xl border border-white/30 bg-[var(--navbar-bg)]/80 px-3 sm:px-4 py-2 backdrop-blur-2xl shadow-[var(--shadow-tight)]">
+        <div className="mt-4 mb-3 flex items-center justify-between rounded-3xl border border-white/25 bg-[var(--navbar-bg)]/75 px-4 sm:px-5 py-2.5 backdrop-blur-2xl shadow-[var(--shadow-tight)]">
           <Link href="/" aria-label="Vickins Technologies Home">
             <motion.div
               whileHover={{ scale: 1.03 }}
@@ -26,11 +28,11 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                 alt="Vickins Technologies Logo"
                 width={70}
                 height={28}
-                className="w-12 sm:w-14"
+                className="w-11 sm:w-12"
                 sizes="(max-width: 640px) 48px, 56px"
               />
               <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-[10px] uppercase tracking-[0.38em] text-[var(--navbar-text)]/70">
+                <span className="text-[10px] uppercase tracking-[0.34em] text-[var(--navbar-text)]/70">
                   Vickins
                 </span>
               </div>
@@ -38,8 +40,8 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
           </Link>
 
           <div className="flex items-center gap-2">
-            <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/40 bg-white/45 px-1 py-1">
-              {["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients"].map((item) => (
+            <ul className="hidden lg:flex items-center gap-1 rounded-full border border-white/40 bg-white/50 px-2 py-1">
+              {navItems.map((item) => (
                 <motion.li
                   key={item}
                   whileHover={{ y: -1 }}
@@ -47,7 +49,7 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                 >
                   <Link
                     href={item === "Portfolio" ? "/portfolio" : `#${item.toLowerCase()}`}
-                    className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/75 hover:text-[var(--button-bg)] hover:bg-white/70 transition"
+                    className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition"
                   >
                     {item}
                   </Link>
@@ -103,7 +105,7 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
 
             <a
               href="#contact"
-              className="hidden lg:inline-flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg hover:shadow-2xl transition-all duration-300"
+              className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg hover:shadow-2xl transition-all duration-300"
             >
               Book a Call
             </a>

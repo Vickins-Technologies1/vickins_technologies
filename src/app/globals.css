@@ -27,6 +27,10 @@
     linear-gradient(180deg, #fbfcff 0%, #f2f5fb 100%);
   --page-grid: linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  --dash-card-top: rgba(255, 255, 255, 0.95);
+  --dash-card-bottom: rgba(245, 248, 255, 0.82);
+  --dash-border: rgba(15, 23, 42, 0.08);
+  --dash-icon: rgba(27, 92, 255, 0.9);
 }
 
 :root[data-theme="dark"] {
@@ -54,6 +58,10 @@
     linear-gradient(180deg, #0b111f 0%, #0b142a 100%);
   --page-grid: linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  --dash-card-top: rgba(18, 26, 48, 0.92);
+  --dash-card-bottom: rgba(12, 18, 34, 0.82);
+  --dash-border: rgba(148, 163, 184, 0.18);
+  --dash-icon: rgba(96, 165, 250, 0.9);
 }
 
 /* Dark mode readability overrides for light glass utilities */
@@ -149,6 +157,56 @@ h3,
 h4 {
   font-family: var(--font-display), var(--font-sans);
   letter-spacing: -0.02em;
+}
+
+.dashboard-shell {
+  font-family: var(--font-dashboard), var(--font-sans);
+  font-size: 0.95rem;
+  --dash-pad: 16px;
+  --dash-gap: 14px;
+}
+
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell h4 {
+  font-family: var(--font-dashboard), var(--font-sans);
+  letter-spacing: -0.015em;
+}
+
+.dashboard-shell[data-density="compact"] {
+  font-size: 0.92rem;
+  --dash-pad: 14px;
+  --dash-gap: 12px;
+}
+
+.dashboard-shell[data-density="spacious"] {
+  font-size: 1rem;
+  --dash-pad: 20px;
+  --dash-gap: 16px;
+}
+
+.dashboard-shell .glass-panel {
+  background: linear-gradient(180deg, var(--dash-card-top), var(--dash-card-bottom));
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--shadow-tight);
+  border-radius: calc(var(--radius) - 4px);
+  padding: var(--dash-pad);
+}
+
+:root[data-theme="dark"] .dashboard-shell .glass-panel {
+  background: linear-gradient(180deg, var(--dash-card-top), var(--dash-card-bottom));
+}
+
+.dash-card {
+  background: linear-gradient(180deg, var(--dash-card-top), var(--dash-card-bottom));
+  border: 1px solid var(--dash-border);
+  box-shadow: var(--shadow-tight);
+  border-radius: calc(var(--radius) - 4px);
+}
+
+.dashboard-icon {
+  stroke-width: 1.5;
 }
 
 .glass-panel {

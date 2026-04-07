@@ -196,10 +196,10 @@ export default function AdminDashboard() {
         {dashboardConfig.stats.map((stat) => {
           const Icon = iconMap[stat.icon] ?? ShieldCheck;
           return (
-            <div key={stat.id} className="glass-panel p-5 sm:p-6">
+            <div key={stat.id} className="glass-panel dash-card p-4 sm:p-5">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-[var(--muted)] uppercase tracking-[0.2em]">{stat.label}</p>
-                <Icon size={18} className="text-[var(--button-bg)]" />
+                <Icon size={18} className="text-[var(--button-bg)] dashboard-icon" />
               </div>
               <p className="text-2xl sm:text-3xl font-semibold mt-3">
                 {formatStatValue(stat, dashboardStats[stat.metric])}
@@ -227,10 +227,10 @@ export default function AdminDashboard() {
               <Link
                 key={link.title}
                 href={link.href}
-                className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--glass-border)] bg-white/60 hover:bg-[var(--hover-bg)] transition"
+                className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--glass-border)] bg-white/70 hover:bg-[var(--hover-bg)] transition dash-card"
               >
                 <div className="p-3 rounded-xl bg-[var(--button-bg)]/10 text-[var(--button-bg)]">
-                  <Icon size={20} />
+                  <Icon size={20} className="dashboard-icon" />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold">{link.title}</p>

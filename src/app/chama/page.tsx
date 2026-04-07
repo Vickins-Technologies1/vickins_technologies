@@ -234,12 +234,12 @@ export default function ChamaDashboardPage() {
             icon: Wallet,
           },
         ].map((stat) => (
-          <div key={stat.label} className="glass-panel p-5 sm:p-6">
+          <div key={stat.label} className="glass-panel dash-card p-4 sm:p-5">
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                 {stat.label}
               </p>
-              <stat.icon size={18} className="text-[var(--accent)]" />
+              <stat.icon size={18} className="text-[var(--accent)] dashboard-icon" />
             </div>
             <p className="text-lg sm:text-xl font-semibold mt-3">{stat.value}</p>
           </div>

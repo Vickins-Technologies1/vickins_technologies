@@ -16,6 +16,7 @@ import {
   Moon,
   LogOut,
   Sparkles,
+  SlidersHorizontal,
 } from "lucide-react";
 
 export default function ChamaLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [density, setDensity] = useState<"compact" | "spacious">("compact");
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode ? "dark" : "light";
@@ -42,6 +44,21 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
       setIsDarkMode(false);
     }
   }, []);
+
+  useEffect(() => {
+    const savedDensity = localStorage.getItem("dash-density");
+    if (savedDensity === "spacious") {
+      setDensity("spacious");
+    } else {
+      setDensity("compact");
+    }
+  }, []);
+
+  const toggleDensity = () => {
+    const next = density === "compact" ? "spacious" : "compact";
+    setDensity(next);
+    localStorage.setItem("dash-density", next);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -118,7 +135,10 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased">
+    <div
+      className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased dashboard-shell"
+      data-density={density}
+    >
       {isMobile && sidebarOpen && (
         <button
           type="button"
@@ -143,11 +163,11 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
             <Image
               src="/chamahub-mark.svg"
               alt="ChamaHub logo"
-              width={28}
-              height={28}
-              className="h-7 w-7"
+              width={26}
+              height={26}
+              className="h-6 w-6"
             />
-            <h1 className="font-bold text-xl tracking-tight">ChamaHub</h1>
+            <h1 className="font-semibold text-lg tracking-tight">ChamaHub</h1>
           </div>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -168,14 +188,19 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
                   <Link
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
                       ${isActive
-                        ? "bg-[var(--primary)]/15 text-[var(--primary)] font-medium shadow-sm"
+                        ? "bg-[var(--primary)]/12 text-[var(--primary)] font-semibold shadow-sm"
                         : "text-[var(--sidebar-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--foreground)]"
                       }
                     `}
                   >
-                    <Icon size={20} className="min-w-[20px]" />
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        isActive ? "bg-[var(--button-bg)]" : "bg-[var(--border)]"
+                      }`}
+                    />
+                    <Icon size={18} className="min-w-[18px] dashboard-icon" />
                     <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
                   </Link>
                 </li>
@@ -222,6 +247,14 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
               aria-label="Toggle theme"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <button
+              onClick={toggleDensity}
+              className="p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--foreground)] transition-colors"
+              aria-label={`Switch to ${density === "compact" ? "spacious" : "compact"} density`}
+              title={`Density: ${density === "compact" ? "Compact" : "Spacious"}`}
+            >
+              <SlidersHorizontal size={18} />
             </button>
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold">{session.user.name || session.user.email}</p>

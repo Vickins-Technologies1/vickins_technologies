@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Manrope, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActions from "../components/FloatingActions";
@@ -16,6 +16,13 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-display",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dashboard",
 });
 
 export const metadata: Metadata = {
@@ -102,7 +109,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${playfair.variable} w-full h-full scroll-smooth`}>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${playfair.variable} ${plusJakarta.variable} w-full h-full scroll-smooth`}
+    >
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>
           {children}
