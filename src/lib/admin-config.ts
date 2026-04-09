@@ -55,11 +55,11 @@ export type AdminConfig = {
 export const getDefaultAdminConfig = (): AdminConfig => ({
   key: "default",
   dashboard: {
-    tagline: "ChamaHub Command Center",
+    tagline: "Vickins Admin Command Center",
     title: "Welcome back",
-    subtitle: "Manage ChamaHub groups, contributions, and member activity in one organized command center.",
+    subtitle: "Manage company operations, teams, finances, and platform modules from one command center.",
     ctas: [
-      { href: "/admin/chamahub", label: "ChamaHub Analytics", variant: "primary" },
+      { href: "/admin/chamahub", label: "Platform Analytics", variant: "primary" },
       { href: "/admin/work", label: "Open Work Hub", variant: "secondary" },
     ],
     quickLinks: [

@@ -5,10 +5,11 @@ import { authClient } from "@/lib/auth-client";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import AuthShell from "@/components/AuthShell";
 
 const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+  "glass-input";
 
 function MemberLoginContent() {
   const searchParams = useSearchParams();
@@ -63,87 +64,62 @@ function MemberLoginContent() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="glow-orb float-slow"
-          style={{
-            top: "-10%",
-            left: "-8%",
-            width: "320px",
-            height: "320px",
-            background: "rgba(20, 184, 166, 0.22)",
-          }}
+    <AuthShell
+      eyebrow="Member Login"
+      title="Access your ChamaHub member wallet."
+      subtitle="Check contributions, upcoming payouts, and member updates in one secure place."
+      brandTitle="ChamaHub Members"
+      brandSubtitle="Stay synced with your group, anytime."
+      brandPoints={[
+        "Track your savings contributions in real time.",
+        "Get payout timelines and group updates instantly.",
+        "Secure access for every member.",
+      ]}
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={inputClass}
         />
-        <div
-          className="glow-orb float-slower"
-          style={{
-            bottom: "-12%",
-            right: "-6%",
-            width: "360px",
-            height: "360px",
-            background: "rgba(56, 189, 248, 0.18)",
-          }}
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className={inputClass}
         />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-full transition disabled:opacity-70"
+        >
+          {loading ? "Signing in..." : "Login"}
+        </button>
+
+        {error && (
+          <p className="text-rose-500 text-center text-sm bg-rose-50 dark:bg-rose-900/30 py-2 rounded-lg">
+            {error}
+          </p>
+        )}
+      </form>
+
+      <div className="mt-6 text-sm text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <Link href="/member-signup" className="text-[var(--button-bg)] font-semibold hover:underline">
+          Create a member account
+        </Link>
+        <Link href="/moderator-login" className="inline-flex items-center gap-2 hover:underline">
+          Moderator login
+          <ArrowRight size={14} />
+        </Link>
       </div>
-
-      <div className="relative z-10 w-full max-w-lg glass-panel p-6 sm:p-8">
-        <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
-          <Users size={16} />
-          Member Login
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-semibold mt-3 text-[var(--foreground)]">
-          Access your ChamaHub member wallet.
-        </h2>
-        <p className="text-sm text-[var(--muted)] mt-3">
-          View your contributions, upcoming payouts, and member updates in one place.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-5 mt-6">
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={inputClass}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className={inputClass}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-full transition disabled:opacity-70"
-          >
-            {loading ? "Signing in..." : "Login"}
-          </button>
-
-          {error && (
-            <p className="text-rose-500 text-center text-sm bg-rose-50 dark:bg-rose-900/30 py-2 rounded-lg">
-              {error}
-            </p>
-          )}
-        </form>
-
-        <div className="mt-6 text-sm text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <Link href="/member-signup" className="text-[var(--button-bg)] font-semibold hover:underline">
-            Create a member account
-          </Link>
-          <Link href="/moderator-login" className="inline-flex items-center gap-2 hover:underline">
-            Moderator login
-            <ArrowRight size={14} />
-          </Link>
-        </div>
-      </div>
-    </div>
+    </AuthShell>
   );
 }
 

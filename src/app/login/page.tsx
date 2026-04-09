@@ -4,10 +4,11 @@
 import { authClient } from "@/lib/auth-client";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import AuthShell from "@/components/AuthShell";
 
 const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+  "glass-input";
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -81,110 +82,85 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
-      <div className="pointer-events-none absolute inset-0">
-        <div
-          className="glow-orb float-slow"
-          style={{
-            top: "-10%",
-            left: "-8%",
-            width: "320px",
-            height: "320px",
-            background: "rgba(56, 189, 248, 0.22)",
-          }}
-        />
-        <div
-          className="glow-orb float-slower"
-          style={{
-            bottom: "-12%",
-            right: "-6%",
-            width: "360px",
-            height: "360px",
-            background: "rgba(99, 102, 241, 0.18)",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-lg glass-panel p-6 sm:p-8">
-        <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
-          <ShieldCheck size={16} />
-          ChamaHub Admin Login
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-semibold mt-3 text-[var(--foreground)]">
-          Secure access to your ChamaHub command center.
-        </h2>
-        <p className="text-sm text-[var(--muted)] mt-3">
-          Log in with your admin credentials to manage ChamaHub data, groups, and platform operations.
-        </p>
-
-        {adminExists === false && (
-          <div className="mt-5 rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--foreground)]">
-            No admin account exists yet. Use the one-time signup to create the first admin.
-            <a
-              href="/admin-signup"
-              className="mt-3 inline-flex items-center gap-2 text-[var(--button-bg)] font-semibold hover:underline"
-            >
-              Go to one-time signup
-              <ArrowRight size={16} />
-            </a>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5 mt-6">
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={inputClass}
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className={inputClass}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-full transition disabled:opacity-70"
+    <AuthShell
+      eyebrow="Admin Login"
+      title="Secure access to the Vickins admin panel."
+      subtitle="Sign in to manage company operations, teams, and platform modules with confidence."
+      brandTitle="Admin Control"
+      brandSubtitle="Run operations from one premium command center."
+      brandPoints={[
+        "Live performance dashboards and team oversight.",
+        "Secure access with role-based approvals.",
+        "Mission control for products, finance, and delivery.",
+      ]}
+    >
+      {adminExists === false && (
+        <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--foreground)]">
+          No admin account exists yet. Use the one-time signup to create the first admin.
+          <a
+            href="/admin-signup"
+            className="mt-3 inline-flex items-center gap-2 text-[var(--button-bg)] font-semibold hover:underline"
           >
-            {loading ? "Processing..." : "Login"}
-          </button>
-
-          {error && (
-            <p className="text-rose-500 text-center text-sm bg-rose-50 dark:bg-rose-900/30 py-2 rounded-lg">
-              {error}
-            </p>
-          )}
-        </form>
-
-        {adminExists !== false && (
-          <p className="text-center mt-6 text-[var(--muted)] text-xs">
-            First admin setup?{" "}
-            <a href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
-              Use one-time admin signup
-            </a>
-          </p>
-        )}
-
-        <div className="mt-4 text-center text-[var(--muted)] text-xs">
-          Not an admin?{" "}
-          <a href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
-            Moderator login
-          </a>{" "}
-          or{" "}
-          <a href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
-            Member login
+            Go to one-time signup
+            <ArrowRight size={16} />
           </a>
         </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={inputClass}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className={inputClass}
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-[var(--button-bg)] hover:bg-blue-700 text-white font-semibold rounded-full transition disabled:opacity-70"
+        >
+          {loading ? "Processing..." : "Login"}
+        </button>
+
+        {error && (
+          <p className="text-rose-500 text-center text-sm bg-rose-50 dark:bg-rose-900/30 py-2 rounded-lg">
+            {error}
+          </p>
+        )}
+      </form>
+
+      {adminExists !== false && (
+        <p className="text-center mt-6 text-[var(--muted)] text-xs">
+          First admin setup?{" "}
+          <a href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
+            Use one-time admin signup
+          </a>
+        </p>
+      )}
+
+      <div className="mt-4 text-center text-[var(--muted)] text-xs">
+        Not an admin?{" "}
+        <a href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
+          Moderator login
+        </a>{" "}
+        or{" "}
+        <a href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
+          Member login
+        </a>
       </div>
-    </div>
+    </AuthShell>
   );
 }
 

@@ -16,6 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Modal from "@/components/Modal";
 import {
   getDefaultWorkState,
   mergeWorkState,
@@ -40,7 +41,7 @@ const createId = () =>
     : `id_${Date.now()}`;
 
 const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+  "glass-input";
 
 const categories: WorkCategory[] = [
   "Software Development",
@@ -132,6 +133,13 @@ export default function WorkHubPage() {
     lastContacted: today,
     category: categories[0],
   });
+
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false);
 
   const setTab = (tabId: string) => {
     const next = new URLSearchParams(searchParams.toString());
@@ -349,6 +357,7 @@ export default function WorkHubPage() {
     setWorkState((prev) => ({ ...prev, tasks: [newTask, ...prev.tasks] }));
     setTaskForm((prev) => ({ ...prev, title: "", notes: "" }));
     setMessage("Task added to your list.");
+    setIsTaskModalOpen(false);
   };
 
   const toggleTaskStatus = (taskId: string) => {
@@ -383,6 +392,7 @@ export default function WorkHubPage() {
     setWorkState((prev) => ({ ...prev, projects: [newProject, ...prev.projects] }));
     setProjectForm((prev) => ({ ...prev, name: "", client: "", budget: "", tags: "" }));
     setMessage("Project added to your pipeline.");
+    setIsProjectModalOpen(false);
   };
 
   const addIncomeEntry = () => {
@@ -400,6 +410,7 @@ export default function WorkHubPage() {
     setFinanceState((prev) => ({ ...prev, income: [entry, ...prev.income] }));
     setIncomeForm((prev) => ({ ...prev, amount: "", client: "", notes: "" }));
     setMessage("Earnings entry saved to Finance.");
+    setIsIncomeModalOpen(false);
   };
 
   const addReminder = () => {
@@ -416,6 +427,7 @@ export default function WorkHubPage() {
     setWorkState((prev) => ({ ...prev, reminders: [reminder, ...prev.reminders] }));
     setReminderForm((prev) => ({ ...prev, title: "", notes: "" }));
     setMessage("Reminder added.");
+    setIsReminderModalOpen(false);
   };
 
   const toggleReminderStatus = (reminderId: string) => {
@@ -444,6 +456,7 @@ export default function WorkHubPage() {
     setWorkState((prev) => ({ ...prev, clients: [client, ...prev.clients] }));
     setClientForm((prev) => ({ ...prev, name: "", company: "", email: "", phone: "", notes: "" }));
     setMessage("Client saved.");
+    setIsClientModalOpen(false);
   };
 
   const addLead = () => {
@@ -461,6 +474,7 @@ export default function WorkHubPage() {
     setWorkState((prev) => ({ ...prev, leads: [lead, ...prev.leads] }));
     setLeadForm((prev) => ({ ...prev, name: "", company: "", value: "", nextStep: "" }));
     setMessage("Lead added to pipeline.");
+    setIsLeadModalOpen(false);
   };
 
   const updateLeadStage = (leadId: string, stage: Lead["stage"]) => {
@@ -570,89 +584,22 @@ export default function WorkHubPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                className={inputClass}
-                placeholder="Task title"
-                value={taskForm.title}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, title: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={taskForm.category}
-                onChange={(event) =>
-                  setTaskForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
-                }
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold">Add a task</p>
+                <p className="text-xs text-[var(--muted)] mt-1">
+                  Capture priorities, due dates, and notes in a focused modal.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsTaskModalOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
               >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={inputClass}
-                value={taskForm.priority}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, priority: event.target.value }))}
-              >
-                {"low,medium,high".split(",").map((priority) => (
-                  <option key={priority} value={priority}>
-                    Priority: {priority}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={inputClass}
-                value={taskForm.status}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, status: event.target.value }))}
-              >
-                {"todo,in-progress,done".split(",").map((status) => (
-                  <option key={status} value={status}>
-                    Status: {status}
-                  </option>
-                ))}
-              </select>
-              <input
-                className={inputClass}
-                type="date"
-                value={taskForm.dueDate}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, dueDate: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Estimated hours"
-                value={taskForm.estimateHours}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, estimateHours: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={taskForm.projectId}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, projectId: event.target.value }))}
-              >
-                <option value="">No project</option>
-                {workState.projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-              <input
-                className={inputClass}
-                placeholder="Notes (optional)"
-                value={taskForm.notes}
-                onChange={(event) => setTaskForm((prev) => ({ ...prev, notes: event.target.value }))}
-              />
+                <Plus size={16} />
+                New task
+              </button>
             </div>
-
-            <button
-              type="button"
-              onClick={addTask}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-            >
-              <Plus size={16} />
-              Add task
-            </button>
 
             <div className="space-y-3">
               {[...workState.tasks]
@@ -706,84 +653,20 @@ export default function WorkHubPage() {
               <h2 className="text-xl font-semibold mt-2">Active workstreams</h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              <input
-                className={inputClass}
-                placeholder="Project name"
-                value={projectForm.name}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, name: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="Client or brand"
-                value={projectForm.client}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, client: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={projectForm.category}
-                onChange={(event) =>
-                  setProjectForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
-                }
-              >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <select
-                className={inputClass}
-                value={projectForm.status}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, status: event.target.value }))}
-              >
-                {"active,prospect,blocked,paused,completed".split(",").map((status) => (
-                  <option key={status} value={status}>
-                    Status: {status}
-                  </option>
-                ))}
-              </select>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  className={inputClass}
-                  type="number"
-                  placeholder="Budget"
-                  value={projectForm.budget}
-                  onChange={(event) => setProjectForm((prev) => ({ ...prev, budget: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  type="date"
-                  value={projectForm.dueDate}
-                  onChange={(event) => setProjectForm((prev) => ({ ...prev, dueDate: event.target.value }))}
-                />
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold">Add a project</p>
+                <p className="text-xs text-[var(--muted)] mt-1">
+                  Capture client, budget, and milestones in a clean modal flow.
+                </p>
               </div>
-              <input
-                className={inputClass}
-                placeholder="Next milestone"
-                value={projectForm.nextMilestone}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, nextMilestone: event.target.value }))}
-              />
-              <textarea
-                className={inputClass}
-                placeholder="Project description"
-                rows={3}
-                value={projectForm.description}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, description: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="Tags (comma separated)"
-                value={projectForm.tags}
-                onChange={(event) => setProjectForm((prev) => ({ ...prev, tags: event.target.value }))}
-              />
               <button
                 type="button"
-                onClick={addProject}
+                onClick={() => setIsProjectModalOpen(true)}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
               >
                 <Plus size={16} />
-                Add project
+                New project
               </button>
             </div>
 
@@ -874,71 +757,22 @@ export default function WorkHubPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                className={inputClass}
-                placeholder="Client"
-                value={incomeForm.client}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, client: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={incomeForm.projectId}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, projectId: event.target.value }))}
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold">Log earnings</p>
+                <p className="text-xs text-[var(--muted)] mt-1">
+                  Capture invoices, payment method, and status in a modal.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsIncomeModalOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
               >
-                <option value="">No project</option>
-                {workState.projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Amount"
-                value={incomeForm.amount}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, amount: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="date"
-                value={incomeForm.date}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, date: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={incomeForm.status}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, status: event.target.value }))}
-              >
-                {"invoiced,paid,overdue".split(",").map((status) => (
-                  <option key={status} value={status}>
-                    Status: {status}
-                  </option>
-                ))}
-              </select>
-              <input
-                className={inputClass}
-                placeholder="Payment method"
-                value={incomeForm.method}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, method: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="Notes"
-                value={incomeForm.notes}
-                onChange={(event) => setIncomeForm((prev) => ({ ...prev, notes: event.target.value }))}
-              />
+                <Plus size={16} />
+                Add earnings
+              </button>
             </div>
-
-            <button
-              type="button"
-              onClick={addIncomeEntry}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-            >
-              <Plus size={16} />
-              Save earnings
-            </button>
 
             <div className="space-y-3">
               {financeState.income.slice(0, 8).map((entry) => {
@@ -1050,52 +884,22 @@ export default function WorkHubPage() {
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Add Reminder</p>
                 <h3 className="text-lg font-semibold mt-2">Schedule a follow-up</h3>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  className={inputClass}
-                  placeholder="Reminder title"
-                  value={reminderForm.title}
-                  onChange={(event) => setReminderForm((prev) => ({ ...prev, title: event.target.value }))}
-                />
-                <select
-                  className={inputClass}
-                  value={reminderForm.relatedTaskId}
-                  onChange={(event) => setReminderForm((prev) => ({ ...prev, relatedTaskId: event.target.value }))}
+              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold">Add a reminder</p>
+                  <p className="text-xs text-[var(--muted)] mt-1">
+                    Schedule follow-ups and sync with tasks in a modal.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsReminderModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
                 >
-                  <option value="">No task</option>
-                  {workState.tasks.map((task) => (
-                    <option key={task.id} value={task.id}>
-                      {task.title}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  className={inputClass}
-                  type="date"
-                  value={reminderForm.date}
-                  onChange={(event) => setReminderForm((prev) => ({ ...prev, date: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  type="time"
-                  value={reminderForm.time}
-                  onChange={(event) => setReminderForm((prev) => ({ ...prev, time: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Notes"
-                  value={reminderForm.notes}
-                  onChange={(event) => setReminderForm((prev) => ({ ...prev, notes: event.target.value }))}
-                />
+                  <Plus size={16} />
+                  Add reminder
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={addReminder}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-              >
-                <Plus size={16} />
-                Add reminder
-              </button>
 
               <div className="space-y-3">
                 {workState.reminders.slice(0, 6).map((reminder) => (
@@ -1179,75 +983,23 @@ export default function WorkHubPage() {
                 ))}
               </div>
 
-              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 space-y-4">
+              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <UserPlus size={18} />
-                  <h3 className="font-semibold text-lg">Add a lead</h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input
-                    className={inputClass}
-                    placeholder="Lead name"
-                    value={leadForm.name}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, name: event.target.value }))}
-                  />
-                  <input
-                    className={inputClass}
-                    placeholder="Company"
-                    value={leadForm.company}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, company: event.target.value }))}
-                  />
-                  <input
-                    className={inputClass}
-                    type="number"
-                    placeholder="Estimated value"
-                    value={leadForm.value}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, value: event.target.value }))}
-                  />
-                  <select
-                    className={inputClass}
-                    value={leadForm.stage}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, stage: event.target.value }))}
-                  >
-                    {leadStages.map((stage) => (
-                      <option key={stage} value={stage}>
-                        Stage: {stage}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    className={inputClass}
-                    placeholder="Next step"
-                    value={leadForm.nextStep}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, nextStep: event.target.value }))}
-                  />
-                  <input
-                    className={inputClass}
-                    type="date"
-                    value={leadForm.lastContacted}
-                    onChange={(event) => setLeadForm((prev) => ({ ...prev, lastContacted: event.target.value }))}
-                  />
-                  <select
-                    className={inputClass}
-                    value={leadForm.category}
-                    onChange={(event) =>
-                      setLeadForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
-                    }
-                  >
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <h3 className="font-semibold text-lg">Add a lead</h3>
+                    <p className="text-xs text-[var(--muted)] mt-1">
+                      Capture deal value, stage, and next step in a modal.
+                    </p>
+                  </div>
                 </div>
                 <button
                   type="button"
-                  onClick={addLead}
+                  onClick={() => setIsLeadModalOpen(true)}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
                 >
                   <Plus size={16} />
-                  Add lead
+                  New lead
                 </button>
               </div>
             </div>
@@ -1258,64 +1010,16 @@ export default function WorkHubPage() {
                 <h2 className="text-xl font-semibold mt-2">Client relationships</h2>
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
-                <input
-                  className={inputClass}
-                  placeholder="Client name"
-                  value={clientForm.name}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, name: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Company"
-                  value={clientForm.company}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, company: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Email"
-                  value={clientForm.email}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, email: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Phone"
-                  value={clientForm.phone}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, phone: event.target.value }))}
-                />
-                <select
-                  className={inputClass}
-                  value={clientForm.category}
-                  onChange={(event) =>
-                    setClientForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
-                  }
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  className={inputClass}
-                  value={clientForm.status}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, status: event.target.value }))}
-                >
-                  {"active,lead,dormant".split(",").map((status) => (
-                    <option key={status} value={status}>
-                      Status: {status}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  className={inputClass}
-                  placeholder="Notes"
-                  value={clientForm.notes}
-                  onChange={(event) => setClientForm((prev) => ({ ...prev, notes: event.target.value }))}
-                />
+              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold">Add a client</p>
+                  <p className="text-xs text-[var(--muted)] mt-1">
+                    Store client contacts, status, and notes in one modal.
+                  </p>
+                </div>
                 <button
                   type="button"
-                  onClick={addClient}
+                  onClick={() => setIsClientModalOpen(true)}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
                 >
                   <Plus size={16} />
@@ -1343,6 +1047,461 @@ export default function WorkHubPage() {
           </div>
         </section>
       )}
+
+      <Modal
+        open={isTaskModalOpen}
+        onClose={() => setIsTaskModalOpen(false)}
+        title="Add task"
+        subtitle="Capture priority, due date, and notes."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Task title"
+            value={taskForm.title}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, title: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={taskForm.category}
+            onChange={(event) =>
+              setTaskForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
+            }
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            className={inputClass}
+            value={taskForm.priority}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, priority: event.target.value }))}
+          >
+            {"low,medium,high".split(",").map((priority) => (
+              <option key={priority} value={priority}>
+                Priority: {priority}
+              </option>
+            ))}
+          </select>
+          <select
+            className={inputClass}
+            value={taskForm.status}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, status: event.target.value }))}
+          >
+            {"todo,in-progress,done".split(",").map((status) => (
+              <option key={status} value={status}>
+                Status: {status}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            type="date"
+            value={taskForm.dueDate}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, dueDate: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Estimated hours"
+            value={taskForm.estimateHours}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, estimateHours: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={taskForm.projectId}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, projectId: event.target.value }))}
+          >
+            <option value="">No project</option>
+            {workState.projects.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            placeholder="Notes (optional)"
+            value={taskForm.notes}
+            onChange={(event) => setTaskForm((prev) => ({ ...prev, notes: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addTask}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Add task
+        </button>
+      </Modal>
+
+      <Modal
+        open={isProjectModalOpen}
+        onClose={() => setIsProjectModalOpen(false)}
+        title="Add project"
+        subtitle="Define scope, milestones, and budget."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Project name"
+            value={projectForm.name}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, name: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Client or brand"
+            value={projectForm.client}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, client: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={projectForm.category}
+            onChange={(event) =>
+              setProjectForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
+            }
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            className={inputClass}
+            value={projectForm.status}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, status: event.target.value }))}
+          >
+            {"active,prospect,blocked,paused,completed".split(",").map((status) => (
+              <option key={status} value={status}>
+                Status: {status}
+              </option>
+            ))}
+          </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              className={inputClass}
+              type="number"
+              placeholder="Budget"
+              value={projectForm.budget}
+              onChange={(event) => setProjectForm((prev) => ({ ...prev, budget: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              type="date"
+              value={projectForm.dueDate}
+              onChange={(event) => setProjectForm((prev) => ({ ...prev, dueDate: event.target.value }))}
+            />
+          </div>
+          <input
+            className={inputClass}
+            placeholder="Next milestone"
+            value={projectForm.nextMilestone}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, nextMilestone: event.target.value }))}
+          />
+          <textarea
+            className={inputClass}
+            placeholder="Project description"
+            rows={3}
+            value={projectForm.description}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, description: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Tags (comma separated)"
+            value={projectForm.tags}
+            onChange={(event) => setProjectForm((prev) => ({ ...prev, tags: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addProject}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Add project
+        </button>
+      </Modal>
+
+      <Modal
+        open={isIncomeModalOpen}
+        onClose={() => setIsIncomeModalOpen(false)}
+        title="Log earnings"
+        subtitle="Track invoices, payments, and status."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Client"
+            value={incomeForm.client}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, client: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={incomeForm.projectId}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, projectId: event.target.value }))}
+          >
+            <option value="">No project</option>
+            {workState.projects.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Amount"
+            value={incomeForm.amount}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, amount: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="date"
+            value={incomeForm.date}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, date: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={incomeForm.status}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, status: event.target.value }))}
+          >
+            {"invoiced,paid,overdue".split(",").map((status) => (
+              <option key={status} value={status}>
+                Status: {status}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            placeholder="Payment method"
+            value={incomeForm.method}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, method: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Notes"
+            value={incomeForm.notes}
+            onChange={(event) => setIncomeForm((prev) => ({ ...prev, notes: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addIncomeEntry}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Save earnings
+        </button>
+      </Modal>
+
+      <Modal
+        open={isReminderModalOpen}
+        onClose={() => setIsReminderModalOpen(false)}
+        title="Add reminder"
+        subtitle="Schedule a follow-up with time and notes."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Reminder title"
+            value={reminderForm.title}
+            onChange={(event) => setReminderForm((prev) => ({ ...prev, title: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={reminderForm.relatedTaskId}
+            onChange={(event) => setReminderForm((prev) => ({ ...prev, relatedTaskId: event.target.value }))}
+          >
+            <option value="">No task</option>
+            {workState.tasks.map((task) => (
+              <option key={task.id} value={task.id}>
+                {task.title}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            type="date"
+            value={reminderForm.date}
+            onChange={(event) => setReminderForm((prev) => ({ ...prev, date: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="time"
+            value={reminderForm.time}
+            onChange={(event) => setReminderForm((prev) => ({ ...prev, time: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Notes"
+            value={reminderForm.notes}
+            onChange={(event) => setReminderForm((prev) => ({ ...prev, notes: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addReminder}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Add reminder
+        </button>
+      </Modal>
+
+      <Modal
+        open={isLeadModalOpen}
+        onClose={() => setIsLeadModalOpen(false)}
+        title="Add lead"
+        subtitle="Capture pipeline stage and next step."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Lead name"
+            value={leadForm.name}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, name: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Company"
+            value={leadForm.company}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, company: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Estimated value"
+            value={leadForm.value}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, value: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={leadForm.stage}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, stage: event.target.value }))}
+          >
+            {leadStages.map((stage) => (
+              <option key={stage} value={stage}>
+                Stage: {stage}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            placeholder="Next step"
+            value={leadForm.nextStep}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, nextStep: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="date"
+            value={leadForm.lastContacted}
+            onChange={(event) => setLeadForm((prev) => ({ ...prev, lastContacted: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={leadForm.category}
+            onChange={(event) =>
+              setLeadForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
+            }
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          type="button"
+          onClick={addLead}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Add lead
+        </button>
+      </Modal>
+
+      <Modal
+        open={isClientModalOpen}
+        onClose={() => setIsClientModalOpen(false)}
+        title="Add client"
+        subtitle="Store contacts and engagement status."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Client name"
+            value={clientForm.name}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, name: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Company"
+            value={clientForm.company}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, company: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Email"
+            value={clientForm.email}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, email: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Phone"
+            value={clientForm.phone}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, phone: event.target.value }))}
+          />
+          <select
+            className={inputClass}
+            value={clientForm.category}
+            onChange={(event) =>
+              setClientForm((prev) => ({ ...prev, category: event.target.value as WorkCategory }))
+            }
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            className={inputClass}
+            value={clientForm.status}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, status: event.target.value }))}
+          >
+            {"active,lead,dormant".split(",").map((status) => (
+              <option key={status} value={status}>
+                Status: {status}
+              </option>
+            ))}
+          </select>
+          <input
+            className={inputClass}
+            placeholder="Notes"
+            value={clientForm.notes}
+            onChange={(event) => setClientForm((prev) => ({ ...prev, notes: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addClient}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Save client
+        </button>
+      </Modal>
     </div>
   );
 }

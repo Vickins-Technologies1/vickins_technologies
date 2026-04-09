@@ -225,8 +225,13 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
             <span className={`${!sidebarOpen && "hidden"}`}>Logout</span>
           </button>
           {sidebarOpen && (
-            <div className="rounded-2xl bg-white/60 px-3 py-2 text-xs text-[var(--muted)]">
-              Secure access for members and moderators.
+            <div className="space-y-2">
+              <div className="rounded-2xl bg-white/60 px-3 py-2 text-xs text-[var(--muted)]">
+                Secure access for members and moderators.
+              </div>
+              <div className="text-xs text-[var(--muted)] px-2">
+                © 2026 Vickins Technologies. All rights reserved.
+              </div>
             </div>
           )}
         </div>

@@ -2,14 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarCheck,
-  Plus,
-  Sparkles,
-  Users,
-  Wallet,
-} from "lucide-react";
+import { ArrowRight, CalendarCheck, Plus, Sparkles, Users, Wallet } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 type DashboardSummary = {
@@ -36,25 +29,15 @@ type GroupSummary = {
   } | null;
 };
 
-const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+const formatDate = (value?: string) =>
+  value ? new Date(value).toLocaleDateString("en-KE", { month: "short", day: "numeric" }) : "—";
 
 export default function ChamaDashboardPage() {
   const { data: session } = authClient.useSession();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    contributionAmount: "",
-    frequency: "monthly",
-    numberOfMembers: "5",
-    startDate: new Date().toISOString().slice(0, 10),
-    currency: "KES",
-  });
 
   const currencyFormatter = useMemo(
     () =>
@@ -70,32 +53,7 @@ export default function ChamaDashboardPage() {
     session?.user?.role?.split(",").map((value: string) => value.trim()).includes("moderator") ??
     false;
   const isAdmin =
-    session?.user?.role?.split(",").map((value: string) => value.trim()).includes("admin") ??
-    false;
-
-  const tabs = useMemo(() => {
-    if (isModerator || isAdmin) {
-      return [
-        { id: "overview", label: "Overview" },
-        { id: "groups", label: "Groups" },
-        { id: "create", label: "Create Group" },
-        { id: "payments", label: "Payments" },
-      ];
-    }
-    return [
-      { id: "overview", label: "Overview" },
-      { id: "groups", label: "My Groups" },
-      { id: "payments", label: "Payments" },
-    ];
-  }, [isModerator, isAdmin]);
-
-  const [activeTab, setActiveTab] = useState("overview");
-
-  useEffect(() => {
-    if (!tabs.find((tab) => tab.id === activeTab)) {
-      setActiveTab(tabs[0]?.id ?? "overview");
-    }
-  }, [tabs, activeTab]);
+    session?.user?.role?.split(",").map((value: string) => value.trim()).includes("admin") ?? false;
 
   const loadDashboard = async () => {
     setLoading(true);
@@ -117,36 +75,40 @@ export default function ChamaDashboardPage() {
     loadDashboard();
   }, []);
 
-  const handleCreateGroup = async () => {
-    setMessage("");
-    setError("");
-    if (!form.name.trim() || !form.contributionAmount) {
-      setError("Provide a group name and contribution amount.");
-      return;
-    }
+  const upcomingRounds = useMemo(() => {
+    return groups
+      .filter((group) => group.openRound?.dueDate)
+      .map((group) => ({
+        id: group.id,
+        name: group.name,
+        dueDate: new Date(group.openRound?.dueDate ?? ""),
+        potAmount: group.openRound?.potAmount ?? 0,
+        roundNumber: group.openRound?.roundNumber ?? 0,
+      }))
+      .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+  }, [groups]);
 
-    try {
-      const response = await fetch("/api/chama/groups", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data?.error || "Unable to create group.");
-      setMessage("ChamaHub group created successfully.");
-      setForm((prev) => ({ ...prev, name: "", description: "" }));
-      await loadDashboard();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to create group.");
-    }
-  };
+  const totalOpenPot = useMemo(
+    () => upcomingRounds.reduce((sum, round) => sum + (round.potAmount || 0), 0),
+    [upcomingRounds]
+  );
+
+  const dueSoonCount = useMemo(() => {
+    const now = new Date();
+    return upcomingRounds.filter((round) => {
+      const diff = Math.ceil((round.dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      return diff >= 0 && diff <= 7;
+    }).length;
+  }, [upcomingRounds]);
+
+  const groupPulse = useMemo(() => groups.slice(0, 4), [groups]);
 
   if (loading) {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="glass-panel p-6 sm:p-8 h-40" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[0, 1, 2].map((item) => (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[0, 1, 2, 3].map((item) => (
             <div key={item} className="glass-panel p-6 h-24" />
           ))}
         </div>
@@ -162,252 +124,174 @@ export default function ChamaDashboardPage() {
           <div>
             <p className="inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.3em] text-[var(--accent)]">
               <Sparkles size={16} />
-              ChamaHub Dashboard
+              Chama Workspace
             </p>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Keep your merry-go-round contributions flowing.
+              Keep contributions on track and payouts on time.
             </h1>
             <p className="text-sm sm:text-base text-[var(--muted)] mt-3 max-w-2xl">
-              Track contributions, payout order, and upcoming obligations in one secure place.
+              A focused hub for upcoming dues, group health, and quick moderation actions.
             </p>
           </div>
-          <Link
-            href="/chama/groups"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
-          >
-            View all groups
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-
-      {error && (
-        <div className="glass-panel p-4 text-sm text-rose-500">{error}</div>
-      )}
-      {message && (
-        <div className="glass-panel p-4 text-sm text-[var(--foreground)]">{message}</div>
-      )}
-
-      <section className="glass-panel p-4 sm:p-5">
-        <div className="flex flex-wrap gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition ${
-                activeTab === tab.id
-                  ? "bg-[var(--button-bg)] text-white border-transparent"
-                  : "border-[var(--glass-border)] bg-white/70 text-[var(--foreground)] hover:bg-[var(--hover-bg)]"
-              }`}
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/chama/groups"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition"
             >
-              {tab.label}
-            </button>
-          ))}
+              View groups
+              <ArrowRight size={16} />
+            </Link>
+            <Link
+              href="/chama/ledger"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+            >
+              Open ledger
+              <ArrowRight size={16} />
+            </Link>
+            {(isModerator || isAdmin) && (
+              <Link
+                href="/chama/groups"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+              >
+                <Plus size={16} />
+                New group
+              </Link>
+            )}
+          </div>
         </div>
       </section>
 
-      {activeTab === "overview" && (
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {error && <div className="glass-panel p-4 text-sm text-rose-500">{error}</div>}
+
+      <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {[
           {
-            label: "Active Chama groups",
+            label: "Active groups",
             value: summary?.activeGroups ?? 0,
             icon: Users,
           },
           {
-            label: "Next Contribution",
+            label: "Next contribution",
             value: summary?.nextContribution
-              ? `${summary.nextContribution.groupName} • ${new Date(
-                  summary.nextContribution.dueDate
-                ).toLocaleDateString()}`
+              ? `${summary.nextContribution.groupName} · ${formatDate(summary.nextContribution.dueDate)}`
               : "All clear",
+            icon: Wallet,
+          },
+          {
+            label: "Next payout",
+            value: summary?.nextPayout
+              ? `${summary.nextPayout.groupName} · ${formatDate(summary.nextPayout.dueDate)}`
+              : "No payout soon",
             icon: CalendarCheck,
           },
           {
-            label: "Next Payout",
-            value: summary?.nextPayout
-              ? `${summary.nextPayout.groupName} • ${new Date(
-                  summary.nextPayout.dueDate
-                ).toLocaleDateString()}`
-              : "No payout soon",
+            label: "Open pot",
+            value: totalOpenPot ? currencyFormatter.format(totalOpenPot) : "—",
             icon: Wallet,
           },
         ].map((stat) => (
           <div key={stat.label} className="glass-panel dash-card p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                {stat.label}
-              </p>
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">{stat.label}</p>
               <stat.icon size={18} className="text-[var(--accent)] dashboard-icon" />
             </div>
             <p className="text-lg sm:text-xl font-semibold mt-3">{stat.value}</p>
           </div>
         ))}
-        </section>
-      )}
+      </section>
 
-      {(activeTab === "overview" || activeTab === "groups" || activeTab === "create") && (
-        <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
+      <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         <div className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Your groups</p>
-            <h2 className="text-xl font-semibold mt-2">Active merry-go-rounds</h2>
-          </div>
-          <div className="space-y-4">
-            {groups.length === 0 && (
-              <p className="text-sm text-[var(--muted)]">
-                You have not joined any ChamaHub groups yet.
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Priority timeline</p>
+              <h2 className="text-xl font-semibold mt-2">Upcoming contributions</h2>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+                Due soon
               </p>
-            )}
-            {groups.map((group) => (
-              <div
-                key={group.id}
-                className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 sm:p-5"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">{group.name}</p>
-                    <p className="text-xs text-[var(--muted)] mt-1">
-                      {group.frequency} • {currencyFormatter.format(group.contributionAmount)} per round
-                    </p>
-                    <p className="text-xs text-[var(--muted)] mt-1 capitalize">
-                      Role: {group.role} • Status: {group.status}
-                    </p>
-                  </div>
-                  <Link
-                    href={`/chama/groups/${group.id}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-                  >
-                    Open group
-                    <ArrowRight size={14} />
-                  </Link>
-                </div>
-                {group.openRound && (
-                  <div className="mt-4 text-xs text-[var(--muted)]">
-                    Round {group.openRound.roundNumber} is open. Pot:{" "}
-                    <span className="font-semibold text-[var(--foreground)]">
-                      {currencyFormatter.format(group.openRound.potAmount)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
+              <p className="text-sm font-semibold text-[var(--foreground)]">{dueSoonCount}</p>
+            </div>
           </div>
-        </div>
-
-        {(activeTab === "overview" || activeTab === "create") && (
-          <div className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-              Create group
-            </p>
-            <h2 className="text-xl font-semibold mt-2">Start a new Chama group</h2>
-            <p className="text-sm text-[var(--muted)] mt-2">
-              Each ChamaHub lease is per group. Set the contribution amount, schedule, and invite members later.
-            </p>
-          </div>
-
-          {(isModerator || isAdmin) ? (
-            <>
-              <div className="grid grid-cols-1 gap-4">
-                <input
-                  className={inputClass}
-                  placeholder="Group name"
-                  value={form.name}
-                  onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Description (optional)"
-                  value={form.description}
-                  onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
-                />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input
-                    className={inputClass}
-                    type="number"
-                    placeholder="Contribution amount (KES)"
-                    value={form.contributionAmount}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, contributionAmount: event.target.value }))
-                    }
-                  />
-                  <select
-                    className={inputClass}
-                    value={form.frequency}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, frequency: event.target.value }))
-                    }
-                  >
-                    <option value="weekly">Weekly</option>
-                    <option value="bi-weekly">Bi-weekly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
-                  <input
-                    className={inputClass}
-                    type="number"
-                    placeholder="Expected members"
-                    value={form.numberOfMembers}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, numberOfMembers: event.target.value }))
-                    }
-                  />
-                  <input
-                    className={inputClass}
-                    type="date"
-                    value={form.startDate}
-                    onChange={(event) =>
-                      setForm((prev) => ({ ...prev, startDate: event.target.value }))
-                    }
-                  />
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleCreateGroup}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-              >
-                <Plus size={16} />
-                Create Chama group
-              </button>
-              <p className="text-xs text-[var(--muted)]">
-                Tip: You can add members later by email or phone. Karibu!
-              </p>
-            </>
-          ) : (
+          {upcomingRounds.length === 0 ? (
             <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--muted)]">
-              Only ChamaHub moderators can create a new group. Ask your moderator to
-              invite you, or{" "}
-              <Link href="/moderator-signup" className="text-[var(--button-bg)] font-semibold">
-                sign up as a moderator
-              </Link>{" "}
-              to start one.
+              No open rounds right now. New rounds will appear here as soon as a cycle starts.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {upcomingRounds.slice(0, 4).map((round) => (
+                <div
+                  key={round.id}
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4"
+                >
+                  <div>
+                    <p className="font-semibold">{round.name}</p>
+                    <p className="text-xs text-[var(--muted)] mt-1">
+                      Round {round.roundNumber} · Due {round.dueDate.toLocaleDateString("en-KE", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <p className="text-sm font-semibold text-[var(--foreground)]">
+                    {currencyFormatter.format(round.potAmount)}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
-          </div>
-        )}
-        </section>
-      )}
+        </div>
 
-      {activeTab === "payments" && (
-        <section className="glass-panel p-6 sm:p-7 space-y-4">
+        <div className="glass-panel p-6 sm:p-7 space-y-5">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Payments</p>
-            <h2 className="text-xl font-semibold mt-2">Member contribution ledger</h2>
-            <p className="text-sm text-[var(--muted)] mt-2">
-              Review contributions and upcoming dues in your ChamaHub ledger.
-            </p>
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group pulse</p>
+            <h2 className="text-xl font-semibold mt-2">Quick health check</h2>
           </div>
-          <Link
-            href="/chama/ledger"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            Open ledger
-            <ArrowRight size={16} />
-          </Link>
-        </section>
-      )}
+          {groupPulse.length === 0 ? (
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--muted)]">
+              No groups found yet. Create a new chama to get started.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {groupPulse.map((group) => (
+                <div
+                  key={group.id}
+                  className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">{group.name}</p>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+                      {group.status}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
+                    <span>{group.frequency}</span>
+                    <span>{currencyFormatter.format(group.contributionAmount)}</span>
+                    <span>Role: {group.role}</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs">
+                    <span className="text-[var(--muted)]">
+                      Next due: {formatDate(group.openRound?.dueDate)}
+                    </span>
+                    <Link
+                      href={`/chama/groups/${group.id}`}
+                      className="text-[var(--button-bg)] font-semibold"
+                    >
+                      Open
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {(isModerator || isAdmin) && (
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-xs text-[var(--muted)]">
+              Need to spin up a new chama? Create a group and invite members in minutes.
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   BadgeDollarSign,
 } from "lucide-react";
+import Modal from "@/components/Modal";
 import {
   getDefaultInventoryState,
   type Hustle,
@@ -22,7 +23,7 @@ import {
 const createId = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id_${Date.now()}`);
 
 const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+  "glass-input";
 
 export default function InventoryPage() {
   const [state, setState] = useState<InventoryState>(() => getDefaultInventoryState());
@@ -56,6 +57,11 @@ export default function InventoryPage() {
     note: "Restock",
     date: new Date().toISOString().slice(0, 10),
   });
+
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+  const [isStockModalOpen, setIsStockModalOpen] = useState(false);
+  const [isHustleModalOpen, setIsHustleModalOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -161,6 +167,7 @@ export default function InventoryPage() {
     setState((prev) => ({ ...prev, hustles: [...prev.hustles, hustle] }));
     setActiveHustleId(hustle.id);
     setNewHustle("");
+    setIsHustleModalOpen(false);
   };
 
   const addProduct = () => {
@@ -177,6 +184,7 @@ export default function InventoryPage() {
     };
     setState((prev) => ({ ...prev, items: [...prev.items, item] }));
     setProductForm({ name: "", sku: "", unit: "pcs", price: "", stock: "", reorder: "" });
+    setIsProductModalOpen(false);
   };
 
   const recordSale = () => {
@@ -207,6 +215,7 @@ export default function InventoryPage() {
       ),
     }));
     setMessage("Sale recorded.");
+    setIsSaleModalOpen(false);
   };
 
   const recordStock = () => {
@@ -233,6 +242,7 @@ export default function InventoryPage() {
       ),
     }));
     setMessage("Stock updated.");
+    setIsStockModalOpen(false);
   };
 
   return (
@@ -312,53 +322,17 @@ export default function InventoryPage() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5">
-            <h3 className="font-semibold text-lg">Add New Product</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-              <input
-                className={inputClass}
-                placeholder="Product name"
-                value={productForm.name}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, name: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="SKU (optional)"
-                value={productForm.sku}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, sku: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                placeholder="Unit (pcs, kg, session)"
-                value={productForm.unit}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, unit: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Selling price"
-                value={productForm.price}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, price: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Opening stock"
-                value={productForm.stock}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, stock: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="number"
-                placeholder="Reorder level"
-                value={productForm.reorder}
-                onChange={(event) => setProductForm((prev) => ({ ...prev, reorder: event.target.value }))}
-              />
+          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="font-semibold text-lg">Add New Product</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">
+                Capture SKU, pricing, and stock levels in a focused modal.
+              </p>
             </div>
             <button
               type="button"
-              onClick={addProduct}
-              className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+              onClick={() => setIsProductModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
             >
               <Plus size={16} />
               Add product
@@ -370,76 +344,28 @@ export default function InventoryPage() {
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Add Hustle</p>
             <h3 className="text-lg font-semibold mt-2">Organize your side hustles</h3>
-            <div className="flex flex-col sm:flex-row gap-3 mt-4">
-              <input
-                className={inputClass}
-                placeholder="New hustle name"
-                value={newHustle}
-                onChange={(event) => setNewHustle(event.target.value)}
-              />
-              <button
-                type="button"
-                onClick={addHustle}
-                className="px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
-              >
-                Add hustle
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 space-y-4">
-            <h3 className="font-semibold text-lg">Record a Sale</h3>
-            <select
-              className={inputClass}
-              value={saleForm.itemId}
-              onChange={(event) => {
-                const selected = filteredItems.find((item) => item.id === event.target.value);
-                setSaleForm((prev) => ({
-                  ...prev,
-                  itemId: event.target.value,
-                  price: selected ? String(selected.price) : prev.price,
-                }));
-              }}
-            >
-              {filteredItems.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                className={inputClass}
-                type="number"
-                min="1"
-                placeholder="Qty"
-                value={saleForm.quantity}
-                onChange={(event) => setSaleForm((prev) => ({ ...prev, quantity: event.target.value }))}
-              />
-              <input
-                className={inputClass}
-                type="number"
-                min="0"
-                placeholder="Price"
-                value={saleForm.price}
-                onChange={(event) => setSaleForm((prev) => ({ ...prev, price: event.target.value }))}
-              />
-            </div>
-            <input
-              className={inputClass}
-              placeholder="Channel (In person, Online)"
-              value={saleForm.channel}
-              onChange={(event) => setSaleForm((prev) => ({ ...prev, channel: event.target.value }))}
-            />
-            <input
-              className={inputClass}
-              type="date"
-              value={saleForm.date}
-              onChange={(event) => setSaleForm((prev) => ({ ...prev, date: event.target.value }))}
-            />
+            <p className="text-sm text-[var(--muted)] mt-3">
+              Group inventory by hustle, then track performance per line.
+            </p>
             <button
               type="button"
-              onClick={recordSale}
+              onClick={() => setIsHustleModalOpen(true)}
+              className="mt-4 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+            >
+              Add hustle
+            </button>
+          </div>
+
+          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="font-semibold text-lg">Record a Sale</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">
+                Log cash, card, or online transactions with clean metadata.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsSaleModalOpen(true)}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
             >
               <ArrowUpRight size={16} />
@@ -447,52 +373,16 @@ export default function InventoryPage() {
             </button>
           </div>
 
-          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 space-y-4">
-            <h3 className="font-semibold text-lg">Update Stock</h3>
-            <select
-              className={inputClass}
-              value={stockForm.itemId}
-              onChange={(event) => setStockForm((prev) => ({ ...prev, itemId: event.target.value }))}
-            >
-              {filteredItems.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                className={inputClass}
-                type="number"
-                min="1"
-                placeholder="Qty"
-                value={stockForm.quantity}
-                onChange={(event) => setStockForm((prev) => ({ ...prev, quantity: event.target.value }))}
-              />
-              <select
-                className={inputClass}
-                value={stockForm.direction}
-                onChange={(event) => setStockForm((prev) => ({ ...prev, direction: event.target.value }))}
-              >
-                <option value="in">Restock (add)</option>
-                <option value="out">Stock out (remove)</option>
-              </select>
+          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="font-semibold text-lg">Update Stock</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">
+                Log restocks and stock-outs with a short note.
+              </p>
             </div>
-            <input
-              className={inputClass}
-              placeholder="Note"
-              value={stockForm.note}
-              onChange={(event) => setStockForm((prev) => ({ ...prev, note: event.target.value }))}
-            />
-            <input
-              className={inputClass}
-              type="date"
-              value={stockForm.date}
-              onChange={(event) => setStockForm((prev) => ({ ...prev, date: event.target.value }))}
-            />
             <button
               type="button"
-              onClick={recordStock}
+              onClick={() => setIsStockModalOpen(true)}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
             >
               <ArrowDownRight size={16} />
@@ -616,6 +506,215 @@ export default function InventoryPage() {
           </div>
         </div>
       </section>
+
+      <Modal
+        open={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        title="Add new product"
+        subtitle="Capture SKU, pricing, and starting stock."
+        size="lg"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className={inputClass}
+            placeholder="Product name"
+            value={productForm.name}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, name: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="SKU (optional)"
+            value={productForm.sku}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, sku: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            placeholder="Unit (pcs, kg, session)"
+            value={productForm.unit}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, unit: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Selling price"
+            value={productForm.price}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, price: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Opening stock"
+            value={productForm.stock}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, stock: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="number"
+            placeholder="Reorder level"
+            value={productForm.reorder}
+            onChange={(event) => setProductForm((prev) => ({ ...prev, reorder: event.target.value }))}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={addProduct}
+          className="mt-4 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+        >
+          <Plus size={16} />
+          Add product
+        </button>
+      </Modal>
+
+      <Modal
+        open={isHustleModalOpen}
+        onClose={() => setIsHustleModalOpen(false)}
+        title="Add hustle"
+        subtitle="Create a new hustle lane to group inventory and sales."
+        size="md"
+      >
+        <div className="space-y-4">
+          <input
+            className={inputClass}
+            placeholder="New hustle name"
+            value={newHustle}
+            onChange={(event) => setNewHustle(event.target.value)}
+          />
+          <button
+            type="button"
+            onClick={addHustle}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+          >
+            Add hustle
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={isSaleModalOpen}
+        onClose={() => setIsSaleModalOpen(false)}
+        title="Record a sale"
+        subtitle="Log transactions with quantity, price, and channel."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <select
+            className={inputClass}
+            value={saleForm.itemId}
+            onChange={(event) => {
+              const selected = filteredItems.find((item) => item.id === event.target.value);
+              setSaleForm((prev) => ({
+                ...prev,
+                itemId: event.target.value,
+                price: selected ? String(selected.price) : prev.price,
+              }));
+            }}
+          >
+            {filteredItems.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              className={inputClass}
+              type="number"
+              min="1"
+              placeholder="Qty"
+              value={saleForm.quantity}
+              onChange={(event) => setSaleForm((prev) => ({ ...prev, quantity: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              type="number"
+              min="0"
+              placeholder="Price"
+              value={saleForm.price}
+              onChange={(event) => setSaleForm((prev) => ({ ...prev, price: event.target.value }))}
+            />
+          </div>
+          <input
+            className={inputClass}
+            placeholder="Channel (In person, Online)"
+            value={saleForm.channel}
+            onChange={(event) => setSaleForm((prev) => ({ ...prev, channel: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="date"
+            value={saleForm.date}
+            onChange={(event) => setSaleForm((prev) => ({ ...prev, date: event.target.value }))}
+          />
+          <button
+            type="button"
+            onClick={recordSale}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+          >
+            <ArrowUpRight size={16} />
+            Record sale
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={isStockModalOpen}
+        onClose={() => setIsStockModalOpen(false)}
+        title="Update stock"
+        subtitle="Track restocks and stock-outs."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <select
+            className={inputClass}
+            value={stockForm.itemId}
+            onChange={(event) => setStockForm((prev) => ({ ...prev, itemId: event.target.value }))}
+          >
+            {filteredItems.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              className={inputClass}
+              type="number"
+              min="1"
+              placeholder="Qty"
+              value={stockForm.quantity}
+              onChange={(event) => setStockForm((prev) => ({ ...prev, quantity: event.target.value }))}
+            />
+            <select
+              className={inputClass}
+              value={stockForm.direction}
+              onChange={(event) => setStockForm((prev) => ({ ...prev, direction: event.target.value }))}
+            >
+              <option value="in">Restock (add)</option>
+              <option value="out">Stock out (remove)</option>
+            </select>
+          </div>
+          <input
+            className={inputClass}
+            placeholder="Note"
+            value={stockForm.note}
+            onChange={(event) => setStockForm((prev) => ({ ...prev, note: event.target.value }))}
+          />
+          <input
+            className={inputClass}
+            type="date"
+            value={stockForm.date}
+            onChange={(event) => setStockForm((prev) => ({ ...prev, date: event.target.value }))}
+          />
+          <button
+            type="button"
+            onClick={recordStock}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+          >
+            <ArrowDownRight size={16} />
+            Save stock update
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
