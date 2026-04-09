@@ -22,8 +22,8 @@ import {
   Wallet,
   Briefcase,
   Sparkles,
-  SlidersHorizontal,
-  ArrowRight
+  ArrowRight,
+  Palette
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -33,7 +33,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [density, setDensity] = useState<"compact" | "spacious">("compact");
 
   // Theme toggle with persistence
   const toggleTheme = () => {
@@ -54,21 +53,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setIsDarkMode(false);
     }
   }, []);
-
-  useEffect(() => {
-    const savedDensity = localStorage.getItem("dash-density");
-    if (savedDensity === "spacious") {
-      setDensity("spacious");
-    } else {
-      setDensity("compact");
-    }
-  }, []);
-
-  const toggleDensity = () => {
-    const next = density === "compact" ? "spacious" : "compact";
-    setDensity(next);
-    localStorage.setItem("dash-density", next);
-  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-[var(--foreground)] font-medium">Loading ChamaHub admin panel...</p>
+          <p className="text-[var(--foreground)] font-medium">Loading admin panel...</p>
         </div>
       </div>
     );
@@ -114,10 +98,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return null; // Redirect is handled in useEffect
   }
 
-  const navItems = [
+  const generalNavItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/chamahub", label: "ChamaHub", icon: Sparkles },
     { href: "/admin/work", label: "Work Hub", icon: Briefcase },
+    { href: "/admin/portfolio", label: "Portfolio", icon: Palette },
     { href: "/admin/inventory", label: "Inventory", icon: Boxes },
     { href: "/admin/finance", label: "Expenses & Cash", icon: Wallet },
     { href: "/admin/quotations", label: "Quotations", icon: FileText },
@@ -125,7 +109,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
 
-  const activeNav = navItems.find((item) => item.href === pathname);
+  const chamaNavItems = [
+    { href: "/admin/chamahub", label: "ChamaHub", icon: Sparkles },
+  ];
+
+  const activeNav = [...generalNavItems, ...chamaNavItems].find(
+    (item) => item.href === pathname
+  );
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -135,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div
       className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased dashboard-shell"
-      data-density={density}
+      data-density="compact"
     >
       {isMobile && sidebarOpen && (
         <button
@@ -162,7 +152,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className={`flex items-center gap-2 ${!sidebarOpen && "hidden"}`}>
             <span className="h-2 w-2 rounded-full bg-[var(--button-bg)]" />
             <h1 className="font-semibold text-lg tracking-tight text-[var(--sidebar-text)]">
-              ChamaHub Admin
+              Vickins Admin
             </h1>
           </div>
           <button
@@ -178,57 +168,91 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
           <div className={`${!sidebarOpen && "hidden"} rounded-2xl bg-white/55 p-3`}>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
-              Workspace
+              Admin Workspace
             </p>
             <p className="text-sm font-semibold mt-2 text-[var(--foreground)]">
-              ChamaHub Command
+              Company Operations
             </p>
             <p className="text-xs text-[var(--muted)] mt-1">
-              Oversee groups, members, and payments.
+              Manage teams, projects, finance, and product platforms.
             </p>
           </div>
-          <ul className="space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
-                      ${isActive 
-                        ? "bg-[var(--primary)]/12 text-[var(--primary)] font-semibold shadow-sm" 
-                        : "text-[var(--sidebar-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--foreground)]"
-                      }
-                    `}
-                  >
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        isActive ? "bg-[var(--button-bg)]" : "bg-[var(--border)]"
-                      }`}
-                    />
-                    <Icon size={18} className="min-w-[18px] dashboard-icon" />
-                    <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="space-y-3">
+            <p className={`text-[10px] uppercase tracking-[0.3em] text-[var(--muted)] ${!sidebarOpen && "hidden"}`}>
+              General
+            </p>
+            <ul className="space-y-1">
+              {generalNavItems.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`
+                        dashboard-nav-link flex items-center gap-3 px-3 py-2.5 rounded-[16px] transition-all duration-200
+                        ${isActive 
+                          ? "dashboard-nav-link--active text-[var(--foreground)] font-semibold" 
+                          : "text-[var(--sidebar-text)] hover:text-[var(--foreground)]"
+                        }
+                      `}
+                    >
+                      <span
+                        className={`dashboard-nav-dot ${isActive ? "dashboard-nav-dot--active" : ""}`}
+                      />
+                      <Icon size={18} className="min-w-[18px] dashboard-icon" />
+                      <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <p className={`text-[10px] uppercase tracking-[0.3em] text-[var(--muted)] ${!sidebarOpen && "hidden"}`}>
+              ChamaHub
+            </p>
+            <ul className="space-y-1">
+              {chamaNavItems.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`
+                        dashboard-nav-link flex items-center gap-3 px-3 py-2.5 rounded-[16px] transition-all duration-200
+                        ${isActive 
+                          ? "dashboard-nav-link--active text-[var(--foreground)] font-semibold" 
+                          : "text-[var(--sidebar-text)] hover:text-[var(--foreground)]"
+                        }
+                      `}
+                    >
+                      <span
+                        className={`dashboard-nav-dot ${isActive ? "dashboard-nav-dot--active" : ""}`}
+                      />
+                      <Icon size={18} className="min-w-[18px] dashboard-icon" />
+                      <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
           <div className={`${!sidebarOpen && "hidden"} space-y-2`}>
             <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
               Quick Actions
             </p>
             <Link
               href="/admin/chamahub"
-              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+              className="dashboard-quick-link inline-flex items-center justify-between rounded-2xl px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
             >
               Open ChamaHub
               <ArrowRight size={14} />
             </Link>
             <Link
               href="/moderator-signup"
-              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+              className="dashboard-quick-link inline-flex items-center justify-between rounded-2xl px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
             >
               Add Moderator
               <ArrowRight size={14} />
@@ -274,7 +298,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-                ChamaHub Admin Panel
+                Admin Panel
               </p>
               <h2 className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--foreground)]">
                 {activeNav?.label ?? "Dashboard"}
@@ -290,15 +314,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               aria-label="Toggle theme"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-
-            <button
-              onClick={toggleDensity}
-              className="p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--foreground)] transition-colors"
-              aria-label={`Switch to ${density === "compact" ? "spacious" : "compact"} density`}
-              title={`Density: ${density === "compact" ? "Compact" : "Spacious"}`}
-            >
-              <SlidersHorizontal size={18} />
             </button>
 
             {/* User Info & Logout */}

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Sora, Space_Grotesk, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
-import FloatingActions from "../components/FloatingActions";
+import FloatingActionsGate from "../components/FloatingActionsGate";
 
 const sora = Sora({
   weight: ["300", "400", "500", "600", "700"],
@@ -116,7 +116,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>
           {children}
-          <FloatingActions />
+          <FloatingActionsGate />
         </ThemePreloaderProvider>
       </body>
     </html>

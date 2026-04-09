@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: NavbarProps) {
-  const navItems = ["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients"];
+  const navItems = ["Process", "About", "Services", "Portfolio", "Pricing", "Clients"];
 
   return (
     <nav className="sticky top-0 z-50">
@@ -43,12 +43,6 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                   </div>
                 </motion.div>
               </Link>
-
-              <div className="hidden sm:flex items-center gap-2 rounded-full border border-white/30 bg-white/50 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-[var(--navbar-text)]/70">
-                ChamaHub
-                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
-                Groups & Payments
-              </div>
 
               <motion.button
                 onClick={toggleSidebar}

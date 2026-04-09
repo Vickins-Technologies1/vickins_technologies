@@ -16,7 +16,6 @@ import {
   Moon,
   LogOut,
   Sparkles,
-  SlidersHorizontal,
   ArrowRight,
 } from "lucide-react";
 
@@ -26,7 +25,6 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [density, setDensity] = useState<"compact" | "spacious">("compact");
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode ? "dark" : "light";
@@ -45,21 +43,6 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
       setIsDarkMode(false);
     }
   }, []);
-
-  useEffect(() => {
-    const savedDensity = localStorage.getItem("dash-density");
-    if (savedDensity === "spacious") {
-      setDensity("spacious");
-    } else {
-      setDensity("compact");
-    }
-  }, []);
-
-  const toggleDensity = () => {
-    const next = density === "compact" ? "spacious" : "compact";
-    setDensity(next);
-    localStorage.setItem("dash-density", next);
-  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -138,7 +121,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
   return (
     <div
       className="min-h-screen flex bg-[var(--background)] text-[var(--foreground)] antialiased dashboard-shell"
-      data-density={density}
+      data-density="compact"
     >
       {isMobile && sidebarOpen && (
         <button
@@ -200,17 +183,15 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
                   <Link
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                      dashboard-nav-link flex items-center gap-3 px-3 py-2.5 rounded-[16px] transition-all duration-200
                       ${isActive
-                        ? "bg-[var(--primary)]/12 text-[var(--primary)] font-semibold shadow-sm"
-                        : "text-[var(--sidebar-text)] hover:bg-[var(--hover-bg)] hover:text-[var(--foreground)]"
+                        ? "dashboard-nav-link--active text-[var(--foreground)] font-semibold"
+                        : "text-[var(--sidebar-text)] hover:text-[var(--foreground)]"
                       }
                     `}
                   >
                     <span
-                      className={`h-2 w-2 rounded-full ${
-                        isActive ? "bg-[var(--button-bg)]" : "bg-[var(--border)]"
-                      }`}
+                      className={`dashboard-nav-dot ${isActive ? "dashboard-nav-dot--active" : ""}`}
                     />
                     <Icon size={18} className="min-w-[18px] dashboard-icon" />
                     <span className={`${!sidebarOpen && "hidden"} truncate`}>{item.label}</span>
@@ -219,27 +200,20 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
               );
             })}
           </ul>
-          <div className={`${!sidebarOpen && "hidden"} space-y-2`}>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
-              Quick Actions
-            </p>
-            <Link
-              href="/chama/ledger"
-              className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
-            >
-              Open Ledger
-              <ArrowRight size={14} />
-            </Link>
-            {isModerator && (
+          {isModerator && (
+            <div className={`${!sidebarOpen && "hidden"} space-y-2`}>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--muted)]">
+                Quick Actions
+              </p>
               <Link
                 href="/chama"
-                className="inline-flex items-center justify-between rounded-2xl bg-white/65 px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
+                className="dashboard-quick-link inline-flex items-center justify-between rounded-2xl px-3 py-2 text-xs font-semibold text-[var(--foreground)]"
               >
                 Create Group
                 <ArrowRight size={14} />
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </nav>
 
         <div className="p-4 space-y-3">
@@ -285,14 +259,6 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
               aria-label="Toggle theme"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <button
-              onClick={toggleDensity}
-              className="p-2 rounded-lg hover:bg-[var(--hover-bg)] text-[var(--foreground)] transition-colors"
-              aria-label={`Switch to ${density === "compact" ? "spacious" : "compact"} density`}
-              title={`Density: ${density === "compact" ? "Compact" : "Spacious"}`}
-            >
-              <SlidersHorizontal size={18} />
             </button>
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold">{session.user.name || session.user.email}</p>

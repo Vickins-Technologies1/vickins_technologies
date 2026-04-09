@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight, ExternalLink, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import {
+  getDefaultGraphicCollection,
+  mergeGraphicCollection,
+  type GraphicCollection,
+} from "@/lib/portfolio-collection";
 
 const FALLBACK_MAIN = "/images/placeholder-4x3.png";
 const FALLBACK_SQUARE = "/images/placeholder-square.png";
@@ -19,17 +24,7 @@ type DevProject = {
   isDev: true;
 };
 
-type GraphicProject = {
-  id: number;
-  title: string;
-  category: string;
-  description: string;
-  mainImage: string;
-  tags: string[];
-  link: string;
-  isDev: false;
-  subProjects: Array<{ subTitle: string; subImage: string }>;
-};
+type GraphicProject = GraphicCollection & { isDev: false };
 
 type ProjectItem = DevProject | GraphicProject;
 
@@ -56,61 +51,76 @@ const featuredProjects: ProjectItem[] = [
     link: "https://macdeeentertainment.com",
     isDev: true,
   },
-  {
-    id: 100,
-    title: "Branding & Graphic Design Collection",
-    category: "Graphic Design",
-    description:
-      "A curated showcase of logos, brand identities, social media kits, posters, packaging concepts and visual storytelling.",
-    mainImage: "/projects/vp.jpg",
-    tags: ["Branding", "Logo Design", "Graphic Design", "Visual Identity"],
-    link: "/portfolio",
-    isDev: false,
-    subProjects: [
-      { subTitle: "Vickins Brand System", subImage: "/projects/teshlie-cake-main.jpg" },
-      { subTitle: "Social Media Templates", subImage: "/projects/vp.jpg" },
-      { subTitle: "Client Logo Suite", subImage: "/projects/APD-1.jpg" },
-      { subTitle: "Event & Promo Posters", subImage: "/projects/KN-1.jpg" },
-      { subTitle: "Packaging Concepts", subImage: "/projects/TSH-1.jpg" },
-      { subTitle: "Visual Storytelling", subImage: "/projects/MDS-1.jpg" },
-      { subTitle: "Brand Collateral Designs", subImage: "/projects/JDTGE-1.jpg" },
-      { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1.jpg" },
-      { subTitle: "Illustrative Graphics", subImage: "/projects/P-XMASS-1.jpg" },
-      { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1.jpg" },
-      { subTitle: "Color Palette Studies", subImage: "/projects/CNJ-1.jpg" },
-      { subTitle: "Layout & Composition", subImage: "/projects/BPPN-1.jpg" },
-      { subTitle: "Iconography Sets", subImage: "/projects/J-1.jpg" },
-      { subTitle: "Creative Direction Samples", subImage: "/projects/MDAJ-1.jpg" },
-      { subTitle: "Brand Guidelines Excerpts", subImage: "/projects/MCR-1.jpg" },
-    ],
-  },
 ];
+
+const shouldUnoptimize = (src: string) => src.startsWith("data:") || src.startsWith("http");
 
 export default function RecentProjectsSection() {
   const [selectedGraphicIndex, setSelectedGraphicIndex] = useState<number | null>(null);
+  const [graphicProject, setGraphicProject] = useState<GraphicProject>(() => ({
+    ...getDefaultGraphicCollection(),
+    isDev: false,
+  }));
 
-  const graphicProject = featuredProjects.find((p) => !p.isDev) as GraphicProject | undefined;
   const devProjects = featuredProjects.filter((p) => p.isDev) as DevProject[];
 
+  useEffect(() => {
+    let isMounted = true;
+    const loadCollection = async () => {
+      try {
+        const response = await fetch("/api/portfolio", { cache: "no-store" });
+        const data = await response.json();
+        if (response.ok && isMounted) {
+          setGraphicProject({
+            ...mergeGraphicCollection(data?.collection),
+            isDev: false,
+          });
+        }
+      } catch (error) {
+        // Keep defaults if loading fails.
+      }
+    };
+    loadCollection();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const totalSlides = graphicProject.subProjects.length;
+
+  useEffect(() => {
+    if (selectedGraphicIndex === null) return;
+    if (totalSlides === 0) {
+      setSelectedGraphicIndex(null);
+      return;
+    }
+    if (selectedGraphicIndex >= totalSlides) {
+      setSelectedGraphicIndex(0);
+    }
+  }, [selectedGraphicIndex, totalSlides]);
+
   const currentSlide = selectedGraphicIndex !== null
-    ? graphicProject?.subProjects[selectedGraphicIndex]
+    ? graphicProject.subProjects[selectedGraphicIndex]
     : null;
 
-  const totalSlides = graphicProject?.subProjects.length ?? 0;
-
   const goToPrevious = useCallback(() => {
-    if (selectedGraphicIndex === null) return;
+    if (selectedGraphicIndex === null || totalSlides === 0) return;
     setSelectedGraphicIndex((prev) =>
       prev === null ? null : prev === 0 ? totalSlides - 1 : prev - 1
     );
   }, [selectedGraphicIndex, totalSlides]);
 
   const goToNext = useCallback(() => {
-    if (selectedGraphicIndex === null) return;
+    if (selectedGraphicIndex === null || totalSlides === 0) return;
     setSelectedGraphicIndex((prev) =>
       prev === null ? null : prev === totalSlides - 1 ? 0 : prev + 1
     );
   }, [selectedGraphicIndex, totalSlides]);
+
+  const openGallery = () => {
+    if (graphicProject.subProjects.length === 0) return;
+    setSelectedGraphicIndex(0);
+  };
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Escape") setSelectedGraphicIndex(null);
@@ -226,20 +236,24 @@ export default function RecentProjectsSection() {
 
                 <div className="mt-6 grid grid-cols-3 gap-2">
                   {graphicProject.subProjects.slice(0, 6).map((item) => (
-                    <div key={item.subTitle} className="relative h-20 sm:h-24 rounded-2xl overflow-hidden">
+                    <div
+                      key={item.id ?? item.subTitle}
+                      className="relative h-20 sm:h-24 rounded-2xl overflow-hidden"
+                    >
                       <Image
                         src={item.subImage || FALLBACK_SQUARE}
                         alt={item.subTitle}
                         fill
                         className="object-cover"
                         sizes="120px"
+                        unoptimized={shouldUnoptimize(item.subImage || FALLBACK_SQUARE)}
                       />
                     </div>
                   ))}
                 </div>
 
                 <button
-                  onClick={() => setSelectedGraphicIndex(0)}
+                  onClick={openGallery}
                   className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-white transition"
                 >
                   Open Gallery
@@ -295,6 +309,7 @@ export default function RecentProjectsSection() {
                       className="object-contain"
                       priority
                       quality={92}
+                      unoptimized={shouldUnoptimize(currentSlide?.subImage || FALLBACK_SQUARE)}
                     />
                   </motion.div>
                 </AnimatePresence>

@@ -1,7 +1,7 @@
 // src/app/portfolio/page.tsx
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -16,6 +16,11 @@ import {
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
+import {
+  getDefaultGraphicCollection,
+  mergeGraphicCollection,
+  type GraphicCollection,
+} from "@/lib/portfolio-collection";
 
 const FALLBACK = "/images/placeholder-square.png";
 
@@ -27,17 +32,6 @@ type DevProject = {
   image: string;
   tags: string[];
   link: string;
-};
-
-type GraphicCollection = {
-  id: number;
-  title: string;
-  category: string;
-  description: string;
-  mainImage: string;
-  tags: string[];
-  link: string;
-  subProjects: { subTitle: string; subImage: string }[];
 };
 
 const devProjects: DevProject[] = [
@@ -93,33 +87,7 @@ const devProjects: DevProject[] = [
   },
 ];
 
-const graphicCollection: GraphicCollection = {
-  id: 100,
-  title: "Branding & Graphic Design Collection",
-  category: "Graphic Design",
-  description:
-    "A curated showcase of logos, brand identities, social templates, posters, packaging concepts and visual storytelling.",
-  mainImage: "/projects/vp.jpg",
-  tags: ["Branding", "Logo Design", "Graphic Design", "Visual Identity"],
-  link: "/portfolio",
-  subProjects: [
-    { subTitle: "Vickins Brand System", subImage: "/projects/teshlie-cake-main.jpg" },
-    { subTitle: "Social Media Templates", subImage: "/projects/vp.jpg" },
-    { subTitle: "Client Logo Suite", subImage: "/projects/APD-1.jpg" },
-    { subTitle: "Event & Promo Posters", subImage: "/projects/KN-1.jpg" },
-    { subTitle: "Packaging Concepts", subImage: "/projects/TSH-1.jpg" },
-    { subTitle: "Visual Storytelling", subImage: "/projects/MDS-1.jpg" },
-    { subTitle: "Brand Collateral Designs", subImage: "/projects/JDTGE-1.jpg" },
-    { subTitle: "Digital Ad Creatives", subImage: "/projects/VICKINS-GD-1.jpg" },
-    { subTitle: "Illustrative Graphics", subImage: "/projects/P-XMASS-1.jpg" },
-    { subTitle: "Typography Experiments", subImage: "/projects/M-XMASS-1.jpg" },
-    { subTitle: "Color Palette Studies", subImage: "/projects/CNJ-1.jpg" },
-    { subTitle: "Layout & Composition", subImage: "/projects/BPPN-1.jpg" },
-    { subTitle: "Iconography Sets", subImage: "/projects/J-1.jpg" },
-    { subTitle: "Creative Direction Samples", subImage: "/projects/MDAJ-1.jpg" },
-    { subTitle: "Brand Guidelines Excerpts", subImage: "/projects/MCR-1.jpg" },
-  ],
-};
+const shouldUnoptimize = (src: string) => src.startsWith("data:") || src.startsWith("http");
 
 const categories = [
   "All",
@@ -139,6 +107,9 @@ export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedSlideIndex, setSelectedSlideIndex] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<"contain" | "cover">("contain");
+  const [graphicCollection, setGraphicCollection] = useState<GraphicCollection>(() =>
+    getDefaultGraphicCollection()
+  );
 
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
@@ -148,6 +119,38 @@ export default function Portfolio() {
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
+  useEffect(() => {
+    let isMounted = true;
+    const loadCollection = async () => {
+      try {
+        const response = await fetch("/api/portfolio", { cache: "no-store" });
+        const data = await response.json();
+        if (response.ok && isMounted) {
+          setGraphicCollection(mergeGraphicCollection(data?.collection));
+        }
+      } catch (error) {
+        // Fall back to defaults silently if the collection can't be loaded.
+      }
+    };
+    loadCollection();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const totalSlides = graphicCollection.subProjects.length;
+
+  useEffect(() => {
+    if (selectedSlideIndex === null) return;
+    if (totalSlides === 0) {
+      setSelectedSlideIndex(null);
+      return;
+    }
+    if (selectedSlideIndex >= totalSlides) {
+      setSelectedSlideIndex(0);
+    }
+  }, [selectedSlideIndex, totalSlides]);
+
   const filteredProjects =
     activeCategory === "All"
       ? [...devProjects, graphicCollection]
@@ -155,15 +158,20 @@ export default function Portfolio() {
       ? [graphicCollection]
       : devProjects.filter((p) => p.category === activeCategory);
 
-  const totalSlides = graphicCollection.subProjects.length;
-
   const goPrev = useCallback(() => {
+    if (totalSlides === 0) return;
     setSelectedSlideIndex((prev) => (prev === 0 ? totalSlides - 1 : (prev ?? 0) - 1));
   }, [totalSlides]);
 
   const goNext = useCallback(() => {
+    if (totalSlides === 0) return;
     setSelectedSlideIndex((prev) => (prev === totalSlides - 1 ? 0 : (prev ?? 0) + 1));
   }, [totalSlides]);
+
+  const openGallery = () => {
+    if (totalSlides === 0) return;
+    setSelectedSlideIndex(0);
+  };
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
@@ -224,7 +232,7 @@ export default function Portfolio() {
             >
               <div className="space-y-5">
                 {filteredProjects
-                  .filter((project) => "image" in project)
+                  .filter((project): project is DevProject => "image" in project)
                   .map((project, index) => (
                     <motion.a
                       key={project.id}
@@ -298,7 +306,7 @@ export default function Portfolio() {
                     <div className="mt-6 grid grid-cols-3 gap-2">
                       {graphicCollection.subProjects.slice(0, 9).map((item, idx) => (
                         <button
-                          key={item.subTitle}
+                          key={item.id ?? item.subTitle}
                           onClick={() => setSelectedSlideIndex(idx)}
                           className="relative h-20 sm:h-24 rounded-2xl overflow-hidden"
                         >
@@ -308,13 +316,14 @@ export default function Portfolio() {
                             fill
                             className="object-cover"
                             sizes="120px"
+                            unoptimized={shouldUnoptimize(item.subImage || FALLBACK)}
                           />
                         </button>
                       ))}
                     </div>
 
                     <button
-                      onClick={() => setSelectedSlideIndex(0)}
+                      onClick={openGallery}
                       className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-white transition"
                     >
                       Open Gallery
@@ -403,6 +412,9 @@ export default function Portfolio() {
                       className={viewMode === "contain" ? "object-contain" : "object-cover"}
                       priority
                       quality={92}
+                      unoptimized={shouldUnoptimize(
+                        graphicCollection.subProjects[selectedSlideIndex]?.subImage || FALLBACK
+                      )}
                     />
                   </motion.div>
                 </AnimatePresence>
@@ -433,7 +445,7 @@ export default function Portfolio() {
                 <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
                   {graphicCollection.subProjects.map((item, idx) => (
                     <button
-                      key={item.subTitle}
+                      key={item.id ?? item.subTitle}
                       onClick={() => setSelectedSlideIndex(idx)}
                       className={`relative h-12 w-16 rounded-xl overflow-hidden border ${
                         idx === selectedSlideIndex ? "border-white/70" : "border-white/20"
@@ -445,6 +457,7 @@ export default function Portfolio() {
                         fill
                         className="object-cover"
                         sizes="64px"
+                        unoptimized={shouldUnoptimize(item.subImage || FALLBACK)}
                       />
                     </button>
                   ))}
