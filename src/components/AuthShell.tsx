@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 type AuthShellProps = {
   eyebrow: string;
@@ -49,9 +50,17 @@ export default function AuthShell({
 
         <section className="auth-shell__form">
           <div className="auth-shell__card">
-            <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
-              <Image src="/logo1.png" alt="Vickins Technologies" width={22} height={22} />
-              {eyebrow}
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-[var(--button-bg)] text-xs sm:text-sm uppercase tracking-[0.3em]">
+                <Image src="/logo1.png" alt="Vickins Technologies" width={22} height={22} />
+                {eyebrow}
+              </div>
+              <Link
+                href="/"
+                className="inline-flex items-center rounded-full border border-[var(--glass-border)] bg-white/70 px-3 py-1 text-[10px] uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/70 hover:text-[var(--button-bg)] hover:bg-white transition"
+              >
+                Home
+              </Link>
             </div>
             <h1 className="text-2xl sm:text-3xl font-semibold mt-3 text-[var(--foreground)]">
               {title}

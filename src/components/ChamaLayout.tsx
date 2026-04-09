@@ -219,17 +219,24 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
         <div className="p-4 space-y-3">
           <button
             onClick={handleSignOut}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-600 text-white text-sm font-semibold ${!sidebarOpen && "justify-center"}`}
+            className={`w-full group flex items-center gap-2 px-3 py-2.5 rounded-xl border border-rose-200/60 bg-gradient-to-r from-rose-500 via-rose-600 to-rose-500 text-white text-sm font-semibold shadow-[0_10px_24px_rgba(244,63,94,0.35)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(244,63,94,0.45)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/60 ${!sidebarOpen && "justify-center"}`}
           >
-            <LogOut size={16} />
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/15">
+              <LogOut size={16} />
+            </span>
             <span className={`${!sidebarOpen && "hidden"}`}>Logout</span>
           </button>
           {sidebarOpen && (
             <div className="space-y-2">
-              <div className="rounded-2xl bg-white/60 px-3 py-2 text-xs text-[var(--muted)]">
-                Secure access for members and moderators.
+              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/70 px-3 py-3 text-[11px] text-[var(--muted)] leading-relaxed break-words">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--button-bg)]">
+                  Security
+                </p>
+                <p className="mt-2">
+                  Secure access for members and moderators with encrypted sessions.
+                </p>
               </div>
-              <div className="text-xs text-[var(--muted)] px-2">
+              <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 px-3 py-2 text-[10px] uppercase tracking-[0.24em] text-[var(--muted)] leading-relaxed break-words">
                 © 2026 Vickins Technologies. All rights reserved.
               </div>
             </div>

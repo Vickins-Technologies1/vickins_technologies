@@ -5,7 +5,6 @@ import {
   ArrowRightIcon,
   UserGroupIcon,
   WalletIcon,
-  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 
 const highlights = [
@@ -38,12 +37,6 @@ const accessCards = [
     description: "Track contributions, receipts, and upcoming payout dates.",
     href: "/chama/ledger",
     icon: WalletIcon,
-  },
-  {
-    title: "Admin Panel",
-    description: "Oversee all ChamaHub data, groups, and platform health.",
-    href: "/admin",
-    icon: ShieldCheckIcon,
   },
 ];
 
@@ -80,7 +73,8 @@ export default function ChamaHubSection() {
             </h2>
             <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4 max-w-2xl">
               ChamaHub is built for rotating savings groups. Moderators lease one group at a time,
-              members get their own payment view, and your main admin panel keeps the full network visible.
+              members get their own payment view, and every role stays aligned through shared schedules and
+              transparent contribution activity.
             </p>
 
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -141,11 +135,11 @@ export default function ChamaHubSection() {
 
             <div className="rounded-2xl border border-[var(--glass-border)] bg-white/70 p-5 sm:p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">
-                Redirect links
+                Role-based access
               </p>
               <p className="text-sm text-[var(--muted)] mt-2">
-                Moderator, member, and admin routes are wired so every role lands in the right
-                ChamaHub workspace.
+                Moderator and member routes are wired so each role lands in the right ChamaHub workspace
+                instantly.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
@@ -160,12 +154,6 @@ export default function ChamaHubSection() {
                   className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-white/80 px-4 py-2 text-xs font-semibold text-[var(--foreground)]"
                 >
                   Member Ledger
-                </Link>
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-white/80 px-4 py-2 text-xs font-semibold text-[var(--foreground)]"
-                >
-                  Admin Console
                 </Link>
               </div>
             </div>
