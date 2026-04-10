@@ -68,7 +68,9 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                 whileHover={{ x: 5 }}
               >
                 <Link
-                  href={item === "Portfolio" ? "/portfolio" : `#${item.toLowerCase()}`}
+                  href={
+                    item === "Portfolio" ? "/portfolio" : item === "ChamaHub" ? "/chama" : `#${item.toLowerCase()}`
+                  }
                   className="flex items-center justify-between rounded-2xl border border-white/35 bg-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
                   onClick={toggleSidebar}
                 >
@@ -85,11 +87,11 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
             </div>
             <div className="grid grid-cols-1 gap-2">
               <Link
-                href="/moderator-signup"
+                href="/chama"
                 onClick={toggleSidebar}
                 className="inline-flex items-center justify-between rounded-2xl border border-white/35 bg-white/65 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--navbar-text)]/80"
               >
-                Become a Moderator
+                ChamaHub
                 <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
               </Link>
               <Link

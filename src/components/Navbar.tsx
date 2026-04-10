@@ -115,10 +115,10 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
               </motion.button>
 
               <Link
-                href="/moderator-signup"
+                href="/chama"
                 className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/40 bg-white/60 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/80 transition"
               >
-                Become a Moderator
+                ChamaHub
               </Link>
 
               <a

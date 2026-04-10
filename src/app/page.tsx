@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSection";
+import ProductsSection from "../components/ProductsSection";
 import ProcessSection from "../components/ProcessSection";
 import AboutSection from "../components/AboutSection";
 import ServicesSection from "../components/ServicesSection";
@@ -13,7 +14,6 @@ import ClientsSection from "../components/ClientsSection";
 import PricingSection from "../components/PricingSection";
 import ContactSection from "../components/ContactSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
-import ChamaHubSection from "../components/ChamaHubSection";
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -49,13 +49,15 @@ export default function Home() {
 
       {/* Hero Section: Full-bleed, full viewport height */}
       <HeroSection />
+      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <ProductsSection />
+      </div>
 
       {/* All other sections: Contained with proper inner padding */}
       <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
-        <ChamaHubSection />
         {/* ← Add here – preferably after Services or Technology */}
         <RecentProjectsSection />
         <TechnologySection />
