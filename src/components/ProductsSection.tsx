@@ -22,14 +22,14 @@ const productTracks = [
   {
     title: "Custom Platforms",
     description:
-      "We co-build revenue-ready products for founders and teams who want to launch or modernize their platform.",
+      "Vickins-owned platforms built to launch, modernize, and scale business operations with confidence.",
     icon: RocketLaunchIcon,
     tags: ["Web", "Mobile", "Subscription"],
   },
   {
     title: "Automation Suites",
     description:
-      "Workflow automation, AI copilots, and analytics that remove manual ops and keep teams informed.",
+      "Workflow automation, AI copilots, and analytics maintained by Vickins for reliable scale.",
     icon: CpuChipIcon,
     tags: ["Integrations", "AI", "Insights"],
   },
@@ -64,11 +64,11 @@ export default function ProductsSection() {
                 Vickins Technologies Products
               </p>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
-                A focused suite of platforms we build, run, and scale with our partners.
+                A focused suite of platforms owned, built, scaled, and maintained by Vickins Technologies.
               </h2>
               <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4 max-w-2xl">
-                ChamaHub is our flagship platform, supported by productized builds for teams that want
-                premium digital infrastructure without the heavy lift.
+                ChamaHub is our flagship platform, backed by a portfolio of Vickins-built products that keep
+                modern businesses running smoothly.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -79,12 +79,6 @@ export default function ProductsSection() {
                 Open ChamaHub
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-white/80 px-5 py-3 text-xs sm:text-sm font-semibold text-[var(--foreground)]"
-              >
-                Plan a Product
-              </a>
             </div>
           </div>
 

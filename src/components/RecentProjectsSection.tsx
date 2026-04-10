@@ -146,16 +146,25 @@ export default function RecentProjectsSection() {
               Premium delivery across product and visual design.
             </h2>
             <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-              Select engagements highlighting fullstack engineering and brand-forward creative systems.
+              Selected partnerships highlighting fullstack engineering and brand-forward creative systems.
             </p>
           </div>
-          <a
-            href="/portfolio"
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--button-bg)]"
-          >
-            Explore Portfolio
-            <ArrowRight className="h-4 w-4" />
-          </a>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold shadow-lg hover:shadow-xl transition"
+            >
+              Plan a Product
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="/portfolio"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--button-bg)]"
+            >
+              Explore Portfolio
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
