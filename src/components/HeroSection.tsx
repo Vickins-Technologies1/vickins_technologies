@@ -11,8 +11,8 @@ const highlights = [
 
 const stats = [
   { label: "Projects Delivered", value: "40+" },
-  { label: "Avg. Launch Time", value: "6-10 wks" },
-  { label: "Client Retention", value: "92%" },
+  { label: "Avg. Launch Time", value: "1-3 weeks" },
+  { label: "Client Retention", value: "99%" },
 ];
 
 export default function HeroSection() {
