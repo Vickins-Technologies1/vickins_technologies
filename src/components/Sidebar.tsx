@@ -103,13 +103,13 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                 <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
               </Link>
             </div>
-            <a
-              href="#contact"
+            <Link
+              href="/vtix"
               onClick={toggleSidebar}
               className="inline-flex items-center justify-center w-full px-4 py-3 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg"
             >
-              Book a Call
-            </a>
+              V-Tix
+            </Link>
           </div>
         </motion.div>
       )}
