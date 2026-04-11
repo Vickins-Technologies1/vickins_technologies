@@ -15,6 +15,16 @@ export type GraphicCollection = {
   subProjects: GraphicSubProject[];
 };
 
+export type DevProject = {
+  id?: string;
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  tags: string[];
+  link: string;
+};
+
 export const getDefaultGraphicCollection = (): GraphicCollection => ({
   id: 100,
   title: "Branding & Graphic Design Collection",
@@ -43,6 +53,59 @@ export const getDefaultGraphicCollection = (): GraphicCollection => ({
   ],
 });
 
+export const getDefaultDevProjects = (): DevProject[] => [
+  {
+    id: "dev-1",
+    title: "Smart Choice Rental Management SaaS",
+    category: "Fullstack + UI/UX",
+    description:
+      "Kenya's leading property management platform: tenant tracking, M-Pesa payments, invoicing, SMS notifications, property listings, and admin dashboard.",
+    image: "/projects/scr.png",
+    tags: ["TypeScript", "React/Next.js", "Dashboard", "Authentication", "Fullstack"],
+    link: "https://soranapropertymanagers.com",
+  },
+  {
+    id: "dev-2",
+    title: "Baggit – Premium E-commerce Platform",
+    category: "Fullstack + E-commerce",
+    description:
+      "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
+    image: "/projects/Baggit.png",
+    tags: ["Next.js", "React", "Tailwind", "E-commerce", "UI/UX", "Responsive"],
+    link: "https://baggit-ashy.vercel.app/",
+  },
+  {
+    id: "dev-3",
+    title: "Wanjahi Group – Motors, Property & Business Solutions",
+    category: "Fullstack + Corporate Website",
+    description:
+      "Professional company website for Wanjahi Group showcasing premium vehicles, property services, business solutions, client testimonials, and performance stats.",
+    image: "/projects/wanjahi.png",
+    tags: ["Next.js", "TypeScript", "Tailwind", "Corporate", "UI/UX", "Responsive"],
+    link: "https://wanjahi.com",
+  },
+  {
+    id: "dev-4",
+    title: "Macdee Entertainment Platform",
+    category: "Enterprise Web App",
+    description:
+      "Enterprise-level web application with robust backend, user management, and custom UI components.",
+    image: "/projects/k28.png",
+    tags: ["JavaScript", "Fullstack", "Enterprise", "Custom UI"],
+    link: "https://macdeeentertainment.com",
+  },
+  {
+    id: "dev-5",
+    title: "Vickins Technologies Portfolio (Current)",
+    category: "Web & Brand Identity",
+    description:
+      "Modern agency portfolio with dark/light mode, smooth animations, responsive layout, and integrated branding.",
+    image: "/projects/vbi.png",
+    tags: ["Next.js 14", "Tailwind CSS", "Framer Motion", "UI/UX", "Branding"],
+    link: "/",
+  },
+];
+
 export const mergeGraphicCollection = (
   state?: Partial<GraphicCollection> | null
 ): GraphicCollection => {
@@ -68,4 +131,20 @@ export const mergeGraphicCollection = (
       subImage: item.subImage?.trim() || "",
     })),
   };
+};
+
+export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
+  if (!Array.isArray(state)) {
+    return getDefaultDevProjects();
+  }
+
+  return state.map((item, index) => ({
+    id: item.id ?? `dev-${index}`,
+    title: item.title?.trim() || `Untitled Project ${index + 1}`,
+    category: item.category?.trim() || "Project",
+    description: item.description?.trim() || "Project description coming soon.",
+    image: item.image?.trim() || "",
+    tags: Array.isArray(item.tags) ? item.tags : [],
+    link: item.link?.trim() || "#",
+  }));
 };

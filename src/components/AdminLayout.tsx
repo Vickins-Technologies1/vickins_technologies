@@ -23,7 +23,8 @@ import {
   Briefcase,
   Sparkles,
   ArrowRight,
-  Palette
+  Palette,
+  Ticket
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -111,6 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const chamaNavItems = [
     { href: "/admin/chamahub", label: "ChamaHub", icon: Sparkles },
+    { href: "/admin/vtix", label: "V-Tix Africa", icon: Ticket },
   ];
 
   const activeNav = [...generalNavItems, ...chamaNavItems].find(

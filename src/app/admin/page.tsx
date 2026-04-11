@@ -16,6 +16,7 @@ import {
   Briefcase,
   ListChecks,
   DollarSign,
+  Ticket,
 } from "lucide-react";
 
 function DashboardSkeleton() {
@@ -130,6 +131,7 @@ export default function AdminDashboard() {
     ListChecks,
     DollarSign,
     Sparkles,
+    Ticket,
   };
 
   const tagline = dashboardConfig.tagline?.trim() || "Admin Dashboard";

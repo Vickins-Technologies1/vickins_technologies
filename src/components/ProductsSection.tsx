@@ -18,6 +18,21 @@ const chamaHighlights = [
   },
 ];
 
+const vtixHighlights = [
+  {
+    title: "Event marketplace",
+    description: "Publish football matches, concerts, and festivals with instant ticket discovery.",
+  },
+  {
+    title: "QR ticketing",
+    description: "Issue secure QR tickets with real-time validation for every attendee.",
+  },
+  {
+    title: "M-Pesa + Stripe",
+    description: "Collect payments fast with Kenya-first checkout flows and global fallback.",
+  },
+];
+
 const productTracks = [
   {
     title: "Custom Platforms",
@@ -57,33 +72,41 @@ export default function ProductsSection() {
           }}
         />
 
-        <div className="relative z-10 p-6 sm:p-10">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-[var(--button-bg)]">
-                Vickins Technologies Products
-              </p>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
-                A focused suite of platforms owned, built, scaled, and maintained by Vickins Technologies.
-              </h2>
-              <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4 max-w-2xl">
-                ChamaHub is our flagship platform, backed by a portfolio of Vickins-built products that keep
-                modern businesses running smoothly.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/chama"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs sm:text-sm font-semibold"
-              >
-                Open ChamaHub
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
-            </div>
+      <div className="relative z-10 p-6 sm:p-10">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[var(--button-bg)]">
+              Vickins Technologies Products
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
+              A focused suite of platforms owned, built, scaled, and maintained by Vickins Technologies.
+            </h2>
+            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4 max-w-2xl">
+              ChamaHub is our flagship platform, backed by a portfolio of Vickins-built products that keep
+              modern businesses running smoothly.
+            </p>
           </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/chama"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs sm:text-sm font-semibold"
+            >
+              Open ChamaHub
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/vtix"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-white/80 px-5 py-3 text-xs sm:text-sm font-semibold text-[var(--foreground)]"
+            >
+              Open V-Tix Africa
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
 
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-2 rounded-3xl border border-white/40 bg-white/70 p-6 sm:p-8 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2 space-y-5">
+            <div className="rounded-3xl border border-white/40 bg-white/70 p-6 sm:p-8 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.28em] text-[var(--button-bg)]">
                   <Image
@@ -134,6 +157,58 @@ export default function ProductsSection() {
                 </Link>
               </div>
             </div>
+
+            <div className="rounded-3xl border border-white/40 bg-white/70 p-6 sm:p-8 shadow-[0_24px_60px_rgba(15,23,42,0.12)]">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.28em] text-[var(--button-bg)]">
+                  <Image
+                    src="/logo1.png"
+                    alt="V-Tix Africa logo"
+                    width={28}
+                    height={28}
+                    className="h-6 w-6"
+                  />
+                  V-Tix Africa
+                </div>
+                <span className="text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                  Event Ticketing Platform
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold mt-5">
+                Event Ticketing & Booking Platform for Africa.
+              </h3>
+              <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-3 max-w-2xl">
+                Power football matches, concerts, festivals, and corporate events with mobile-first ticketing.
+              </p>
+
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {vtixHighlights.map((item) => (
+                  <div key={item.title} className="rounded-2xl border border-white/40 bg-white/75 p-4">
+                    <p className="text-xs uppercase tracking-[0.25em] text-[var(--button-bg)]">
+                      {item.title}
+                    </p>
+                    <p className="text-sm text-[var(--foreground)]/80 mt-2">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/vtix"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2 text-xs font-semibold"
+                >
+                  Open V-Tix Africa
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/vtix/dashboard"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-white/80 px-4 py-2 text-xs font-semibold text-[var(--foreground)]"
+                >
+                  Organizer Dashboard
+                </Link>
+              </div>
+            </div>
+          </div>
 
             <div className="space-y-5">
               {productTracks.map((item) => {

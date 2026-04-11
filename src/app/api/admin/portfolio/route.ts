@@ -1,29 +1,42 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import {
+  mergeDevProjects,
   mergeGraphicCollection,
+  type DevProject,
   type GraphicCollection,
 } from "@/lib/portfolio-collection";
 
 const COLLECTION = "admin_portfolio";
-const STATE_KEY = "graphic_collection";
+const GRAPHIC_KEY = "graphic_collection";
+const DEV_KEY = "dev_projects";
 
 export const dynamic = "force-dynamic";
 
-type PortfolioDoc = {
+type GraphicDoc = {
   key: string;
   collection: GraphicCollection;
+  updatedAt: Date;
+};
+
+type DevProjectsDoc = {
+  key: string;
+  projects: DevProject[];
   updatedAt: Date;
 };
 
 export async function GET() {
   try {
     const db = await connectToDatabase();
-    const collection = db.collection<PortfolioDoc>(COLLECTION);
-    const doc = await collection.findOne({ key: STATE_KEY });
-    const merged = mergeGraphicCollection(doc?.collection ?? null);
+    const collection = db.collection<GraphicDoc | DevProjectsDoc>(COLLECTION);
+    const graphicDoc = await collection.findOne({ key: GRAPHIC_KEY });
+    const devDoc = await collection.findOne({ key: DEV_KEY });
+    const mergedCollection = mergeGraphicCollection(
+      (graphicDoc as GraphicDoc | null)?.collection ?? null
+    );
+    const mergedDevProjects = mergeDevProjects((devDoc as DevProjectsDoc | null)?.projects ?? null);
 
-    return NextResponse.json({ collection: merged });
+    return NextResponse.json({ collection: mergedCollection, devProjects: mergedDevProjects });
   } catch (error) {
     return NextResponse.json(
       { error: "Unable to load portfolio collection." },
@@ -34,9 +47,10 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   const body = await request.json().catch(() => null);
-  const incoming = body?.collection as GraphicCollection | undefined;
+  const incomingCollection = body?.collection as GraphicCollection | undefined;
+  const incomingDevProjects = body?.devProjects as DevProject[] | undefined;
 
-  if (!incoming) {
+  if (!incomingCollection && !incomingDevProjects) {
     return NextResponse.json(
       { error: "Invalid portfolio payload." },
       { status: 400 }
@@ -45,14 +59,25 @@ export async function PUT(request: Request) {
 
   try {
     const db = await connectToDatabase();
-    const collection = db.collection<PortfolioDoc>(COLLECTION);
-    const merged = mergeGraphicCollection(incoming);
+    const collection = db.collection<GraphicDoc | DevProjectsDoc>(COLLECTION);
 
-    await collection.updateOne(
-      { key: STATE_KEY },
-      { $set: { collection: merged, updatedAt: new Date() } },
-      { upsert: true }
-    );
+    if (incomingCollection) {
+      const merged = mergeGraphicCollection(incomingCollection);
+      await collection.updateOne(
+        { key: GRAPHIC_KEY },
+        { $set: { collection: merged, updatedAt: new Date() } },
+        { upsert: true }
+      );
+    }
+
+    if (incomingDevProjects) {
+      const mergedDevProjects = mergeDevProjects(incomingDevProjects);
+      await collection.updateOne(
+        { key: DEV_KEY },
+        { $set: { projects: mergedDevProjects, updatedAt: new Date() } },
+        { upsert: true }
+      );
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

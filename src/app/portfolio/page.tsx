@@ -17,89 +17,17 @@ import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import {
+  getDefaultDevProjects,
   getDefaultGraphicCollection,
   mergeGraphicCollection,
+  mergeDevProjects,
+  type DevProject,
   type GraphicCollection,
 } from "@/lib/portfolio-collection";
 
 const FALLBACK = "/images/placeholder-square.png";
 
-type DevProject = {
-  id: number;
-  title: string;
-  category: string;
-  description: string;
-  image: string;
-  tags: string[];
-  link: string;
-};
-
-const devProjects: DevProject[] = [
-  {
-    id: 1,
-    title: "Smart Choice Rental Management SaaS",
-    category: "Fullstack + UI/UX",
-    description:
-      "Kenya's leading property management platform: tenant tracking, M-Pesa payments, invoicing, SMS notifications, property listings, and admin dashboard.",
-    image: "/projects/scr.png",
-    tags: ["TypeScript", "React/Next.js", "Dashboard", "Authentication", "Fullstack"],
-    link: "https://soranapropertymanagers.com",
-  },
-  {
-    id: 2,
-    title: "Baggit – Premium E-commerce Platform",
-    category: "Fullstack + E-commerce",
-    description:
-      "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
-    image: "/projects/Baggit.png",
-    tags: ["Next.js", "React", "Tailwind", "E-commerce", "UI/UX", "Responsive"],
-    link: "https://baggit-ashy.vercel.app/",
-  },
-  {
-    id: 3,
-    title: "Wanjahi Group – Motors, Property & Business Solutions",
-    category: "Fullstack + Corporate Website",
-    description:
-      "Professional company website for Wanjahi Group showcasing premium vehicles, property services, business solutions, client testimonials, and performance stats.",
-    image: "/projects/wanjahi.png",
-    tags: ["Next.js", "TypeScript", "Tailwind", "Corporate", "UI/UX", "Responsive"],
-    link: "https://wanjahi.com",
-  },
-  {
-    id: 4,
-    title: "Macdee Entertainment Platform",
-    category: "Enterprise Web App",
-    description:
-      "Enterprise-level web application with robust backend, user management, and custom UI components.",
-    image: "/projects/k28.png",
-    tags: ["JavaScript", "Fullstack", "Enterprise", "Custom UI"],
-    link: "https://macdeeentertainment.com",
-  },
-  {
-    id: 5,
-    title: "Vickins Technologies Portfolio (Current)",
-    category: "Web & Brand Identity",
-    description:
-      "Modern agency portfolio with dark/light mode, smooth animations, responsive layout, and integrated branding.",
-    image: "/projects/vbi.png",
-    tags: ["Next.js 14", "Tailwind CSS", "Framer Motion", "UI/UX", "Branding"],
-    link: "/",
-  },
-];
-
 const shouldUnoptimize = (src: string) => src.startsWith("data:") || src.startsWith("http");
-
-const categories = [
-  "All",
-  "Fullstack + UI/UX",
-  "Fullstack Application",
-  "Business Application",
-  "Enterprise Web App",
-  "Web & Brand Identity",
-  "Fullstack + E-commerce",
-  "Fullstack + Corporate Website",
-  "Graphic Design",
-];
 
 export default function Portfolio() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -110,6 +38,7 @@ export default function Portfolio() {
   const [graphicCollection, setGraphicCollection] = useState<GraphicCollection>(() =>
     getDefaultGraphicCollection()
   );
+  const [devProjects, setDevProjects] = useState<DevProject[]>(() => getDefaultDevProjects());
 
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
@@ -127,6 +56,7 @@ export default function Portfolio() {
         const data = await response.json();
         if (response.ok && isMounted) {
           setGraphicCollection(mergeGraphicCollection(data?.collection));
+          setDevProjects(mergeDevProjects(data?.devProjects));
         }
       } catch (error) {
         // Fall back to defaults silently if the collection can't be loaded.
@@ -150,6 +80,12 @@ export default function Portfolio() {
       setSelectedSlideIndex(0);
     }
   }, [selectedSlideIndex, totalSlides]);
+
+  const devCategories = Array.from(
+    new Set(devProjects.map((project) => project.category).filter(Boolean))
+  );
+
+  const categories = ["All", ...devCategories, "Graphic Design"];
 
   const filteredProjects =
     activeCategory === "All"

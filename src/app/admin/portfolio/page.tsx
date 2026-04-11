@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Image as ImageIcon, Plus, Save, Trash2 } from "lucide-react";
 import {
+  getDefaultDevProjects,
   getDefaultGraphicCollection,
   mergeGraphicCollection,
+  mergeDevProjects,
+  type DevProject,
   type GraphicCollection,
 } from "@/lib/portfolio-collection";
 
@@ -24,6 +27,7 @@ const shouldUnoptimize = (src?: string) =>
 
 export default function AdminPortfolioPage() {
   const [collection, setCollection] = useState<GraphicCollection>(() => getDefaultGraphicCollection());
+  const [devProjects, setDevProjects] = useState<DevProject[]>(() => getDefaultDevProjects());
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -42,6 +46,7 @@ export default function AdminPortfolioPage() {
         }
         if (isMounted) {
           setCollection(mergeGraphicCollection(data?.collection));
+          setDevProjects(mergeDevProjects(data?.devProjects));
         }
       } catch (err) {
         if (isMounted) {
@@ -110,22 +115,51 @@ export default function AdminPortfolioPage() {
     }));
   };
 
+  const addDevProject = () => {
+    setDevProjects((prev) => [
+      ...prev,
+      {
+        id: createId(),
+        title: "New project",
+        category: "Fullstack + UI/UX",
+        description: "",
+        image: "",
+        tags: [],
+        link: "",
+      },
+    ]);
+  };
+
+  const updateDevProject = (index: number, updates: Partial<DevProject>) => {
+    setDevProjects((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], ...updates };
+      return next;
+    });
+  };
+
+  const removeDevProject = (index: number) => {
+    setDevProjects((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
   const saveCollection = async () => {
     setIsSaving(true);
     setMessage("");
     setError("");
     const normalized = mergeGraphicCollection(collection);
+    const normalizedDevProjects = mergeDevProjects(devProjects);
     try {
       const response = await fetch("/api/admin/portfolio", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ collection: normalized }),
+        body: JSON.stringify({ collection: normalized, devProjects: normalizedDevProjects }),
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data?.error || "Failed to save portfolio collection.");
       }
       setCollection(normalized);
+      setDevProjects(normalizedDevProjects);
       setMessage("Portfolio collection saved.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to save portfolio collection.");
@@ -156,11 +190,10 @@ export default function AdminPortfolioPage() {
               Portfolio Collection
             </p>
             <h1 className="text-2xl sm:text-3xl font-semibold mt-2">
-              Manage the Branding & Graphic Design gallery.
+              Manage the portfolio projects and branding gallery.
             </h1>
             <p className="text-sm text-[var(--muted)] mt-3 max-w-2xl">
-              Upload images and update the titles to keep the live collection in sync with the homepage
-              and portfolio gallery.
+              Update development projects and graphic design assets to keep the public portfolio in sync.
             </p>
           </div>
           <button
@@ -224,6 +257,124 @@ export default function AdminPortfolioPage() {
             value={collection.description}
             onChange={(event) => updateCollection({ description: event.target.value })}
           />
+        </div>
+      </section>
+
+      <section className="glass-panel p-6 sm:p-7 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Development Projects</p>
+            <h2 className="text-xl font-semibold mt-2">Featured builds & platforms</h2>
+            <p className="text-sm text-[var(--muted)] mt-2">
+              Add, edit, and reorder the web, mobile, and platform projects shown on the public portfolio.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={addDevProject}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+          >
+            <Plus size={16} />
+            Add project
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5">
+          {devProjects.map((project, index) => (
+            <div
+              key={project.id ?? `dev-project-${index}`}
+              className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-[0.4fr_1fr] gap-5"
+            >
+              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/50 bg-white/70">
+                {project.image ? (
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="360px"
+                    unoptimized={shouldUnoptimize(project.image)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xs text-[var(--muted)]">
+                    No image
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
+                    Project {index + 1}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => removeDevProject(index)}
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-rose-500"
+                  >
+                    <Trash2 size={14} />
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className={inputClass}
+                  placeholder="Project title"
+                  value={project.title}
+                  onChange={(event) => updateDevProject(index, { title: event.target.value })}
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    className={inputClass}
+                    placeholder="Category"
+                    value={project.category}
+                    onChange={(event) => updateDevProject(index, { category: event.target.value })}
+                  />
+                  <input
+                    className={inputClass}
+                    placeholder="Project link"
+                    value={project.link}
+                    onChange={(event) => updateDevProject(index, { link: event.target.value })}
+                  />
+                </div>
+                <textarea
+                  className={`${inputClass} min-h-[110px]`}
+                  placeholder="Short description"
+                  value={project.description}
+                  onChange={(event) => updateDevProject(index, { description: event.target.value })}
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Tags (comma separated)"
+                  value={project.tags.join(", ")}
+                  onChange={(event) =>
+                    updateDevProject(index, {
+                      tags: event.target.value
+                        .split(",")
+                        .map((tag) => tag.trim())
+                        .filter(Boolean),
+                    })
+                  }
+                />
+                <input
+                  className={inputClass}
+                  placeholder="Image URL (optional)"
+                  value={project.image}
+                  onChange={(event) => updateDevProject(index, { image: event.target.value })}
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) {
+                      handleImageFile(file, (dataUrl) => updateDevProject(index, { image: dataUrl }));
+                    }
+                  }}
+                  className="block w-full text-sm text-[var(--muted)] file:mr-4 file:rounded-full file:border-0 file:bg-[var(--button-bg)] file:px-4 file:py-2 file:text-xs file:uppercase file:tracking-[0.24em] file:text-white"
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
