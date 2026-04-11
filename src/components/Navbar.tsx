@@ -121,12 +121,12 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                 ChamaHub
               </Link>
 
-              <a
-                href="#contact"
+              <Link
+                href="/vtix"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                Book a Call
-              </a>
+                V-Tix
+              </Link>
             </div>
           </div>
         </div>
