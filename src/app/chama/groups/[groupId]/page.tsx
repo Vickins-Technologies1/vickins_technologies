@@ -11,6 +11,8 @@ import {
   RefreshCcw,
   Sparkles,
   UserPlus,
+  Video,
+  CalendarClock,
 } from "lucide-react";
 import RotationWheel from "@/components/chama/RotationWheel";
 import { authClient } from "@/lib/auth-client";
@@ -63,6 +65,20 @@ type Contribution = {
   paidAt?: string;
 };
 
+type GroupCall = {
+  id: string;
+  title: string;
+  meetingUri?: string;
+  scheduledFor?: string;
+  accessType?: string;
+  autoRecording?: boolean;
+  autoTranscription?: boolean;
+  autoSmartNotes?: boolean;
+  attendanceCapturedAt?: string;
+  attendanceParticipantCount?: number;
+  createdAt?: string;
+};
+
 const inputClass =
   "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
 
@@ -76,6 +92,8 @@ export default function ChamaGroupPage() {
   const [rounds, setRounds] = useState<Round[]>([]);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [openRoundId, setOpenRoundId] = useState<string | null>(null);
+  const [calls, setCalls] = useState<GroupCall[]>([]);
+  const [callsLoading, setCallsLoading] = useState(true);
   const [stats, setStats] = useState<{ membersCount: number; potAmount: number } | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -93,6 +111,15 @@ export default function ChamaGroupPage() {
     amount: "",
     method: "manual",
     reference: "",
+  });
+
+  const [callForm, setCallForm] = useState({
+    title: "",
+    scheduledFor: "",
+    accessType: "OPEN",
+    autoRecording: false,
+    autoTranscription: false,
+    autoSmartNotes: false,
   });
 
   const [groupForm, setGroupForm] = useState({
@@ -157,6 +184,40 @@ export default function ChamaGroupPage() {
     }
   };
 
+  const loadCalls = async () => {
+    if (!groupId) return;
+    setCallsLoading(true);
+    try {
+      const response = await fetch(`/api/chama/groups/${groupId}/calls`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Unable to load calls.");
+      setCalls(data.calls ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to load calls.");
+    } finally {
+      setCallsLoading(false);
+    }
+  };
+
+  const handleSyncAttendance = async (callId: string) => {
+    setMessage("");
+    setError("");
+    try {
+      const response = await fetch(
+        `/api/chama/groups/${groupId}/calls/${callId}/attendance/sync`,
+        { method: "POST" }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || "Unable to sync attendance.");
+      }
+      setMessage(`Attendance captured (${data.participantCount ?? 0} participants).`);
+      await loadCalls();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to sync attendance.");
+    }
+  };
+
   const loadContributions = async (roundId?: string | null) => {
     if (!roundId) {
       setContributions([]);
@@ -178,6 +239,12 @@ export default function ChamaGroupPage() {
   useEffect(() => {
     if (groupId) {
       loadGroup();
+    }
+  }, [groupId]);
+
+  useEffect(() => {
+    if (groupId) {
+      loadCalls();
     }
   }, [groupId]);
 
@@ -334,6 +401,43 @@ export default function ChamaGroupPage() {
     }
   };
 
+  const handleCreateCall = async () => {
+    setMessage("");
+    setError("");
+    if (!callForm.title.trim()) {
+      setError("Provide a call title.");
+      return;
+    }
+    try {
+      const response = await fetch(`/api/chama/groups/${groupId}/calls`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: callForm.title.trim(),
+          scheduledFor: callForm.scheduledFor || null,
+          accessType: callForm.accessType,
+          autoRecording: callForm.autoRecording,
+          autoTranscription: callForm.autoTranscription,
+          autoSmartNotes: callForm.autoSmartNotes,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "Unable to create call.");
+      setMessage("Group call created.");
+      setCallForm({
+        title: "",
+        scheduledFor: "",
+        accessType: "OPEN",
+        autoRecording: false,
+        autoTranscription: false,
+        autoSmartNotes: false,
+      });
+      await loadCalls();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to create call.");
+    }
+  };
+
   const rotationMembers = useMemo(() => {
     if (!group?.rotationOrder?.length) return members;
     return group.rotationOrder
@@ -361,6 +465,8 @@ export default function ChamaGroupPage() {
     isModerator ||
     ["admin", "treasurer", "secretary"].includes(myMember?.role ?? "");
   const isGroupAdmin = isSiteAdmin || isModerator || myMember?.role === "admin";
+  const canManageCalls =
+    isSiteAdmin || isModerator || ["admin", "secretary"].includes(myMember?.role ?? "");
 
   const tabs = useMemo(() => {
     if (hasGroupPrivileges) {
@@ -368,12 +474,14 @@ export default function ChamaGroupPage() {
         { id: "overview", label: "Overview" },
         { id: "members", label: "Members" },
         { id: "contributions", label: "Contributions" },
+        { id: "calls", label: "Calls" },
         { id: "settings", label: "Settings" },
       ];
     }
     return [
       { id: "overview", label: "Overview" },
       { id: "contributions", label: "Contributions" },
+      { id: "calls", label: "Calls" },
     ];
   }, [hasGroupPrivileges]);
 
@@ -580,12 +688,15 @@ export default function ChamaGroupPage() {
         <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         {hasGroupPrivileges ? (
           <div className="glass-panel p-6 sm:p-7 space-y-5">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-                Members & roles
-              </p>
-              <h2 className="text-xl font-semibold mt-2">Manage contributors</h2>
-            </div>
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+              Members & roles
+            </p>
+            <h2 className="text-xl font-semibold mt-2">Manage contributors</h2>
+            <p className="text-sm text-[var(--muted)] mt-2">
+              Assign the Secretary or Treasurer role to unlock their dedicated control panels.
+            </p>
+          </div>
             <div className="space-y-3">
               {members.map((member) => (
                 <div
@@ -793,6 +904,220 @@ export default function ChamaGroupPage() {
             })}
             {contributions.length === 0 && (
               <p className="text-sm text-[var(--muted)]">No contributions logged yet.</p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {activeTab === "calls" && (
+        <section className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-6">
+          <div className="glass-panel p-6 sm:p-7 space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                Group calls
+              </p>
+              <h2 className="text-xl font-semibold mt-2">Upcoming and recent calls</h2>
+            </div>
+            {callsLoading ? (
+              <div className="space-y-3">
+                {[0, 1].map((item) => (
+                  <div key={item} className="glass-panel h-24 shimmer-line" />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {calls.map((call) => {
+                  const scheduled = call.scheduledFor
+                    ? new Date(call.scheduledFor)
+                    : null;
+                  const isUpcoming = scheduled ? scheduled.getTime() > Date.now() : false;
+                  const attendanceCaptured = call.attendanceCapturedAt
+                    ? new Date(call.attendanceCapturedAt)
+                    : null;
+                  return (
+                    <div
+                      key={call.id}
+                      className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                          <p className="font-semibold">{call.title}</p>
+                          <p className="text-xs text-[var(--muted)] mt-1">
+                            {scheduled
+                              ? scheduled.toLocaleString()
+                              : "Start immediately"}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span
+                            className={`px-3 py-1 rounded-full ${
+                              isUpcoming
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-emerald-100 text-emerald-700"
+                            }`}
+                          >
+                            {isUpcoming ? "Scheduled" : "Ready"}
+                          </span>
+                          {typeof call.attendanceParticipantCount === "number" && (
+                            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700">
+                              Attendance: {call.attendanceParticipantCount}
+                            </span>
+                          )}
+                          {call.meetingUri && (
+                            <a
+                              href={call.meetingUri}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--button-bg)] text-white"
+                            >
+                              <Video size={14} />
+                              Join
+                            </a>
+                          )}
+                          {canManageCalls && !isUpcoming && (
+                            <button
+                              type="button"
+                              onClick={() => handleSyncAttendance(call.id)}
+                              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[var(--glass-border)] text-[var(--foreground)]"
+                            >
+                              <RefreshCcw size={14} />
+                              Sync attendance
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {attendanceCaptured && (
+                        <p className="text-xs text-[var(--muted)] mt-2">
+                          Attendance captured {attendanceCaptured.toLocaleString()}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2 mt-3 text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
+                        <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">
+                          {call.accessType || "OPEN"} access
+                        </span>
+                        {call.autoRecording && (
+                          <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">
+                            Auto recording
+                          </span>
+                        )}
+                        {call.autoTranscription && (
+                          <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">
+                            Transcription
+                          </span>
+                        )}
+                        {call.autoSmartNotes && (
+                          <span className="rounded-full border border-[var(--glass-border)] px-2 py-1">
+                            Smart notes
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {calls.length === 0 && (
+                  <p className="text-sm text-[var(--muted)]">
+                    No calls scheduled yet. Create a new group call to get started.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="glass-panel p-6 sm:p-7 space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
+                Call setup
+              </p>
+              <h2 className="text-xl font-semibold mt-2">Create a new call</h2>
+            </div>
+            {canManageCalls ? (
+              <>
+                <div className="grid grid-cols-1 gap-4">
+                  <input
+                    className={inputClass}
+                    placeholder="Call title"
+                    value={callForm.title}
+                    onChange={(event) =>
+                      setCallForm((prev) => ({ ...prev, title: event.target.value }))
+                    }
+                  />
+                  <input
+                    className={inputClass}
+                    type="datetime-local"
+                    value={callForm.scheduledFor}
+                    onChange={(event) =>
+                      setCallForm((prev) => ({ ...prev, scheduledFor: event.target.value }))
+                    }
+                  />
+                  <select
+                    className={inputClass}
+                    value={callForm.accessType}
+                    onChange={(event) =>
+                      setCallForm((prev) => ({ ...prev, accessType: event.target.value }))
+                    }
+                  >
+                    <option value="OPEN">Open access</option>
+                    <option value="TRUSTED">Trusted access</option>
+                    <option value="RESTRICTED">Restricted access</option>
+                  </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[var(--muted)]">
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={callForm.autoRecording}
+                        onChange={(event) =>
+                          setCallForm((prev) => ({
+                            ...prev,
+                            autoRecording: event.target.checked,
+                          }))
+                        }
+                      />
+                      Auto recording
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={callForm.autoTranscription}
+                        onChange={(event) =>
+                          setCallForm((prev) => ({
+                            ...prev,
+                            autoTranscription: event.target.checked,
+                          }))
+                        }
+                      />
+                      Auto transcription
+                    </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={callForm.autoSmartNotes}
+                        onChange={(event) =>
+                          setCallForm((prev) => ({
+                            ...prev,
+                            autoSmartNotes: event.target.checked,
+                          }))
+                        }
+                      />
+                      Smart notes
+                    </label>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCreateCall}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+                >
+                  <CalendarClock size={16} />
+                  Create call
+                </button>
+                <p className="text-xs text-[var(--muted)]">
+                  Leave the date empty to start a call immediately.
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-[var(--muted)]">
+                Only moderators or secretaries can schedule group calls.
+              </p>
             )}
           </div>
         </section>

@@ -9,6 +9,8 @@ import {
   LayoutDashboard,
   Users,
   CalendarCheck,
+  ClipboardList,
+  Wallet,
   Menu,
   ChevronLeft,
   ChevronRight,
@@ -25,6 +27,7 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [rolePanels, setRolePanels] = useState({ hasSecretary: false, hasTreasurer: false });
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode ? "dark" : "light";
@@ -54,6 +57,32 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    let isActive = true;
+    const loadRolePanels = async () => {
+      if (!session?.user) return;
+      try {
+        const response = await fetch("/api/chama/groups", { cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) return;
+        const roles = (data.groups ?? []).map(
+          (group: { membership?: { role?: string | null } | null }) => group.membership?.role
+        );
+        if (!isActive) return;
+        setRolePanels({
+          hasSecretary: roles.includes("secretary"),
+          hasTreasurer: roles.includes("treasurer"),
+        });
+      } catch {
+        // Role panels are optional; ignore failures.
+      }
+    };
+    loadRolePanels();
+    return () => {
+      isActive = false;
+    };
+  }, [session?.user]);
 
   if (isPending) {
     return (
@@ -101,6 +130,12 @@ export default function ChamaLayout({ children }: { children: React.ReactNode })
     { href: "/chama", label: "Dashboard", icon: LayoutDashboard },
     { href: "/chama/groups", label: "Groups", icon: Users },
     { href: "/chama/ledger", label: "Contributions", icon: CalendarCheck },
+    ...(rolePanels.hasSecretary
+      ? [{ href: "/chama/secretary", label: "Secretary", icon: ClipboardList }]
+      : []),
+    ...(rolePanels.hasTreasurer
+      ? [{ href: "/chama/treasurer", label: "Treasurer", icon: Wallet }]
+      : []),
   ];
 
   const roleList = session?.user?.role
