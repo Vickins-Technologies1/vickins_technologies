@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Loader2,
   Plus,
   RefreshCcw,
   Sparkles,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import RotationWheel from "@/components/chama/RotationWheel";
 import { authClient } from "@/lib/auth-client";
+import Modal from "@/components/Modal";
 
 type GroupDetail = {
   id: string;
@@ -79,8 +81,7 @@ type GroupCall = {
   createdAt?: string;
 };
 
-const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+const inputClass = "glass-input";
 
 export default function ChamaGroupPage() {
   const params = useParams();
@@ -97,7 +98,14 @@ export default function ChamaGroupPage() {
   const [stats, setStats] = useState<{ membersCount: number; potAmount: number } | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [pending, setPending] = useState<Record<string, boolean>>({});
+
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [contributionOpen, setContributionOpen] = useState(false);
+  const [callOpen, setCallOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const [memberForm, setMemberForm] = useState({
     name: "",
@@ -141,9 +149,14 @@ export default function ChamaGroupPage() {
     []
   );
 
-  const loadGroup = async () => {
-    setLoading(true);
-    setError("");
+  const setPendingKey = (key: string, value: boolean) =>
+    setPending((prev) => ({ ...prev, [key]: value }));
+
+  const loadGroup = async (options: { silent?: boolean } = {}) => {
+    if (options.silent) setRefreshing(true);
+    else setInitialLoading(true);
+
+    setError((prev) => (options.silent ? prev : ""));
     try {
       const [groupRes, membersRes, roundsRes] = await Promise.all([
         fetch(`/api/chama/groups/${groupId}`, { cache: "no-store" }),
@@ -180,7 +193,8 @@ export default function ChamaGroupPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load group.");
     } finally {
-      setLoading(false);
+      if (options.silent) setRefreshing(false);
+      else setInitialLoading(false);
     }
   };
 
@@ -202,6 +216,8 @@ export default function ChamaGroupPage() {
   const handleSyncAttendance = async (callId: string) => {
     setMessage("");
     setError("");
+    const pendingKey = `attendance:${callId}`;
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(
         `/api/chama/groups/${groupId}/calls/${callId}/attendance/sync`,
@@ -215,6 +231,8 @@ export default function ChamaGroupPage() {
       await loadCalls();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sync attendance.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -259,6 +277,9 @@ export default function ChamaGroupPage() {
       setError("Provide an email or phone number.");
       return;
     }
+
+    const pendingKey = "member-invite";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/members`, {
         method: "POST",
@@ -269,15 +290,24 @@ export default function ChamaGroupPage() {
       if (!response.ok) throw new Error(data?.error || "Unable to invite member.");
       setMessage("Invite sent. Member is pending approval.");
       setMemberForm({ name: "", email: "", phone: "", role: "member" });
-      await loadGroup();
+      setInviteOpen(false);
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to invite member.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const handleUpdateMember = async (memberId: string, updates: Record<string, string>) => {
     setMessage("");
     setError("");
+    const pendingKey = updates.role
+      ? `member-role:${memberId}`
+      : updates.status
+      ? `member-status:${memberId}:${updates.status}`
+      : `member-update:${memberId}`;
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/members/${memberId}`, {
         method: "PATCH",
@@ -287,9 +317,11 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to update member.");
       setMessage("Member updated.");
-      await loadGroup();
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update member.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -304,6 +336,9 @@ export default function ChamaGroupPage() {
       setError("Select a member and amount.");
       return;
     }
+
+    const pendingKey = "contribution-record";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/contributions`, {
         method: "POST",
@@ -319,16 +354,21 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to record contribution.");
       setMessage("Contribution recorded.");
-      await loadGroup();
+      setContributionOpen(false);
+      await loadGroup({ silent: true });
       await loadContributions(openRoundId);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to record contribution.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const handleAdvanceRound = async () => {
     setMessage("");
     setError("");
+    const pendingKey = "round-advance";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/rounds`, {
         method: "POST",
@@ -338,15 +378,19 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to advance round.");
       setMessage("Round advanced to next recipient.");
-      await loadGroup();
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to advance round.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const handleMarkReceived = async () => {
     setMessage("");
     setError("");
+    const pendingKey = "round-received";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/rounds`, {
         method: "POST",
@@ -356,15 +400,19 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to mark received.");
       setMessage("Recipient marked as paid.");
-      await loadGroup();
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to mark received.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const updateRotationOrder = async (nextOrder: string[], shuffle = false) => {
     setMessage("");
     setError("");
+    const pendingKey = "rotation-update";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}`, {
         method: "PUT",
@@ -377,15 +425,19 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to update rotation.");
       setMessage("Rotation order updated.");
-      await loadGroup();
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update rotation.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const handleGroupUpdate = async () => {
     setMessage("");
     setError("");
+    const pendingKey = "group-update";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}`, {
         method: "PUT",
@@ -395,9 +447,12 @@ export default function ChamaGroupPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to update group.");
       setMessage("Group details updated.");
-      await loadGroup();
+      setSettingsOpen(false);
+      await loadGroup({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update group.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -408,6 +463,8 @@ export default function ChamaGroupPage() {
       setError("Provide a call title.");
       return;
     }
+    const pendingKey = "call-create";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${groupId}/calls`, {
         method: "POST",
@@ -432,9 +489,12 @@ export default function ChamaGroupPage() {
         autoTranscription: false,
         autoSmartNotes: false,
       });
+      setCallOpen(false);
       await loadCalls();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create call.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -493,7 +553,7 @@ export default function ChamaGroupPage() {
     }
   }, [tabs, activeTab]);
 
-  if (loading || !group) {
+  if (initialLoading || !group) {
     return (
       <div className="space-y-6">
         <div className="glass-panel h-32 shimmer-line" />
@@ -536,18 +596,28 @@ export default function ChamaGroupPage() {
               <button
                 type="button"
                 onClick={handleMarkReceived}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+                disabled={pending["round-received"]}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold disabled:opacity-70"
               >
-                <CheckCircle2 size={16} />
-                Mark recipient paid
+                {pending["round-received"] ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <CheckCircle2 size={16} />
+                )}
+                {pending["round-received"] ? "Marking..." : "Mark recipient paid"}
               </button>
               <button
                 type="button"
                 onClick={handleAdvanceRound}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+                disabled={pending["round-advance"]}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
               >
-                <ArrowRight size={16} />
-                Move to next round
+                {pending["round-advance"] ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <ArrowRight size={16} />
+                )}
+                {pending["round-advance"] ? "Moving..." : "Move to next round"}
               </button>
             </div>
           )}
@@ -556,6 +626,12 @@ export default function ChamaGroupPage() {
 
       {error && <div className="glass-panel p-4 text-sm text-rose-500">{error}</div>}
       {message && <div className="glass-panel p-4 text-sm">{message}</div>}
+      {refreshing && (
+        <div className="glass-panel p-3 text-xs text-[var(--muted)] inline-flex items-center gap-2">
+          <Loader2 size={14} className="animate-spin" />
+          Updating group data…
+        </div>
+      )}
 
       <section className="glass-panel p-4 sm:p-5">
         <div className="flex flex-wrap gap-2">
@@ -640,9 +716,14 @@ export default function ChamaGroupPage() {
                         [next[index - 1], next[index]] = [next[index], next[index - 1]];
                         updateRotationOrder(next);
                       }}
-                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
+                      disabled={pending["rotation-update"]}
+                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70 disabled:opacity-70"
                     >
-                      <ChevronUp size={14} />
+                      {pending["rotation-update"] ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <ChevronUp size={14} />
+                      )}
                     </button>
                     <button
                       type="button"
@@ -653,9 +734,14 @@ export default function ChamaGroupPage() {
                         [next[index + 1], next[index]] = [next[index], next[index + 1]];
                         updateRotationOrder(next);
                       }}
-                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70"
+                      disabled={pending["rotation-update"]}
+                      className="p-2 rounded-full border border-[var(--glass-border)] bg-white/70 disabled:opacity-70"
                     >
-                      <ChevronDown size={14} />
+                      {pending["rotation-update"] ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <ChevronDown size={14} />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -664,10 +750,15 @@ export default function ChamaGroupPage() {
             <button
               type="button"
               onClick={() => updateRotationOrder(rotationOrder, true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+              disabled={pending["rotation-update"]}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold disabled:opacity-70"
             >
-              <RefreshCcw size={16} />
-              Shuffle order
+              {pending["rotation-update"] ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <RefreshCcw size={16} />
+              )}
+              {pending["rotation-update"] ? "Updating..." : "Shuffle order"}
             </button>
           </div>
         ) : (
@@ -688,7 +779,8 @@ export default function ChamaGroupPage() {
         <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         {hasGroupPrivileges ? (
           <div className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Members & roles
             </p>
@@ -696,6 +788,15 @@ export default function ChamaGroupPage() {
             <p className="text-sm text-[var(--muted)] mt-2">
               Assign the Secretary or Treasurer role to unlock their dedicated control panels.
             </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setInviteOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              <UserPlus size={16} />
+              Invite member
+            </button>
           </div>
             <div className="space-y-3">
               {members.map((member) => (
@@ -718,7 +819,8 @@ export default function ChamaGroupPage() {
                   </div>
                     <div className="flex flex-wrap gap-2">
                       <select
-                        className="text-xs border border-[var(--glass-border)] rounded-full px-2 py-1 bg-white/70"
+                        disabled={pending[`member-role:${member.id}`]}
+                        className="text-xs border border-[var(--glass-border)] rounded-full px-2 py-1 bg-white/70 disabled:opacity-70"
                         value={member.role}
                         onChange={(event) =>
                           handleUpdateMember(member.id, { role: event.target.value })
@@ -730,22 +832,35 @@ export default function ChamaGroupPage() {
                           </option>
                         ))}
                       </select>
+                      {pending[`member-role:${member.id}`] ? (
+                        <span className="inline-flex items-center px-2">
+                          <Loader2 size={14} className="animate-spin text-[var(--muted)]" />
+                        </span>
+                      ) : null}
                       {member.status !== "active" && (
                         <button
                           type="button"
                           onClick={() => handleUpdateMember(member.id, { status: "active" })}
-                          className="text-xs px-3 py-1 rounded-full bg-[var(--button-bg)]/10 text-[var(--button-bg)]"
+                          disabled={pending[`member-status:${member.id}:active`]}
+                          className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-[var(--button-bg)]/10 text-[var(--button-bg)] disabled:opacity-70"
                         >
-                          Accept
+                          {pending[`member-status:${member.id}:active`] ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : null}
+                          {pending[`member-status:${member.id}:active`] ? "Accepting..." : "Accept"}
                         </button>
                       )}
                       {member.status !== "rejected" && (
                         <button
                           type="button"
                           onClick={() => handleUpdateMember(member.id, { status: "rejected" })}
-                          className="text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600"
+                          disabled={pending[`member-status:${member.id}:rejected`]}
+                          className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600 disabled:opacity-70"
                         >
-                          Reject
+                          {pending[`member-status:${member.id}:rejected`] ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : null}
+                          {pending[`member-status:${member.id}:rejected`] ? "Rejecting..." : "Reject"}
                         </button>
                       )}
                     </div>
@@ -755,51 +870,6 @@ export default function ChamaGroupPage() {
                   </p>
                 </div>
               ))}
-            </div>
-            <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 space-y-4">
-              <div className="flex items-center gap-2">
-                <UserPlus size={18} />
-                <h3 className="font-semibold text-lg">Invite member</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  className={inputClass}
-                  placeholder="Full name"
-                  value={memberForm.name}
-                  onChange={(event) => setMemberForm((prev) => ({ ...prev, name: event.target.value }))}
-                />
-                <select
-                  className={inputClass}
-                  value={memberForm.role}
-                  onChange={(event) => setMemberForm((prev) => ({ ...prev, role: event.target.value }))}
-                >
-                  {["member", "secretary", "treasurer", "admin"].map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  className={inputClass}
-                  placeholder="Email"
-                  value={memberForm.email}
-                  onChange={(event) => setMemberForm((prev) => ({ ...prev, email: event.target.value }))}
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Phone"
-                  value={memberForm.phone}
-                  onChange={(event) => setMemberForm((prev) => ({ ...prev, phone: event.target.value }))}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleAddMember}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-              >
-                <Plus size={16} />
-                Send invite
-              </button>
             </div>
           </div>
         ) : (
@@ -818,63 +888,29 @@ export default function ChamaGroupPage() {
 
       {activeTab === "contributions" && (
         <section className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Contribution log
             </p>
             <h2 className="text-xl font-semibold mt-2">Record contributions</h2>
-          </div>
-          {hasGroupPrivileges ? (
-            <>
-              <div className="grid grid-cols-1 gap-4">
-                <select
-                  className={inputClass}
-                  value={contributionForm.memberId}
-                  onChange={(event) =>
-                    setContributionForm((prev) => ({ ...prev, memberId: event.target.value }))
-                  }
-                >
-                  {members.map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.name || member.email || "Member"}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  className={inputClass}
-                  type="number"
-                  placeholder="Amount (KES)"
-                  value={contributionForm.amount}
-                  onChange={(event) =>
-                    setContributionForm((prev) => ({ ...prev, amount: event.target.value }))
-                  }
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Method (manual / mpesa)"
-                  value={contributionForm.method}
-                  onChange={(event) =>
-                    setContributionForm((prev) => ({ ...prev, method: event.target.value }))
-                  }
-                />
-                <input
-                  className={inputClass}
-                  placeholder="Reference (optional)"
-                  value={contributionForm.reference}
-                  onChange={(event) =>
-                    setContributionForm((prev) => ({ ...prev, reference: event.target.value }))
-                  }
-                />
-              </div>
+            </div>
+            {hasGroupPrivileges && (
               <button
                 type="button"
-                onClick={handleRecordContribution}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold"
+                onClick={() => setContributionOpen(true)}
+                disabled={!openRoundId}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold disabled:opacity-60"
               >
                 <Plus size={16} />
                 Record contribution
               </button>
-            </>
+            )}
+          </div>
+          {hasGroupPrivileges ? (
+            <p className="text-sm text-[var(--muted)]">
+              Use the action button above to log a payment without leaving this page.
+            </p>
           ) : (
             <p className="text-sm text-[var(--muted)]">
               Contributions can be recorded by moderators only.
@@ -978,10 +1014,15 @@ export default function ChamaGroupPage() {
                             <button
                               type="button"
                               onClick={() => handleSyncAttendance(call.id)}
-                              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[var(--glass-border)] text-[var(--foreground)]"
+                              disabled={pending[`attendance:${call.id}`]}
+                              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[var(--glass-border)] text-[var(--foreground)] disabled:opacity-70"
                             >
-                              <RefreshCcw size={14} />
-                              Sync attendance
+                              {pending[`attendance:${call.id}`] ? (
+                                <Loader2 size={14} className="animate-spin" />
+                              ) : (
+                                <RefreshCcw size={14} />
+                              )}
+                              {pending[`attendance:${call.id}`] ? "Syncing..." : "Sync attendance"}
                             </button>
                           )}
                         </div>
@@ -1024,97 +1065,26 @@ export default function ChamaGroupPage() {
           </div>
 
           <div className="glass-panel p-6 sm:p-7 space-y-5">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
-                Call setup
-              </p>
-              <h2 className="text-xl font-semibold mt-2">Create a new call</h2>
-            </div>
-            {canManageCalls ? (
-              <>
-                <div className="grid grid-cols-1 gap-4">
-                  <input
-                    className={inputClass}
-                    placeholder="Call title"
-                    value={callForm.title}
-                    onChange={(event) =>
-                      setCallForm((prev) => ({ ...prev, title: event.target.value }))
-                    }
-                  />
-                  <input
-                    className={inputClass}
-                    type="datetime-local"
-                    value={callForm.scheduledFor}
-                    onChange={(event) =>
-                      setCallForm((prev) => ({ ...prev, scheduledFor: event.target.value }))
-                    }
-                  />
-                  <select
-                    className={inputClass}
-                    value={callForm.accessType}
-                    onChange={(event) =>
-                      setCallForm((prev) => ({ ...prev, accessType: event.target.value }))
-                    }
-                  >
-                    <option value="OPEN">Open access</option>
-                    <option value="TRUSTED">Trusted access</option>
-                    <option value="RESTRICTED">Restricted access</option>
-                  </select>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[var(--muted)]">
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={callForm.autoRecording}
-                        onChange={(event) =>
-                          setCallForm((prev) => ({
-                            ...prev,
-                            autoRecording: event.target.checked,
-                          }))
-                        }
-                      />
-                      Auto recording
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={callForm.autoTranscription}
-                        onChange={(event) =>
-                          setCallForm((prev) => ({
-                            ...prev,
-                            autoTranscription: event.target.checked,
-                          }))
-                        }
-                      />
-                      Auto transcription
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={callForm.autoSmartNotes}
-                        onChange={(event) =>
-                          setCallForm((prev) => ({
-                            ...prev,
-                            autoSmartNotes: event.target.checked,
-                          }))
-                        }
-                      />
-                      Smart notes
-                    </label>
-                  </div>
-                </div>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Call setup</p>
+                <h2 className="text-xl font-semibold mt-2">Create a new call</h2>
+                <p className="text-sm text-[var(--muted)] mt-2">
+                  Schedule a video call and optionally enable recording, transcripts, and smart notes.
+                </p>
+              </div>
+              {canManageCalls ? (
                 <button
                   type="button"
-                  onClick={handleCreateCall}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+                  onClick={() => setCallOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
                 >
                   <CalendarClock size={16} />
-                  Create call
+                  New call
                 </button>
-                <p className="text-xs text-[var(--muted)]">
-                  Leave the date empty to start a call immediately.
-                </p>
-              </>
-            ) : (
+              ) : null}
+            </div>
+            {!canManageCalls && (
               <p className="text-sm text-[var(--muted)]">
                 Only moderators or secretaries can schedule group calls.
               </p>
@@ -1125,10 +1095,252 @@ export default function ChamaGroupPage() {
 
       {activeTab === "settings" && hasGroupPrivileges && (
         <section className="glass-panel p-6 sm:p-7 space-y-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group settings</p>
-            <h2 className="text-xl font-semibold mt-2">Update core details</h2>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Group settings</p>
+              <h2 className="text-xl font-semibold mt-2">Update core details</h2>
+              <p className="text-sm text-[var(--muted)] mt-2">
+                Edit the group profile in a modal so the dashboard stays in place.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSettingsOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              Edit details
+              <ArrowRight size={16} />
+            </button>
           </div>
+
+          <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4">
+            <div className="flex flex-wrap gap-2">
+              <span className="glass-chip px-4 py-2 text-xs">Currency: {group.currency}</span>
+              <span className="glass-chip px-4 py-2 text-xs">
+                Contribution: {currencyFormatter.format(group.contributionAmount)}
+              </span>
+              <span className="glass-chip px-4 py-2 text-xs">Frequency: {group.frequency}</span>
+              <span className="glass-chip px-4 py-2 text-xs">
+                Start: {group.startDate ? new Date(group.startDate).toLocaleDateString() : "—"}
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Modal
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        title="Invite member"
+        subtitle="Send an email or phone invite without leaving this dashboard."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Full name"
+              value={memberForm.name}
+              onChange={(event) => setMemberForm((prev) => ({ ...prev, name: event.target.value }))}
+            />
+            <select
+              className={inputClass}
+              value={memberForm.role}
+              onChange={(event) => setMemberForm((prev) => ({ ...prev, role: event.target.value }))}
+            >
+              {["member", "secretary", "treasurer", "admin"].map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+            <input
+              className={inputClass}
+              placeholder="Email"
+              value={memberForm.email}
+              onChange={(event) => setMemberForm((prev) => ({ ...prev, email: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              placeholder="Phone"
+              value={memberForm.phone}
+              onChange={(event) => setMemberForm((prev) => ({ ...prev, phone: event.target.value }))}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleAddMember}
+            disabled={pending["member-invite"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["member-invite"] ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Plus size={16} />
+            )}
+            {pending["member-invite"] ? "Sending..." : "Send invite"}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={contributionOpen}
+        onClose={() => setContributionOpen(false)}
+        title="Record contribution"
+        subtitle="Log a payment and refresh the ledger silently."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <select
+              className={inputClass}
+              value={contributionForm.memberId}
+              onChange={(event) =>
+                setContributionForm((prev) => ({ ...prev, memberId: event.target.value }))
+              }
+            >
+              {members.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name || member.email || "Member"}
+                </option>
+              ))}
+            </select>
+            <input
+              className={inputClass}
+              type="number"
+              placeholder="Amount (KES)"
+              value={contributionForm.amount}
+              onChange={(event) =>
+                setContributionForm((prev) => ({ ...prev, amount: event.target.value }))
+              }
+            />
+            <input
+              className={inputClass}
+              placeholder="Method (manual / mpesa)"
+              value={contributionForm.method}
+              onChange={(event) =>
+                setContributionForm((prev) => ({ ...prev, method: event.target.value }))
+              }
+            />
+            <input
+              className={inputClass}
+              placeholder="Reference (optional)"
+              value={contributionForm.reference}
+              onChange={(event) =>
+                setContributionForm((prev) => ({ ...prev, reference: event.target.value }))
+              }
+            />
+          </div>
+
+          {!openRoundId ? (
+            <p className="text-sm text-rose-500">No open round available.</p>
+          ) : null}
+
+          <button
+            type="button"
+            onClick={handleRecordContribution}
+            disabled={!openRoundId || pending["contribution-record"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[var(--glass-border)] bg-white/70 text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["contribution-record"] ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Plus size={16} />
+            )}
+            {pending["contribution-record"] ? "Recording..." : "Record contribution"}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={callOpen}
+        onClose={() => setCallOpen(false)}
+        title="Create a new call"
+        subtitle="Leave the date empty to start immediately."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Call title"
+              value={callForm.title}
+              onChange={(event) => setCallForm((prev) => ({ ...prev, title: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              type="datetime-local"
+              value={callForm.scheduledFor}
+              onChange={(event) =>
+                setCallForm((prev) => ({ ...prev, scheduledFor: event.target.value }))
+              }
+            />
+            <select
+              className={inputClass}
+              value={callForm.accessType}
+              onChange={(event) => setCallForm((prev) => ({ ...prev, accessType: event.target.value }))}
+            >
+              <option value="OPEN">Open access</option>
+              <option value="TRUSTED">Trusted access</option>
+              <option value="RESTRICTED">Restricted access</option>
+            </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[var(--muted)]">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={callForm.autoRecording}
+                  onChange={(event) =>
+                    setCallForm((prev) => ({ ...prev, autoRecording: event.target.checked }))
+                  }
+                />
+                Auto recording
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={callForm.autoTranscription}
+                  onChange={(event) =>
+                    setCallForm((prev) => ({ ...prev, autoTranscription: event.target.checked }))
+                  }
+                />
+                Auto transcription
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={callForm.autoSmartNotes}
+                  onChange={(event) =>
+                    setCallForm((prev) => ({ ...prev, autoSmartNotes: event.target.checked }))
+                  }
+                />
+                Smart notes
+              </label>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleCreateCall}
+            disabled={pending["call-create"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["call-create"] ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <CalendarClock size={16} />
+            )}
+            {pending["call-create"] ? "Creating..." : "Create call"}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        title="Update group details"
+        subtitle="Save changes with a button loader (no page skeleton)."
+        size="lg"
+      >
+        <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               className={inputClass}
@@ -1168,28 +1380,26 @@ export default function ChamaGroupPage() {
               className={inputClass}
               type="date"
               value={groupForm.startDate}
-              onChange={(event) =>
-                setGroupForm((prev) => ({ ...prev, startDate: event.target.value }))
-              }
+              onChange={(event) => setGroupForm((prev) => ({ ...prev, startDate: event.target.value }))}
             />
             <input
               className={inputClass}
               placeholder="Currency"
               value={groupForm.currency}
-              onChange={(event) =>
-                setGroupForm((prev) => ({ ...prev, currency: event.target.value }))
-              }
+              onChange={(event) => setGroupForm((prev) => ({ ...prev, currency: event.target.value }))}
             />
           </div>
           <button
             type="button"
             onClick={handleGroupUpdate}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            disabled={pending["group-update"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
           >
-            Save changes
+            {pending["group-update"] ? <Loader2 size={16} className="animate-spin" /> : null}
+            {pending["group-update"] ? "Saving..." : "Save changes"}
           </button>
-        </section>
-      )}
+        </div>
+      </Modal>
     </div>
   );
 }

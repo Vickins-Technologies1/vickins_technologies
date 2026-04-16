@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   CalendarCheck,
+  Loader2,
   Plus,
   Search,
   ShieldCheck,
@@ -54,11 +55,13 @@ export default function ChamaGroupsPage() {
   const { data: session } = authClient.useSession();
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [message, setMessage] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createPending, setCreatePending] = useState(false);
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -84,9 +87,11 @@ export default function ChamaGroupsPage() {
     }).format(amount);
   }, []);
 
-  const loadGroups = async () => {
-    setLoading(true);
-    setError("");
+  const loadGroups = async (options: { silent?: boolean } = {}) => {
+    if (options.silent) setRefreshing(true);
+    else setLoading(true);
+
+    setError((prev) => (options.silent ? prev : ""));
     try {
       const response = await fetch("/api/chama/groups", { cache: "no-store" });
       const data = await response.json();
@@ -95,7 +100,8 @@ export default function ChamaGroupsPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load groups.");
     } finally {
-      setLoading(false);
+      if (options.silent) setRefreshing(false);
+      else setLoading(false);
     }
   };
 
@@ -149,6 +155,7 @@ export default function ChamaGroupsPage() {
       return;
     }
 
+    setCreatePending(true);
     try {
       const response = await fetch("/api/chama/groups", {
         method: "POST",
@@ -160,9 +167,11 @@ export default function ChamaGroupsPage() {
       setMessage("Group created successfully.");
       setForm((prev) => ({ ...prev, name: "", description: "" }));
       setIsCreateOpen(false);
-      await loadGroups();
+      await loadGroups({ silent: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create group.");
+    } finally {
+      setCreatePending(false);
     }
   };
 
@@ -248,7 +257,7 @@ export default function ChamaGroupsPage() {
 
       <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         <div className="space-y-4">
-          {loading ? (
+          {loading && groups.length === 0 ? (
             <div className="space-y-4">
               {[0, 1, 2].map((item) => (
                 <div
@@ -495,10 +504,11 @@ export default function ChamaGroupsPage() {
           <button
             type="button"
             onClick={handleCreateGroup}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            disabled={createPending}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
           >
-            <Plus size={16} />
-            Create chama
+            {createPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+            {createPending ? "Creating..." : "Create chama"}
           </button>
         </div>
       </Modal>

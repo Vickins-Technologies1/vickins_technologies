@@ -9,11 +9,13 @@ import {
   Coins,
   Download,
   Filter,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import TreasurerLedgerPdf from "@/components/chama/TreasurerLedgerPdf";
+import Modal from "@/components/Modal";
 
 type GroupSummary = {
   id: string;
@@ -66,8 +68,7 @@ type Contribution = {
   paidAt?: string;
 };
 
-const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+const inputClass = "glass-input";
 
 export default function TreasurerPanelPage() {
   const { data: session } = authClient.useSession();
@@ -83,6 +84,8 @@ export default function TreasurerPanelPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [pending, setPending] = useState<Record<string, boolean>>({});
+  const [recordOpen, setRecordOpen] = useState(false);
 
   const [recordForm, setRecordForm] = useState({
     memberId: "",
@@ -111,6 +114,9 @@ export default function TreasurerPanelPage() {
       }),
     [groupDetail?.currency]
   );
+
+  const setPendingKey = (key: string, value: boolean) =>
+    setPending((prev) => ({ ...prev, [key]: value }));
 
   const loadGroups = async () => {
     setLoading(true);
@@ -184,6 +190,8 @@ export default function TreasurerPanelPage() {
       setError("Select a member and amount.");
       return;
     }
+    const pendingKey = "contribution-record";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${selectedGroup}/contributions`, {
         method: "POST",
@@ -199,9 +207,12 @@ export default function TreasurerPanelPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data?.error || "Unable to record contribution.");
       setMessage("Contribution recorded.");
+      setRecordOpen(false);
       await loadGroupDetail(selectedGroup);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to record contribution.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -345,53 +356,17 @@ export default function TreasurerPanelPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Record</p>
             <h2 className="text-xl font-semibold mt-2">Log a contribution</h2>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <select
-              className={inputClass}
-              value={recordForm.memberId}
-              onChange={(event) =>
-                setRecordForm((prev) => ({ ...prev, memberId: event.target.value }))
-              }
-            >
-              {members.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {member.name || member.email || "Member"}
-                </option>
-              ))}
-            </select>
-            <input
-              className={inputClass}
-              type="number"
-              placeholder="Amount"
-              value={recordForm.amount}
-              onChange={(event) =>
-                setRecordForm((prev) => ({ ...prev, amount: event.target.value }))
-              }
-            />
-            <input
-              className={inputClass}
-              placeholder="Method (manual / mpesa)"
-              value={recordForm.method}
-              onChange={(event) =>
-                setRecordForm((prev) => ({ ...prev, method: event.target.value }))
-              }
-            />
-            <input
-              className={inputClass}
-              placeholder="Reference (optional)"
-              value={recordForm.reference}
-              onChange={(event) =>
-                setRecordForm((prev) => ({ ...prev, reference: event.target.value }))
-              }
-            />
-          </div>
+          <p className="text-sm text-[var(--muted)]">
+            Record a payment in a modal so the dashboard doesn’t shift or reload.
+          </p>
           <button
             type="button"
-            onClick={handleRecordContribution}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            onClick={() => setRecordOpen(true)}
+            disabled={!openRound}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
           >
             <Receipt size={16} />
-            Record contribution
+            New contribution
           </button>
           {!openRound && (
             <p className="text-sm text-[var(--muted)]">
@@ -534,6 +509,69 @@ export default function TreasurerPanelPage() {
           )}
         </div>
       </section>
+
+      <Modal
+        open={recordOpen}
+        onClose={() => setRecordOpen(false)}
+        title="Record contribution"
+        subtitle="Log a payment with a button loader (no page reload)."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <select
+              className={inputClass}
+              value={recordForm.memberId}
+              onChange={(event) =>
+                setRecordForm((prev) => ({ ...prev, memberId: event.target.value }))
+              }
+            >
+              {members.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name || member.email || "Member"}
+                </option>
+              ))}
+            </select>
+            <input
+              className={inputClass}
+              type="number"
+              placeholder="Amount"
+              value={recordForm.amount}
+              onChange={(event) => setRecordForm((prev) => ({ ...prev, amount: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              placeholder="Method (manual / mpesa)"
+              value={recordForm.method}
+              onChange={(event) => setRecordForm((prev) => ({ ...prev, method: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              placeholder="Reference (optional)"
+              value={recordForm.reference}
+              onChange={(event) =>
+                setRecordForm((prev) => ({ ...prev, reference: event.target.value }))
+              }
+            />
+          </div>
+          {!openRound?.id ? (
+            <p className="text-sm text-rose-500">There is no open round right now.</p>
+          ) : null}
+          <button
+            type="button"
+            onClick={handleRecordContribution}
+            disabled={!openRound?.id || pending["contribution-record"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["contribution-record"] ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Receipt size={16} />
+            )}
+            {pending["contribution-record"] ? "Recording..." : "Record contribution"}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

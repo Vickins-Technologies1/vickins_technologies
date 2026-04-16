@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Users,
   MailPlus,
+  Loader2,
   ClipboardCheck,
   CalendarClock,
   ScrollText,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import Modal from "@/components/Modal";
 
 type GroupSummary = {
   id: string;
@@ -65,8 +67,7 @@ type Announcement = {
   createdAt?: string;
 };
 
-const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+const inputClass = "glass-input";
 const textAreaClass = `${inputClass} min-h-[120px] resize-none`;
 
 export default function SecretaryPanelPage() {
@@ -80,6 +81,11 @@ export default function SecretaryPanelPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [pending, setPending] = useState<Record<string, boolean>>({});
+
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [minutesOpen, setMinutesOpen] = useState(false);
+  const [announcementOpen, setAnnouncementOpen] = useState(false);
 
   const [inviteForm, setInviteForm] = useState({
     name: "",
@@ -115,6 +121,9 @@ export default function SecretaryPanelPage() {
       }),
     [groupDetail?.currency]
   );
+
+  const setPendingKey = (key: string, value: boolean) =>
+    setPending((prev) => ({ ...prev, [key]: value }));
 
   const loadGroups = async () => {
     setLoading(true);
@@ -182,6 +191,8 @@ export default function SecretaryPanelPage() {
       setError("Provide an email or phone number.");
       return;
     }
+    const pendingKey = "invite-member";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${selectedGroup}/members`, {
         method: "POST",
@@ -192,15 +203,22 @@ export default function SecretaryPanelPage() {
       if (!response.ok) throw new Error(data?.error || "Unable to invite member.");
       setMessage("Invite sent. Member is pending approval.");
       setInviteForm({ name: "", email: "", phone: "" });
+      setInviteOpen(false);
       await loadGroupDetail(selectedGroup);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to invite member.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
   const handleUpdateMember = async (memberId: string, updates: Record<string, string>) => {
     setMessage("");
     setError("");
+    const pendingKey = updates.status
+      ? `member-status:${memberId}:${updates.status}`
+      : `member-update:${memberId}`;
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${selectedGroup}/members/${memberId}`, {
         method: "PATCH",
@@ -213,6 +231,8 @@ export default function SecretaryPanelPage() {
       await loadGroupDetail(selectedGroup);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update member.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -223,6 +243,8 @@ export default function SecretaryPanelPage() {
       setError("Provide a meeting title and date.");
       return;
     }
+    const pendingKey = "minutes-create";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${selectedGroup}/minutes`, {
         method: "POST",
@@ -233,9 +255,12 @@ export default function SecretaryPanelPage() {
       if (!response.ok) throw new Error(data?.error || "Unable to save minutes.");
       setMessage("Meeting minutes saved.");
       setMinutesForm({ title: "", meetingDate: "", summary: "", actionItems: "" });
+      setMinutesOpen(false);
       await loadGroupDetail(selectedGroup);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to save minutes.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -246,6 +271,8 @@ export default function SecretaryPanelPage() {
       setError("Provide an announcement title and message.");
       return;
     }
+    const pendingKey = "announcement-create";
+    setPendingKey(pendingKey, true);
     try {
       const response = await fetch(`/api/chama/groups/${selectedGroup}/announcements`, {
         method: "POST",
@@ -266,9 +293,12 @@ export default function SecretaryPanelPage() {
         deliveryChannels: ["in-app", "email"],
         scheduledFor: "",
       });
+      setAnnouncementOpen(false);
       await loadGroupDetail(selectedGroup);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to publish announcement.");
+    } finally {
+      setPendingKey(pendingKey, false);
     }
   };
 
@@ -404,16 +434,24 @@ export default function SecretaryPanelPage() {
                       <button
                         type="button"
                         onClick={() => handleUpdateMember(member.id, { status: "active" })}
-                        className="text-xs px-3 py-1 rounded-full bg-[var(--button-bg)] text-white"
+                        disabled={pending[`member-status:${member.id}:active`]}
+                        className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-[var(--button-bg)] text-white disabled:opacity-70"
                       >
-                        Accept
+                        {pending[`member-status:${member.id}:active`] ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : null}
+                        {pending[`member-status:${member.id}:active`] ? "Accepting..." : "Accept"}
                       </button>
                       <button
                         type="button"
                         onClick={() => handleUpdateMember(member.id, { status: "rejected" })}
-                        className="text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600"
+                        disabled={pending[`member-status:${member.id}:rejected`]}
+                        className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-rose-100 text-rose-600 disabled:opacity-70"
                       >
-                        Reject
+                        {pending[`member-status:${member.id}:rejected`] ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : null}
+                        {pending[`member-status:${member.id}:rejected`] ? "Rejecting..." : "Reject"}
                       </button>
                     </div>
                   </div>
@@ -424,38 +462,23 @@ export default function SecretaryPanelPage() {
         </div>
 
         <div className="glass-panel p-6 sm:p-7 space-y-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Invite</p>
-            <h2 className="text-xl font-semibold mt-2">Send a member invite</h2>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">Invite</p>
+              <h2 className="text-xl font-semibold mt-2">Send a member invite</h2>
+              <p className="text-sm text-[var(--muted)] mt-2">
+                Invite members by email or phone in a modal (no form clutter on the dashboard).
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setInviteOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              <MailPlus size={16} />
+              New invite
+            </button>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              className={inputClass}
-              placeholder="Full name"
-              value={inviteForm.name}
-              onChange={(event) => setInviteForm((prev) => ({ ...prev, name: event.target.value }))}
-            />
-            <input
-              className={inputClass}
-              placeholder="Email"
-              value={inviteForm.email}
-              onChange={(event) => setInviteForm((prev) => ({ ...prev, email: event.target.value }))}
-            />
-            <input
-              className={inputClass}
-              placeholder="Phone"
-              value={inviteForm.phone}
-              onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleInviteMember}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            <MailPlus size={16} />
-            Send invite
-          </button>
         </div>
       </section>
 
@@ -469,49 +492,15 @@ export default function SecretaryPanelPage() {
               </p>
               <h2 className="text-xl font-semibold mt-1">Log a meeting recap</h2>
             </div>
+            <button
+              type="button"
+              onClick={() => setMinutesOpen(true)}
+              className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              <ScrollText size={16} />
+              New minutes
+            </button>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              className={inputClass}
-              placeholder="Meeting title"
-              value={minutesForm.title}
-              onChange={(event) =>
-                setMinutesForm((prev) => ({ ...prev, title: event.target.value }))
-              }
-            />
-            <input
-              className={inputClass}
-              type="date"
-              value={minutesForm.meetingDate}
-              onChange={(event) =>
-                setMinutesForm((prev) => ({ ...prev, meetingDate: event.target.value }))
-              }
-            />
-            <textarea
-              className={textAreaClass}
-              placeholder="Summary notes"
-              value={minutesForm.summary}
-              onChange={(event) =>
-                setMinutesForm((prev) => ({ ...prev, summary: event.target.value }))
-              }
-            />
-            <textarea
-              className={textAreaClass}
-              placeholder="Action items (optional)"
-              value={minutesForm.actionItems}
-              onChange={(event) =>
-                setMinutesForm((prev) => ({ ...prev, actionItems: event.target.value }))
-              }
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleCreateMinutes}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            <ScrollText size={16} />
-            Save minutes
-          </button>
           <div className="space-y-3">
             {minutes.length === 0 && (
               <p className="text-sm text-[var(--muted)]">No meeting minutes logged yet.</p>
@@ -551,81 +540,15 @@ export default function SecretaryPanelPage() {
               </p>
               <h2 className="text-xl font-semibold mt-1">Share updates</h2>
             </div>
+            <button
+              type="button"
+              onClick={() => setAnnouncementOpen(true)}
+              className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
+            >
+              <Megaphone size={16} />
+              New announcement
+            </button>
           </div>
-          <div className="grid grid-cols-1 gap-4">
-            <input
-              className={inputClass}
-              placeholder="Announcement title"
-              value={announcementForm.title}
-              onChange={(event) =>
-                setAnnouncementForm((prev) => ({ ...prev, title: event.target.value }))
-              }
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                <input
-                  type="checkbox"
-                  checked={announcementForm.deliveryChannels.includes("email")}
-                  onChange={(event) => {
-                    setAnnouncementForm((prev) => {
-                      const next = new Set(prev.deliveryChannels);
-                      if (event.target.checked) {
-                        next.add("email");
-                      } else {
-                        next.delete("email");
-                      }
-                      next.add("in-app");
-                      return { ...prev, deliveryChannels: Array.from(next) };
-                    });
-                  }}
-                />
-                Email delivery
-              </label>
-              <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                <input
-                  type="checkbox"
-                  checked={announcementForm.deliveryChannels.includes("sms")}
-                  onChange={(event) => {
-                    setAnnouncementForm((prev) => {
-                      const next = new Set(prev.deliveryChannels);
-                      if (event.target.checked) {
-                        next.add("sms");
-                      } else {
-                        next.delete("sms");
-                      }
-                      next.add("in-app");
-                      return { ...prev, deliveryChannels: Array.from(next) };
-                    });
-                  }}
-                />
-                SMS delivery
-              </label>
-            </div>
-            <input
-              className={inputClass}
-              type="datetime-local"
-              value={announcementForm.scheduledFor}
-              onChange={(event) =>
-                setAnnouncementForm((prev) => ({ ...prev, scheduledFor: event.target.value }))
-              }
-            />
-            <textarea
-              className={textAreaClass}
-              placeholder="Announcement message"
-              value={announcementForm.message}
-              onChange={(event) =>
-                setAnnouncementForm((prev) => ({ ...prev, message: event.target.value }))
-              }
-            />
-          </div>
-          <button
-            type="button"
-            onClick={handleCreateAnnouncement}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold"
-          >
-            <Megaphone size={16} />
-            Publish announcement
-          </button>
 
           <div className="space-y-3">
             {announcements.length === 0 && (
@@ -707,6 +630,182 @@ export default function SecretaryPanelPage() {
           )}
         </div>
       </section>
+
+      <Modal
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        title="Send a member invite"
+        subtitle="Invite by email or phone (the dashboard stays put)."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Full name"
+              value={inviteForm.name}
+              onChange={(event) => setInviteForm((prev) => ({ ...prev, name: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              placeholder="Email"
+              value={inviteForm.email}
+              onChange={(event) =>
+                setInviteForm((prev) => ({ ...prev, email: event.target.value }))
+              }
+            />
+            <input
+              className={inputClass}
+              placeholder="Phone"
+              value={inviteForm.phone}
+              onChange={(event) =>
+                setInviteForm((prev) => ({ ...prev, phone: event.target.value }))
+              }
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleInviteMember}
+            disabled={pending["invite-member"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["invite-member"] ? <Loader2 size={16} className="animate-spin" /> : <MailPlus size={16} />}
+            {pending["invite-member"] ? "Sending..." : "Send invite"}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={minutesOpen}
+        onClose={() => setMinutesOpen(false)}
+        title="Log meeting minutes"
+        subtitle="Capture the recap and action items."
+        size="xl"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Meeting title"
+              value={minutesForm.title}
+              onChange={(event) => setMinutesForm((prev) => ({ ...prev, title: event.target.value }))}
+            />
+            <input
+              className={inputClass}
+              type="date"
+              value={minutesForm.meetingDate}
+              onChange={(event) =>
+                setMinutesForm((prev) => ({ ...prev, meetingDate: event.target.value }))
+              }
+            />
+            <textarea
+              className={textAreaClass}
+              placeholder="Summary notes"
+              value={minutesForm.summary}
+              onChange={(event) =>
+                setMinutesForm((prev) => ({ ...prev, summary: event.target.value }))
+              }
+            />
+            <textarea
+              className={textAreaClass}
+              placeholder="Action items (optional)"
+              value={minutesForm.actionItems}
+              onChange={(event) =>
+                setMinutesForm((prev) => ({ ...prev, actionItems: event.target.value }))
+              }
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleCreateMinutes}
+            disabled={pending["minutes-create"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["minutes-create"] ? <Loader2 size={16} className="animate-spin" /> : <ScrollText size={16} />}
+            {pending["minutes-create"] ? "Saving..." : "Save minutes"}
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={announcementOpen}
+        onClose={() => setAnnouncementOpen(false)}
+        title="Publish announcement"
+        subtitle="Choose delivery channels and send now or schedule."
+        size="xl"
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            <input
+              className={inputClass}
+              placeholder="Announcement title"
+              value={announcementForm.title}
+              onChange={(event) =>
+                setAnnouncementForm((prev) => ({ ...prev, title: event.target.value }))
+              }
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                <input
+                  type="checkbox"
+                  checked={announcementForm.deliveryChannels.includes("email")}
+                  onChange={(event) => {
+                    setAnnouncementForm((prev) => {
+                      const next = new Set(prev.deliveryChannels);
+                      if (event.target.checked) next.add("email");
+                      else next.delete("email");
+                      next.add("in-app");
+                      return { ...prev, deliveryChannels: Array.from(next) };
+                    });
+                  }}
+                />
+                Email delivery
+              </label>
+              <label className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                <input
+                  type="checkbox"
+                  checked={announcementForm.deliveryChannels.includes("sms")}
+                  onChange={(event) => {
+                    setAnnouncementForm((prev) => {
+                      const next = new Set(prev.deliveryChannels);
+                      if (event.target.checked) next.add("sms");
+                      else next.delete("sms");
+                      next.add("in-app");
+                      return { ...prev, deliveryChannels: Array.from(next) };
+                    });
+                  }}
+                />
+                SMS delivery
+              </label>
+            </div>
+            <input
+              className={inputClass}
+              type="datetime-local"
+              value={announcementForm.scheduledFor}
+              onChange={(event) =>
+                setAnnouncementForm((prev) => ({ ...prev, scheduledFor: event.target.value }))
+              }
+            />
+            <textarea
+              className={textAreaClass}
+              placeholder="Announcement message"
+              value={announcementForm.message}
+              onChange={(event) =>
+                setAnnouncementForm((prev) => ({ ...prev, message: event.target.value }))
+              }
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleCreateAnnouncement}
+            disabled={pending["announcement-create"]}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[var(--button-bg)] text-white text-sm font-semibold disabled:opacity-70"
+          >
+            {pending["announcement-create"] ? <Loader2 size={16} className="animate-spin" /> : <Megaphone size={16} />}
+            {pending["announcement-create"] ? "Publishing..." : "Publish announcement"}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

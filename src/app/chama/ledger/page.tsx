@@ -22,8 +22,7 @@ type Member = {
   email?: string;
 };
 
-const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-white/70 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)]/40";
+const inputClass = "glass-input";
 
 export default function LedgerPage() {
   const [groups, setGroups] = useState<GroupSummary[]>([]);
