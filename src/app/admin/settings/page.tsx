@@ -12,6 +12,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import type { SettingsCard } from "@/lib/admin-config";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function AdminSettingsPage() {
   const [cards, setCards] = useState<SettingsCard[]>([]);
@@ -77,9 +78,20 @@ export default function AdminSettingsPage() {
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {isLoading && (
-          <div className="glass-panel p-6 sm:p-7">
-            <p className="text-sm text-[var(--muted)]">Loading settings...</p>
-          </div>
+          <>
+            {[0, 1].map((item) => (
+              <div key={item} className="glass-panel p-6 sm:p-7">
+                <div className="flex items-start gap-4">
+                  <Skeleton className="w-12 h-12 rounded-2xl" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton variant="line" className="h-4 w-40" />
+                    <Skeleton variant="line" className="h-3 w-full" />
+                    <Skeleton variant="line" className="h-3 w-5/6" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
         )}
         {!isLoading && cards.map((item) => {
           const Icon = iconMap[item.icon] ?? Settings;

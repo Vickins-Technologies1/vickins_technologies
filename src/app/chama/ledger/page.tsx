@@ -80,9 +80,9 @@ export default function LedgerPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="glass-panel h-24" />
-        <div className="glass-panel h-64" />
+      <div className="space-y-6">
+        <div className="glass-panel h-24 shimmer-line" />
+        <div className="glass-panel h-64 shimmer-line" />
       </div>
     );
   }

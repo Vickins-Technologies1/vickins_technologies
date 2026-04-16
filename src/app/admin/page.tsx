@@ -21,16 +21,16 @@ import {
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8">
       <section className="glass-panel p-6 sm:p-8">
         <div className="space-y-4">
-          <div className="h-3 w-36 rounded-full bg-[var(--border)]/60" />
-          <div className="h-8 w-2/3 rounded-full bg-[var(--border)]/60" />
-          <div className="h-4 w-full rounded-full bg-[var(--border)]/50" />
-          <div className="h-4 w-5/6 rounded-full bg-[var(--border)]/50" />
+          <div className="h-3 w-36 rounded-full bg-[var(--border)]/60 shimmer-line" />
+          <div className="h-8 w-2/3 rounded-full bg-[var(--border)]/60 shimmer-line" />
+          <div className="h-4 w-full rounded-full bg-[var(--border)]/50 shimmer-line" />
+          <div className="h-4 w-5/6 rounded-full bg-[var(--border)]/50 shimmer-line" />
           <div className="flex flex-wrap gap-3 pt-2">
-            <div className="h-10 w-36 rounded-full bg-[var(--border)]/60" />
-            <div className="h-10 w-32 rounded-full bg-[var(--border)]/50" />
+            <div className="h-10 w-36 rounded-full bg-[var(--border)]/60 shimmer-line" />
+            <div className="h-10 w-32 rounded-full bg-[var(--border)]/50 shimmer-line" />
           </div>
         </div>
       </section>
@@ -38,22 +38,22 @@ function DashboardSkeleton() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {[0, 1, 2].map((item) => (
           <div key={item} className="glass-panel p-5 sm:p-6 space-y-3">
-            <div className="h-3 w-28 rounded-full bg-[var(--border)]/50" />
-            <div className="h-8 w-24 rounded-full bg-[var(--border)]/60" />
-            <div className="h-3 w-40 rounded-full bg-[var(--border)]/40" />
+            <div className="h-3 w-28 rounded-full bg-[var(--border)]/50 shimmer-line" />
+            <div className="h-8 w-24 rounded-full bg-[var(--border)]/60 shimmer-line" />
+            <div className="h-3 w-40 rounded-full bg-[var(--border)]/40 shimmer-line" />
           </div>
         ))}
       </section>
 
       <section className="glass-panel p-6 sm:p-7">
         <div className="space-y-4">
-          <div className="h-3 w-32 rounded-full bg-[var(--border)]/60" />
-          <div className="h-7 w-1/2 rounded-full bg-[var(--border)]/60" />
+          <div className="h-3 w-32 rounded-full bg-[var(--border)]/60 shimmer-line" />
+          <div className="h-7 w-1/2 rounded-full bg-[var(--border)]/60 shimmer-line" />
           <div className="space-y-3">
             {[0, 1, 2].map((item) => (
               <div
                 key={item}
-                className="h-16 w-full rounded-2xl border border-[var(--glass-border)] bg-white/60"
+                className="h-16 w-full rounded-2xl border border-[var(--glass-border)] bg-white/60 shimmer-line"
               />
             ))}
           </div>

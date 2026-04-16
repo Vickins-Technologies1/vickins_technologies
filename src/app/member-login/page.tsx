@@ -3,7 +3,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { Suspense, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import AuthShell from "@/components/AuthShell";
@@ -13,6 +13,7 @@ const inputClass =
 
 function MemberLoginContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -59,7 +60,8 @@ function MemberLoginContent() {
       return;
     }
 
-    window.location.href = safeCallback;
+    router.replace(safeCallback);
+    router.refresh();
     setLoading(false);
   };
 

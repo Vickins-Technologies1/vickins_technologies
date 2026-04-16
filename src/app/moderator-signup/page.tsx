@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Users, Wallet } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import AuthShell from "@/components/AuthShell";
@@ -11,6 +12,7 @@ const inputClass =
   "glass-input";
 
 export default function ModeratorSignupPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -58,7 +60,8 @@ export default function ModeratorSignupPage() {
       setMessage("Moderator account created. Redirecting...");
       const groupId = data?.groupId ? `?groupId=${data.groupId}` : "";
       const groupName = form.groupName ? `&groupName=${encodeURIComponent(form.groupName)}` : "";
-      window.location.href = `/moderator/onboarding${groupId}${groupName}`;
+      router.replace(`/moderator/onboarding${groupId}${groupName}`);
+      router.refresh();
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Something went wrong.");

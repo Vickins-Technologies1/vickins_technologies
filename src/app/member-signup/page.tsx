@@ -3,7 +3,7 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import AuthShell from "@/components/AuthShell";
@@ -13,6 +13,7 @@ const inputClass =
 
 function MemberSignupContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const prefillEmail = searchParams.get("email") ?? "";
   const groupName = searchParams.get("groupName");
 
@@ -54,7 +55,8 @@ function MemberSignupContent() {
 
       setStatus("success");
       setMessage("Member account created. Redirecting...");
-      window.location.href = "/chama";
+      router.replace("/chama");
+      router.refresh();
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Something went wrong.");

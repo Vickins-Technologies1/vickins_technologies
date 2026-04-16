@@ -2,16 +2,18 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import AuthShell from "@/components/AuthShell";
+import Link from "next/link";
 
 const inputClass =
   "glass-input";
 
 function LoginContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -77,7 +79,8 @@ function LoginContent() {
       return;
     }
 
-    window.location.href = safeCallback;
+    router.replace(safeCallback);
+    router.refresh();
     setLoading(false);
   };
 
@@ -97,13 +100,13 @@ function LoginContent() {
       {adminExists === false && (
         <div className="rounded-2xl border border-[var(--glass-border)] bg-white/60 p-4 text-sm text-[var(--foreground)]">
           No admin account exists yet. Use the one-time signup to create the first admin.
-          <a
+          <Link
             href="/admin-signup"
             className="mt-3 inline-flex items-center gap-2 text-[var(--button-bg)] font-semibold hover:underline"
           >
             Go to one-time signup
             <ArrowRight size={16} />
-          </a>
+          </Link>
         </div>
       )}
 
@@ -144,21 +147,21 @@ function LoginContent() {
       {adminExists !== false && (
         <p className="text-center mt-6 text-[var(--muted)] text-xs">
           First admin setup?{" "}
-          <a href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
+          <Link href="/admin-signup" className="text-[var(--button-bg)] font-medium hover:underline">
             Use one-time admin signup
-          </a>
+          </Link>
         </p>
       )}
 
       <div className="mt-4 text-center text-[var(--muted)] text-xs">
         Not an admin?{" "}
-        <a href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
+        <Link href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
           Moderator login
-        </a>{" "}
+        </Link>{" "}
         or{" "}
-        <a href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
+        <Link href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
           Member login
-        </a>
+        </Link>
       </div>
     </AuthShell>
   );

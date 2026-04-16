@@ -495,9 +495,9 @@ export default function ChamaGroupPage() {
 
   if (loading || !group) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="glass-panel h-32" />
-        <div className="glass-panel h-72" />
+      <div className="space-y-6">
+        <div className="glass-panel h-32 shimmer-line" />
+        <div className="glass-panel h-72 shimmer-line" />
       </div>
     );
   }

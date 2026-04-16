@@ -105,11 +105,11 @@ export default function ChamaDashboardPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="glass-panel p-6 sm:p-8 h-40" />
+      <div className="space-y-6">
+        <div className="glass-panel p-6 sm:p-8 h-40 shimmer-line" />
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[0, 1, 2, 3].map((item) => (
-            <div key={item} className="glass-panel p-6 h-24" />
+            <div key={item} className="glass-panel p-6 h-24 shimmer-line" />
           ))}
         </div>
       </div>

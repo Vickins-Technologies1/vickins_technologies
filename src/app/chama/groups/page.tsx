@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import Modal from "@/components/Modal";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type GroupMembership = {
   role: string;
@@ -248,7 +249,43 @@ export default function ChamaGroupsPage() {
       <section className="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-6">
         <div className="space-y-4">
           {loading ? (
-            <div className="glass-panel p-6 sm:p-8">Loading groups...</div>
+            <div className="space-y-4">
+              {[0, 1, 2].map((item) => (
+                <div
+                  key={item}
+                  className="glass-panel p-5 sm:p-6 border border-[var(--glass-border)]"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Skeleton variant="line" className="h-5 w-44" />
+                        <Skeleton className="h-6 w-20 rounded-full" />
+                        <Skeleton className="h-6 w-24 rounded-full" />
+                      </div>
+                      <Skeleton variant="line" className="h-4 w-5/6" />
+                      <div className="flex flex-wrap gap-3">
+                        <Skeleton variant="line" className="h-3 w-20" />
+                        <Skeleton variant="line" className="h-3 w-16" />
+                        <Skeleton variant="line" className="h-3 w-28" />
+                        <Skeleton variant="line" className="h-3 w-16" />
+                      </div>
+                    </div>
+                    <div className="space-y-2 sm:text-right">
+                      <Skeleton variant="line" className="h-4 w-28 sm:ml-auto" />
+                      <Skeleton variant="line" className="h-3 w-24 sm:ml-auto" />
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap gap-3">
+                      <Skeleton variant="line" className="h-3 w-20" />
+                      <Skeleton variant="line" className="h-3 w-24" />
+                      <Skeleton variant="line" className="h-3 w-28" />
+                    </div>
+                    <Skeleton className="h-9 w-28 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : filteredGroups.length === 0 ? (
             <div className="glass-panel p-6 sm:p-8 text-sm text-[var(--muted)]">
               No groups match your filters yet.

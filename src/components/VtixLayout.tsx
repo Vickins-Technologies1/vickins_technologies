@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { PremiumDashboardShellLoader } from "@/components/dashboard/DashboardLoaders";
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -22,6 +23,7 @@ import {
 
 export default function VtixLayout({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
   const pathname = usePathname() || "";
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -63,14 +65,7 @@ export default function VtixLayout({ children }: { children: React.ReactNode }) 
   }
 
   if (isPending) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-[var(--foreground)] font-medium">Loading your V-Tix workspace...</p>
-        </div>
-      </div>
-    );
+    return <PremiumDashboardShellLoader tone="sky" label="Loading your V-Tix workspace..." />;
   }
 
   if (!session?.user) {
@@ -131,7 +126,8 @@ export default function VtixLayout({ children }: { children: React.ReactNode }) 
     await authClient.signOut();
     const role = session?.user?.role ?? "";
     const isOrganizer = role.split(",").map((value) => value.trim()).includes("moderator");
-    window.location.href = isOrganizer ? "/moderator-login" : "/member-login";
+    router.replace(isOrganizer ? "/moderator-login" : "/member-login");
+    router.refresh();
   };
 
   return (

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Users, ShieldCheck, Mail } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 type AdminUser = {
   id: string;
@@ -81,13 +82,26 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {isLoading && (
-                <tr>
-                  <td className="py-4 text-[var(--muted)]" colSpan={4}>
-                    Loading users...
-                  </td>
-                </tr>
-              )}
+              {isLoading &&
+                [0, 1, 2, 3].map((item) => (
+                  <tr key={item}>
+                    <td className="py-3">
+                      <Skeleton variant="line" className="h-4 w-32" />
+                    </td>
+                    <td className="py-3">
+                      <div className="flex items-center gap-2">
+                        <Skeleton variant="line" className="h-4 w-4 rounded-lg" />
+                        <Skeleton variant="line" className="h-4 w-48" />
+                      </div>
+                    </td>
+                    <td className="py-3">
+                      <Skeleton variant="line" className="h-4 w-20" />
+                    </td>
+                    <td className="py-3">
+                      <Skeleton variant="line" className="h-4 w-16" />
+                    </td>
+                  </tr>
+                ))}
               {!isLoading && users.map((user) => (
                 <tr key={user.id}>
                   <td className="py-3 font-medium">{user.name}</td>

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { PremiumDashboardShellLoader } from "@/components/dashboard/DashboardLoaders";
 import { 
   LayoutDashboard, 
   Users, 
@@ -84,14 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Loading state
   if (isPending) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-[var(--foreground)] font-medium">Loading admin panel...</p>
-        </div>
-      </div>
-    );
+    return <PremiumDashboardShellLoader tone="sky" label="Loading admin panel..." />;
   }
 
   // Access denied (non-admin or no session)

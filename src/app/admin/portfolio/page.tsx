@@ -170,11 +170,11 @@ export default function AdminPortfolioPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 animate-pulse">
+      <div className="space-y-6">
         <div className="glass-panel p-6 sm:p-8 space-y-4">
-          <div className="h-4 w-40 bg-[var(--border)]/50 rounded-full" />
-          <div className="h-8 w-2/3 bg-[var(--border)]/60 rounded-full" />
-          <div className="h-4 w-full bg-[var(--border)]/50 rounded-full" />
+          <div className="h-4 w-40 bg-[var(--border)]/50 rounded-full shimmer-line" />
+          <div className="h-8 w-2/3 bg-[var(--border)]/60 rounded-full shimmer-line" />
+          <div className="h-4 w-full bg-[var(--border)]/50 rounded-full shimmer-line" />
         </div>
       </div>
     );

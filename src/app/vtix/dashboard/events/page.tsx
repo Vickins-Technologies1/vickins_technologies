@@ -321,7 +321,10 @@ export default function VtixEventsDashboardPage() {
         {loading ? (
           <div className="space-y-3">
             {[0, 1, 2].map((item) => (
-              <div key={item} className="h-16 rounded-2xl border border-[var(--glass-border)] bg-white/60" />
+              <div
+                key={item}
+                className="h-16 rounded-2xl border border-[var(--glass-border)] bg-white/60 shimmer-line"
+              />
             ))}
           </div>
         ) : (
