@@ -75,7 +75,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                       ? "/chama"
                       : item === "Security"
                       ? "/vickins-security"
-                      : `#${item.toLowerCase()}`
+                      : `/#${item.toLowerCase()}`
                   }
                   className="flex items-center justify-between rounded-2xl border border-white/35 bg-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
                   onClick={toggleSidebar}

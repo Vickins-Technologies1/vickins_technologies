@@ -77,7 +77,7 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                           ? "/portfolio"
                           : item === "Security"
                           ? "/vickins-security"
-                          : `#${item.toLowerCase()}`
+                          : `/#${item.toLowerCase()}`
                       }
                       className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition"
                     >

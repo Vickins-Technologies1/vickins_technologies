@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   FaXTwitter,
   FaFacebook,
@@ -40,13 +41,13 @@ const Footer: FC = () => {
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 items-stretch sm:items-center justify-center lg:justify-start">
-                  <a
-                    href="#contact"
+                  <Link
+                    href="/#contact"
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--button-bg)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-white shadow-lg"
                   >
                     Book a Call
                     <ArrowRightIcon className="h-4 w-4" />
-                  </a>
+                  </Link>
                   <a
                     href="mailto:info@vickinstechnologies.com"
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-white/50 bg-white/70 px-5 py-2.5 text-[10px] sm:text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/70 break-all"
@@ -65,13 +66,31 @@ const Footer: FC = () => {
                 >
                   <p className="text-[11px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">Navigate</p>
                   <ul className="mt-4 space-y-2 text-sm">
-                    {["Home", "Services", "About", "Portfolio", "Contact"].map((item) => (
-                      <li key={item}>
-                        <a href={`#${item.toLowerCase()}`} className="hover:text-[var(--button-bg)] transition">
-                          {item}
-                        </a>
-                      </li>
-                    ))}
+                    <li>
+                      <Link href="/#home" className="hover:text-[var(--button-bg)] transition">
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#services" className="hover:text-[var(--button-bg)] transition">
+                        Services
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#about" className="hover:text-[var(--button-bg)] transition">
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/portfolio" className="hover:text-[var(--button-bg)] transition">
+                        Portfolio
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#contact" className="hover:text-[var(--button-bg)] transition">
+                        Contact
+                      </Link>
+                    </li>
                   </ul>
                 </motion.div>
                 <motion.div
