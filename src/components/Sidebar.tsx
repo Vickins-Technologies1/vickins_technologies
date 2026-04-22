@@ -59,7 +59,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           </motion.button>
 
           <ul className="mt-6 space-y-2.5 relative z-10">
-            {["Process", "About", "Services", "ChamaHub", "Portfolio", "Pricing", "Clients", "Contact"].map((item, index) => (
+            {["Process", "About", "Services", "Security", "ChamaHub", "Portfolio", "Pricing", "Clients", "Contact"].map((item, index) => (
               <motion.li
                 key={item}
                 initial={{ x: -20, opacity: 0 }}
@@ -69,7 +69,13 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
               >
                 <Link
                   href={
-                    item === "Portfolio" ? "/portfolio" : item === "ChamaHub" ? "/chama" : `#${item.toLowerCase()}`
+                    item === "Portfolio"
+                      ? "/portfolio"
+                      : item === "ChamaHub"
+                      ? "/chama"
+                      : item === "Security"
+                      ? "/vickins-security"
+                      : `#${item.toLowerCase()}`
                   }
                   className="flex items-center justify-between rounded-2xl border border-white/35 bg-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
                   onClick={toggleSidebar}

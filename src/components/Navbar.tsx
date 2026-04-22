@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: NavbarProps) {
-  const navItems = ["Process", "About", "Services", "Portfolio", "Pricing", "Clients"];
+  const navItems = ["Process", "About", "Services", "Security", "Portfolio", "Pricing", "Clients"];
 
   return (
     <nav className="sticky top-0 z-50">
@@ -72,7 +72,13 @@ export default function Navbar({ isDarkMode, toggleTheme, toggleSidebar }: Navba
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   >
                     <Link
-                      href={item === "Portfolio" ? "/portfolio" : `#${item.toLowerCase()}`}
+                      href={
+                        item === "Portfolio"
+                          ? "/portfolio"
+                          : item === "Security"
+                          ? "/vickins-security"
+                          : `#${item.toLowerCase()}`
+                      }
                       className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition"
                     >
                       {item}

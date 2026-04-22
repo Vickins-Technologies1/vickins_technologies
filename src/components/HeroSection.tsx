@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowRightIcon, SparklesIcon, ShieldCheckIcon, CpuChipIcon } from "@heroicons/react/24/outline";
 
 const highlights = [
@@ -52,16 +53,23 @@ export default function HeroSection() {
           <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-2xl mt-5">
             Vickins Technologies partners with growth-focused organizations to build secure, scalable web and mobile experiences, automation systems, and brand-forward platforms that drive measurable outcomes.
           </p>
+          <p className="text-xs sm:text-sm text-white/70 max-w-2xl mt-4">
+            Now offering{" "}
+            <Link href="/vickins-security" className="text-white underline underline-offset-4 hover:text-white/90">
+              Vickins Security
+            </Link>{" "}
+            — CCTV & WiFi installations, cyber security, and software security.
+          </p>
 
           <div className="mt-7 flex flex-wrap gap-2">
-            {["Strategy", "Design", "Engineering", "Growth"].map((item) => (
+            {["Strategy", "Design", "Engineering", "Growth", "Security"].map((item) => (
               <span key={item} className="glass-chip px-4 py-2 text-xs sm:text-sm text-white/90">
                 {item}
               </span>
             ))}
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-3">
             <a
               href="#contact"
               className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-white text-[#0b1220] font-semibold shadow-[0_20px_50px_rgba(15,23,42,0.25)] transition-all duration-500 hover:-translate-y-1"
@@ -76,6 +84,13 @@ export default function HeroSection() {
               View Capabilities
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
+            <Link
+              href="/vickins-security"
+              className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full border border-[#fbbf24]/45 text-[#fbbf24] font-semibold backdrop-blur-md hover:bg-[#fbbf24]/10 transition-all duration-500"
+            >
+              Security Service
+              <ShieldCheckIcon className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </div>
 
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">

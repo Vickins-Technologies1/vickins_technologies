@@ -9,6 +9,7 @@ import ProductsSection from "../components/ProductsSection";
 import ProcessSection from "../components/ProcessSection";
 import AboutSection from "../components/AboutSection";
 import ServicesSection from "../components/ServicesSection";
+import SecurityServiceSection from "../components/SecurityServiceSection";
 import TechnologySection from "../components/TechnologySection";
 import ClientsSection from "../components/ClientsSection";
 import PricingSection from "../components/PricingSection";
@@ -58,7 +59,7 @@ export default function Home() {
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
-        {/* ← Add here – preferably after Services or Technology */}
+        <SecurityServiceSection />
         <RecentProjectsSection />
         <TechnologySection />
         <ClientsSection />
