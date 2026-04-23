@@ -27,10 +27,12 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
 
-  // Set light theme as default on initial render
+  // Load saved theme preference (default: light)
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "light");
-    setIsDarkMode(false);
+    const savedTheme = localStorage.getItem("theme");
+    const theme = savedTheme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    setIsDarkMode(theme === "dark");
   }, []);
 
   // Hide preloader after 2 seconds
@@ -45,6 +47,7 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
   const toggleTheme = () => {
     const newTheme = isDarkMode ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
     setIsDarkMode(!isDarkMode);
   };
 

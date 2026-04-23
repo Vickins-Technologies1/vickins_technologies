@@ -119,7 +119,7 @@ export default function ChamaDashboardPage() {
   return (
     <div className="space-y-8">
       <section className="glass-panel p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_55%)]" />
+        <div className="absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_top,_rgba(0,144,224,0.18),_transparent_55%)]" />
         <div className="relative z-10 flex flex-col lg:flex-row gap-6 lg:items-center lg:justify-between">
           <div>
             <p className="inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.3em] text-[var(--accent)]">

@@ -6,11 +6,9 @@ import { Skeleton } from "@/components/ui/Skeleton";
 type Tone = "sky" | "emerald" | "indigo";
 
 const toneGlow: Record<Tone, string> = {
-  sky: "bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]",
-  emerald:
-    "bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_55%)]",
-  indigo:
-    "bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.22),_transparent_55%)]",
+  sky: "bg-[radial-gradient(circle_at_top,_rgba(0,144,224,0.22),_transparent_55%)]",
+  emerald: "bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.22),_transparent_55%)]",
+  indigo: "bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.22),_transparent_55%)]",
 };
 
 export function PremiumDashboardShellLoader({
@@ -114,4 +112,3 @@ export function PremiumDashboardPageLoader({
     </div>
   );
 }
-
