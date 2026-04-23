@@ -13,6 +13,7 @@ interface Item {
 export default function Quotations() {
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
+  const [currency, setCurrency] = useState('KES');
   const [items, setItems] = useState<Item[]>([{ description: '', quantity: 1, price: 0 }]);
   const [notes, setNotes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,20 @@ export default function Quotations() {
   };
 
   const calculateTotal = () => {
-    return items.reduce((sum, item) => sum + item.quantity * item.price, 0).toFixed(2);
+    return items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  };
+
+  const formatMoney = (amount: number) => {
+    try {
+      return new Intl.NumberFormat("en-KE", {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount);
+    } catch {
+      return `${currency} ${amount.toFixed(2)}`;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,9 +63,9 @@ export default function Quotations() {
         body: JSON.stringify({
           clientName,
           clientEmail,
+          currency,
           items,
           notes,
-          total: calculateTotal(),
         }),
       });
 
@@ -59,7 +73,12 @@ export default function Quotations() {
         throw new Error('Failed to generate and send quotation');
       }
 
-      setMessage('Quotation generated and sent successfully!');
+      const data = (await response.json().catch(() => null)) as { quoteNumber?: string } | null;
+      setMessage(
+        data?.quoteNumber
+          ? `Quotation ${data.quoteNumber} generated and sent successfully!`
+          : 'Quotation generated and sent successfully!'
+      );
       // Optionally reset form or redirect
     } catch (error) {
       setMessage('Error: ' + (error as Error).message);
@@ -93,7 +112,7 @@ export default function Quotations() {
             New quotation
           </button>
           <div className="glass-chip px-4 py-2 text-xs text-[var(--foreground)]/80">
-            Total preview: ${calculateTotal()}
+            Total preview: {formatMoney(calculateTotal())}
           </div>
         </div>
         {message && <p className="mt-4 text-sm text-[var(--foreground)]">{message}</p>}
@@ -107,7 +126,7 @@ export default function Quotations() {
         size="xl"
       >
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Client Name</label>
               <input
@@ -128,6 +147,19 @@ export default function Quotations() {
                 required
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--foreground)] mb-1">Currency</label>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                className={inputClass}
+              >
+                <option value="KES">KES</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+              </select>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--foreground)] mb-2">Items</label>
@@ -139,7 +171,7 @@ export default function Quotations() {
                 >
                   <input
                     type="text"
-                    placeholder="Description"
+                    placeholder="Product / Equipment / Task"
                     value={item.description}
                     onChange={(e) => updateItem(index, 'description', e.target.value)}
                     className={inputClass}
@@ -190,7 +222,7 @@ export default function Quotations() {
             />
           </div>
           <div className="text-left sm:text-right">
-            <p className="text-lg font-semibold">Total: ${calculateTotal()}</p>
+            <p className="text-lg font-semibold">Total: {formatMoney(calculateTotal())}</p>
           </div>
           <button
             type="submit"
