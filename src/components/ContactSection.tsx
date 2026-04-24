@@ -45,10 +45,17 @@ export default function ContactSection() {
     "Brand & UI Systems",
     "Data & Analytics",
     "Security & Compliance",
-    "CCTV Installation",
-    "WiFi Installation",
-    "Cyber Security",
-    "Software Security",
+    "CCTV Surveillance",
+    "Biometric Systems",
+    "Electric Fence",
+    "Electric Gates",
+    "Intruder Alarms",
+    "Access Control",
+    "Video Intercom",
+    "Fire Alarm Systems",
+    "Perimeter Security",
+    "Security Lighting",
+    "24/7 Monitoring & Support",
     "Monitoring & Maintenance",
     "E-commerce",
     "Custom Software",
@@ -253,7 +260,7 @@ export default function ContactSection() {
                     <div className="flex items-center gap-3">
                       <EnvelopeIcon className="h-5 w-5 text-[var(--button-bg)]" />
                       <a
-                        href="mailto:info@vickinstech.com"
+                        href="mailto:info@vickinstechnologies.com"
                         className="hover:text-[var(--button-bg)] transition duration-300"
                       >
                         info@vickinstechnologies.com
@@ -262,7 +269,7 @@ export default function ContactSection() {
                     <div className="flex items-center gap-3">
                       <PhoneIcon className="h-5 w-5 text-[var(--button-bg)]" />
                       <a
-                        href="tel:+254123456789"
+                        href="tel:+254794501005"
                         className="hover:text-[var(--button-bg)] transition duration-300"
                       >
                         +254 794 501 005

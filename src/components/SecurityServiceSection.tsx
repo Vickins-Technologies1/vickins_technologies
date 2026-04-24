@@ -2,41 +2,40 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRightIcon,
-  CodeBracketIcon,
+  BellAlertIcon,
   LockClosedIcon,
   ShieldCheckIcon,
   VideoCameraIcon,
-  WifiIcon,
 } from "@heroicons/react/24/outline";
 
 const services = [
   {
-    title: "CCTV Installation",
-    description: "Smart surveillance systems for home and enterprise environments.",
+    title: "CCTV Surveillance",
+    description: "HD/4K camera installation, remote viewing, monitoring, and support.",
     icon: VideoCameraIcon,
   },
   {
-    title: "WiFi Installations",
-    description: "Fast, reliable connectivity with secure configuration and coverage planning.",
-    icon: WifiIcon,
+    title: "Intruder Alarms",
+    description: "Sensors, sirens, instant alerts, and smart alarm systems.",
+    icon: BellAlertIcon,
   },
   {
-    title: "Cyber Security",
-    description: "Protection against evolving threats, hardening, and security best practices.",
+    title: "Access Control",
+    description: "RFID/card access, PIN/password entry, and visitor management.",
     icon: LockClosedIcon,
   },
   {
-    title: "Software Security",
-    description: "Secure code and stronger systems through reviews, fixes, and hardening.",
-    icon: CodeBracketIcon,
+    title: "Perimeter Security",
+    description: "Electric fence, beam barriers, motion detection, and deterrence.",
+    icon: ShieldCheckIcon,
   },
 ];
 
 const quickHighlights = [
-  "Trusted experts",
   "Advanced technology",
-  "Tailored solutions",
-  "24/7 support",
+  "Reliable protection",
+  "24/7 monitoring & support",
+  "Expert team",
 ];
 
 export default function SecurityServiceSection() {
@@ -68,11 +67,10 @@ export default function SecurityServiceSection() {
           Vickins Security
         </p>
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
-          Securing today, protecting tomorrow.
+          Complete security solutions. Total peace of mind.
         </h2>
         <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-          Advanced security solutions for a safer, smarter future — from CCTV and WiFi installations to cyber security
-          and software hardening.
+          End-to-end security solutions designed to protect what matters most — for homes, businesses, and institutions.
         </p>
       </motion.div>
 
@@ -117,4 +115,3 @@ export default function SecurityServiceSection() {
     </motion.section>
   );
 }
-

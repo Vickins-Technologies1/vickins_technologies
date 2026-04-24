@@ -41,7 +41,10 @@
   --shadow-tight: 0 8px 18px rgba(15, 23, 42, 0.1);
   --radius: 18px;
   --font-sans: var(--font-sora);
-  --page-bg: #ffffff;
+  --page-bg:
+    radial-gradient(900px 600px at 12% -10%, rgba(0, 80, 240, 0.12), transparent 60%),
+    radial-gradient(900px 600px at 88% 0%, rgba(0, 144, 224, 0.09), transparent 55%),
+    linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
   --page-grid: linear-gradient(rgba(0, 16, 48, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 16, 48, 0.04) 1px, transparent 1px);
 

@@ -58,7 +58,7 @@ export default function HeroSection() {
             <Link href="/vickins-security" className="text-white underline underline-offset-4 hover:text-white/90">
               Vickins Security
             </Link>{" "}
-            — CCTV & WiFi installations, cyber security, and software security.
+            — CCTV surveillance, intruder alarms, access control, electric fence, and more.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-2">
