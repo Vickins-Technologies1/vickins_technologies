@@ -61,21 +61,14 @@ const coverage = [
 ];
 
 export default function VickinsSecurityPage() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} isDarkMode={isDarkMode} toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <motion.section
         initial={{ opacity: 0 }}
@@ -84,10 +77,10 @@ export default function VickinsSecurityPage() {
         className="relative overflow-hidden text-white"
       >
         <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0b1220] via-[#0f1b35] to-[#0b1220]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35),_transparent_55%)] opacity-80" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(45,212,191,0.25),_transparent_45%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(99,102,241,0.35),_transparent_50%)]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-navy-950)] via-[var(--brand-navy-900)] to-[var(--brand-navy-950)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.42),_transparent_55%)] opacity-85" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(0,144,224,0.26),_transparent_48%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(0,80,240,0.3),_transparent_52%)]" />
           <div
             className="absolute inset-0 opacity-35"
             style={{
@@ -98,8 +91,8 @@ export default function VickinsSecurityPage() {
           />
         </div>
 
-        <div className="glow-orb float-slow" style={{ top: "-10%", left: "-6%", width: "380px", height: "380px", background: "rgba(59,130,246,0.45)" }} />
-        <div className="glow-orb float-slower" style={{ bottom: "-14%", right: "-8%", width: "460px", height: "460px", background: "rgba(20,184,166,0.35)" }} />
+        <div className="glow-orb float-slow" style={{ top: "-10%", left: "-6%", width: "380px", height: "380px", background: "rgba(0,80,240,0.5)" }} />
+        <div className="glow-orb float-slower" style={{ bottom: "-14%", right: "-8%", width: "460px", height: "460px", background: "rgba(0,144,224,0.42)" }} />
 
         <div className="relative z-10 w-full px-6 sm:px-8 lg:px-10 max-w-6xl mx-auto pt-14 sm:pt-18 lg:pt-20 pb-12 sm:pb-14">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-center">
@@ -289,4 +282,3 @@ export default function VickinsSecurityPage() {
     </div>
   );
 }
-

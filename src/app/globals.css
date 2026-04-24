@@ -12,8 +12,12 @@
   /* Light theme stays white */
   --background: #ffffff;
   --foreground: #0b1220;
-  --navbar-bg: rgba(255, 255, 255, 0.92);
+  --navbar-bg: rgba(0, 16, 48, 0.78);
   --navbar-text: var(--foreground);
+  --navbar-border: rgba(255, 255, 255, 0.14);
+  --navbar-surface: rgba(255, 255, 255, 0.1);
+  --navbar-surface-strong: rgba(255, 255, 255, 0.14);
+  --navbar-surface-hover: rgba(255, 255, 255, 0.18);
   --button-bg: var(--brand-blue-600);
   --card-bg: rgba(255, 255, 255, 0.9);
   --card-solid: #ffffff;
@@ -61,7 +65,11 @@
   --background: #070b16;
   --foreground: #eef2ff;
   --navbar-bg: rgba(0, 16, 48, 0.86);
-  --navbar-text: #eef2ff;
+  --navbar-text: var(--foreground);
+  --navbar-border: rgba(255, 255, 255, 0.12);
+  --navbar-surface: rgba(255, 255, 255, 0.06);
+  --navbar-surface-strong: rgba(255, 255, 255, 0.08);
+  --navbar-surface-hover: rgba(255, 255, 255, 0.12);
   --button-bg: #1f6dff;
   --card-bg: rgba(0, 16, 48, 0.88);
   --card-solid: #061026;

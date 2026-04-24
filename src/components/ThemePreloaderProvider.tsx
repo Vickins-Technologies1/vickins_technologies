@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 import Preloader from "./Preloader";
 
 interface ThemeContextType {
@@ -44,12 +44,14 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
     return () => clearTimeout(timer);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => {
+      const newTheme = prev ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      return !prev;
+    });
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>

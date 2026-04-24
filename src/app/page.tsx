@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
@@ -17,36 +17,15 @@ import ContactSection from "../components/ContactSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
 
 export default function Home() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Ensure light mode on first load
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "light");
-    setIsDarkMode(false);
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
       {/* Navbar stays on top, full width */}
-      <Navbar
-        isDarkMode={isDarkMode}
-        toggleTheme={toggleTheme}
-        toggleSidebar={toggleSidebar}
-      />
-      <Sidebar
-        isOpen={isSidebarOpen}
-        isDarkMode={isDarkMode}
-        toggleSidebar={toggleSidebar}
-      />
+      <Navbar toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Hero Section: Full-bleed, full viewport height */}
       <HeroSection />

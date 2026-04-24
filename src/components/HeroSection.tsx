@@ -26,15 +26,15 @@ export default function HeroSection() {
       className="relative min-h-[85vh] flex items-center overflow-hidden text-white"
     >
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0b1220] via-[#0f1b35] to-[#0b1220]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.35),_transparent_55%)] opacity-80" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(45,212,191,0.25),_transparent_45%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(99,102,241,0.35),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-navy-950)] via-[var(--brand-navy-900)] to-[var(--brand-navy-950)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.42),_transparent_55%)] opacity-85" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_rgba(0,144,224,0.26),_transparent_48%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(0,80,240,0.3),_transparent_52%)]" />
         <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       </div>
 
-      <div className="glow-orb float-slow" style={{ top: "-8%", left: "-5%", width: "380px", height: "380px", background: "rgba(59,130,246,0.45)" }} />
-      <div className="glow-orb float-slower" style={{ bottom: "-10%", right: "-5%", width: "420px", height: "420px", background: "rgba(20,184,166,0.35)" }} />
+      <div className="glow-orb float-slow" style={{ top: "-8%", left: "-5%", width: "380px", height: "380px", background: "rgba(0,80,240,0.5)" }} />
+      <div className="glow-orb float-slower" style={{ bottom: "-10%", right: "-5%", width: "420px", height: "420px", background: "rgba(0,144,224,0.42)" }} />
 
       <div className="relative z-10 w-full px-6 sm:px-8 lg:px-10 max-w-6xl mx-auto grid lg:grid-cols-[1.05fr_0.95fr] gap-8 items-center">
         <motion.div

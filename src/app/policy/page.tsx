@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ShieldCheckIcon,
@@ -54,26 +54,14 @@ const policyDetails = [
 ];
 
 export default function PolicyPage() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "light");
-    setIsDarkMode(false);
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} isDarkMode={isDarkMode} toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <section className="pt-16 pb-10 sm:pt-20 sm:pb-14">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

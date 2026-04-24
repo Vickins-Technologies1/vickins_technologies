@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { FileText, Plus, Send } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Download, FileText, Plus, Send } from 'lucide-react';
 import Modal from '@/components/Modal';
 
 interface Item {
@@ -9,6 +9,21 @@ interface Item {
   quantity: number;
   price: number;
 }
+
+type SavedQuotation = {
+  id: string;
+  quoteNumber: string;
+  status: 'draft' | 'sent' | 'failed';
+  clientName: string;
+  clientEmail: string;
+  currency: string;
+  total: number;
+  issuedAt: string;
+  sentAt: string | null;
+  createdAt: string;
+  pdfFileName?: string;
+  lastError?: string;
+};
 
 export default function Quotations() {
   const [clientName, setClientName] = useState('');
@@ -19,6 +34,10 @@ export default function Quotations() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [saved, setSaved] = useState<SavedQuotation[]>([]);
+  const [savedLoading, setSavedLoading] = useState(true);
+  const [savedError, setSavedError] = useState('');
 
   const addItem = () => {
     setItems([...items, { description: '', quantity: 1, price: 0 }]);
@@ -38,18 +57,40 @@ export default function Quotations() {
     return items.reduce((sum, item) => sum + item.quantity * item.price, 0);
   };
 
-  const formatMoney = (amount: number) => {
+  const formatMoney = (amount: number, currencyOverride?: string) => {
+    const targetCurrency = currencyOverride || currency;
     try {
       return new Intl.NumberFormat("en-KE", {
         style: "currency",
-        currency,
+        currency: targetCurrency,
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(amount);
     } catch {
-      return `${currency} ${amount.toFixed(2)}`;
+      return `${targetCurrency} ${amount.toFixed(2)}`;
     }
   };
+
+  const loadSaved = async () => {
+    setSavedLoading(true);
+    setSavedError('');
+    try {
+      const response = await fetch('/api/admin/quotations', { cache: 'no-store' });
+      const data = (await response.json().catch(() => null)) as { quotations?: SavedQuotation[]; error?: string } | null;
+      if (!response.ok) {
+        throw new Error(data?.error || 'Failed to load saved quotations.');
+      }
+      setSaved(data?.quotations ?? []);
+    } catch (err) {
+      setSavedError(err instanceof Error ? err.message : 'Unable to load saved quotations.');
+    } finally {
+      setSavedLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadSaved();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +120,7 @@ export default function Quotations() {
           ? `Quotation ${data.quoteNumber} generated and sent successfully!`
           : 'Quotation generated and sent successfully!'
       );
+      await loadSaved();
       // Optionally reset form or redirect
     } catch (error) {
       setMessage('Error: ' + (error as Error).message);
@@ -117,6 +159,97 @@ export default function Quotations() {
         </div>
         {message && <p className="mt-4 text-sm text-[var(--foreground)]">{message}</p>}
       </div>
+
+      <section className="glass-panel p-6 sm:p-7">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Sent quotations</h2>
+          <button
+            type="button"
+            onClick={loadSaved}
+            className="px-4 py-2 rounded-full border border-[var(--glass-border)] bg-white/70 text-xs font-semibold"
+          >
+            Refresh
+          </button>
+        </div>
+        {savedError && <p className="mb-4 text-sm text-rose-500">{savedError}</p>}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="text-left text-[var(--muted)]">
+              <tr>
+                <th className="pb-3">Quotation</th>
+                <th className="pb-3">Client</th>
+                <th className="pb-3">Status</th>
+                <th className="pb-3">Total</th>
+                <th className="pb-3">Date</th>
+                <th className="pb-3 text-right">Download</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)]">
+              {savedLoading &&
+                [0, 1, 2].map((row) => (
+                  <tr key={row}>
+                    <td className="py-3">Loading…</td>
+                    <td className="py-3" />
+                    <td className="py-3" />
+                    <td className="py-3" />
+                    <td className="py-3" />
+                    <td className="py-3" />
+                  </tr>
+                ))}
+              {!savedLoading &&
+                saved.map((q) => (
+                  <tr key={q.id}>
+                    <td className="py-3 font-medium">{q.quoteNumber}</td>
+                    <td className="py-3 text-[var(--muted)]">
+                      <div className="flex flex-col">
+                        <span className="text-[var(--foreground)]">{q.clientName}</span>
+                        <span className="text-xs">{q.clientEmail}</span>
+                      </div>
+                    </td>
+                    <td className="py-3">
+                      <span
+                        className={
+                          q.status === 'sent'
+                            ? 'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700'
+                            : q.status === 'failed'
+                              ? 'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700'
+                              : 'inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-slate-50 text-slate-700'
+                        }
+                        title={q.lastError || undefined}
+                      >
+                        {q.status}
+                      </span>
+                    </td>
+                    <td className="py-3">{formatMoney(q.total, q.currency)}</td>
+                    <td className="py-3 text-[var(--muted)]">
+                      {new Date(q.issuedAt || q.createdAt).toLocaleDateString('en-KE', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </td>
+                    <td className="py-3 text-right">
+                      <a
+                        href={`/api/admin/quotations/${q.id}/download`}
+                        className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--button-bg)]"
+                      >
+                        <Download size={14} />
+                        PDF
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              {!savedLoading && saved.length === 0 && !savedError && (
+                <tr>
+                  <td className="py-4 text-[var(--muted)]" colSpan={6}>
+                    No quotations yet. Generate one to see it saved here.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <Modal
         open={isModalOpen}

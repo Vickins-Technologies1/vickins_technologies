@@ -5,6 +5,9 @@ import path from "path";
 import { readFile } from "fs/promises";
 import transporter from "@/lib/nodemailer";
 import QuotationPDF from "@/components/QuotationPDF";
+import { connectMongoose } from "@/lib/mongoose";
+import QuotationModel from "@/lib/models/quotation";
+import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,6 +70,14 @@ const createQuoteNumber = () => {
 
 export async function POST(request: Request) {
   try {
+    const user = await getSessionUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+    if (!isSiteAdmin(user)) {
+      return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    }
+
     const body = (await request.json().catch(() => null)) as Partial<GenerateQuotationPayload> | null;
     if (!body) {
       return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
@@ -122,13 +133,38 @@ export async function POST(request: Request) {
     }) as unknown as React.ReactElement;
 
     const pdfBuffer = await renderToBuffer(doc as never);
+    const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
+    const pdfFileName = `${quoteNumber}.pdf`;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: clientEmail,
-      bcc: process.env.EMAIL_RECEIVER || process.env.EMAIL_USER,
-      subject: `Quotation ${quoteNumber} • Vickins Technologies`,
-      html: `
+    await connectMongoose();
+
+    const quotation = await QuotationModel.create({
+      quoteNumber,
+      status: "draft",
+      clientName,
+      clientEmail,
+      currency,
+      issuedAt: new Date(issuedAt),
+      notes,
+      items: items.map((item) => ({
+        ...item,
+        lineTotal: item.quantity * item.price,
+      })),
+      total: overallTotal,
+      pdfBase64,
+      pdfFileName,
+      pdfContentType: "application/pdf",
+      createdByUserId: user.id,
+      createdByEmail: user.email || undefined,
+    });
+
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: clientEmail,
+        bcc: process.env.EMAIL_RECEIVER || process.env.EMAIL_USER,
+        subject: `Quotation ${quoteNumber} • Vickins Technologies`,
+        html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.55; color: #0b1220;">
           <h2 style="margin:0 0 8px;">Quotation from Vickins Technologies</h2>
           <p style="margin:0 0 12px;">
@@ -149,16 +185,32 @@ export async function POST(request: Request) {
           </p>
         </div>
       `,
-      attachments: [
-        {
-          filename: `${quoteNumber}.pdf`,
-          content: pdfBuffer,
-          contentType: "application/pdf",
-        },
-      ],
-    });
+        attachments: [
+          {
+            filename: pdfFileName,
+            content: Buffer.from(pdfBuffer),
+            contentType: "application/pdf",
+          },
+        ],
+      });
 
-    return NextResponse.json({ ok: true, quoteNumber }, { status: 200 });
+      await QuotationModel.updateOne(
+        { _id: quotation._id },
+        { $set: { status: "sent", sentAt: new Date(), lastError: "" } }
+      );
+    } catch (mailError) {
+      const message = mailError instanceof Error ? mailError.message : "Unable to send email.";
+      await QuotationModel.updateOne(
+        { _id: quotation._id },
+        { $set: { status: "failed", lastError: message } }
+      );
+      throw mailError;
+    }
+
+    return NextResponse.json(
+      { ok: true, quoteNumber, quotationId: String(quotation._id) },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("generate-quotation error:", error);
     return NextResponse.json({ error: "Failed to generate quotation." }, { status: 500 });

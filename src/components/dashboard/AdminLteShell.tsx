@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { Menu, Moon, Sun, LogOut, Search } from "lucide-react";
+import { useTheme } from "../ThemePreloaderProvider";
 
 export type DashboardNavItem = {
   href: string;
@@ -65,24 +66,10 @@ export default function AdminLteShell({
 }: Props) {
   const pathname = usePathname() || "/";
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const activeItem = useMemo(() => pickActiveItem(pathname, navSections), [pathname, navSections]);
-
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const theme = savedTheme === "dark" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    setIsDarkMode(theme === "dark");
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {

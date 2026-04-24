@@ -1,14 +1,15 @@
+"use client";
+
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 
 interface SidebarProps {
   isOpen: boolean;
-  isDarkMode: boolean;
   toggleSidebar: () => void;
 }
 
-export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarProps) {
+export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -17,9 +18,9 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: "-100%", opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)]/92 text-[var(--navbar-text)] z-50 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.22)] backdrop-blur-2xl lg:hidden"
+          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)] text-white z-50 p-6 border-r border-[var(--navbar-border)] shadow-[0_18px_45px_rgba(15,23,42,0.22)] backdrop-blur-2xl lg:hidden"
         >
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/12 via-transparent to-transparent" />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -28,7 +29,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           >
             <Link href="/" onClick={toggleSidebar} aria-label="Vickins Technologies Home">
               <Image
-                src={isDarkMode ? "/logo1.png" : "/logo2.png"}
+                src="/logo1.png"
                 alt="Vickins Technologies Logo"
                 width={90}
                 height={36}
@@ -36,11 +37,11 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                 sizes="80px"
               />
             </Link>
-            <div className="mt-3 flex items-center gap-2 text-[10px] uppercase tracking-[0.34em] text-[var(--navbar-text)]/60">
+            <div className="mt-3 flex items-center gap-2 text-[10px] uppercase tracking-[0.34em] opacity-60">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--button-bg)]" />
               Premium Studio
             </div>
-            <div className="mt-3 rounded-2xl bg-white/60 px-3 py-2 text-[10px] uppercase tracking-[0.26em] text-[var(--navbar-text)]/70">
+            <div className="mt-3 rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-3 py-2 text-[10px] uppercase tracking-[0.26em] opacity-75">
               ChamaHub • Groups • Payments
             </div>
           </motion.div>
@@ -48,7 +49,7 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
           <motion.button
             onClick={toggleSidebar}
             aria-label="Close sidebar"
-            className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition duration-300 z-10"
+            className="absolute top-4 right-4 inline-flex items-center justify-center p-2 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition duration-300 z-10"
             whileHover={{ scale: 1.1, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
             transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -77,36 +78,36 @@ export default function Sidebar({ isOpen, isDarkMode, toggleSidebar }: SidebarPr
                       ? "/vickins-security"
                       : `/#${item.toLowerCase()}`
                   }
-                  className="flex items-center justify-between rounded-2xl border border-white/35 bg-white/50 px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--navbar-text)]/80 hover:text-[var(--button-bg)] hover:bg-white/70 transition duration-300 group"
+                  className="flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition duration-300 group"
                   onClick={toggleSidebar}
                 >
                   {item}
-                  <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/30 group-hover:bg-[var(--button-bg)]/80 transition" />
+                  <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-30 group-hover:opacity-80 transition" />
                 </Link>
               </motion.li>
             ))}
           </ul>
 
           <div className="mt-7 space-y-3 relative z-10">
-            <div className="rounded-2xl border border-white/35 bg-white/55 px-4 py-3 text-[10px] uppercase tracking-[0.24em] text-[var(--navbar-text)]/70">
+            <div className="rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-3 text-[10px] uppercase tracking-[0.24em] opacity-75">
               ChamaHub Access
             </div>
             <div className="grid grid-cols-1 gap-2">
               <Link
                 href="/chama"
                 onClick={toggleSidebar}
-                className="inline-flex items-center justify-between rounded-2xl border border-white/35 bg-white/65 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--navbar-text)]/80"
+                className="inline-flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface-strong)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition"
               >
                 ChamaHub
-                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
+                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-40" />
               </Link>
               <Link
                 href="/member-login"
                 onClick={toggleSidebar}
-                className="inline-flex items-center justify-between rounded-2xl border border-white/35 bg-white/65 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--navbar-text)]/80"
+                className="inline-flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface-strong)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition"
               >
                 Member Login
-                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)]/40" />
+                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-40" />
               </Link>
             </div>
             <Link

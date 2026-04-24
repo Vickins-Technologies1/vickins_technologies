@@ -30,7 +30,6 @@ const FALLBACK = "/images/placeholder-square.png";
 const shouldUnoptimize = (src: string) => src.startsWith("data:") || src.startsWith("http");
 
 export default function Portfolio() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedSlideIndex, setSelectedSlideIndex] = useState<number | null>(null);
@@ -39,12 +38,6 @@ export default function Portfolio() {
     getDefaultGraphicCollection()
   );
   const [devProjects, setDevProjects] = useState<DevProject[]>(() => getDefaultDevProjects());
-
-  const toggleTheme = () => {
-    const newTheme = isDarkMode ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    setIsDarkMode(!isDarkMode);
-  };
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
@@ -111,8 +104,8 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
-      <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} isDarkMode={isDarkMode} toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <section className="pt-16 pb-10 md:pt-22 md:pb-14">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
