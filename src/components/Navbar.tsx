@@ -13,6 +13,7 @@ interface NavbarProps {
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
+  const logoSrc = isDarkMode ? "/logo1.png" : "/logo-light.png";
   const navItems = useMemo(() => [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
@@ -72,7 +73,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                   className="flex items-center gap-3"
                 >
                   <Image
-                    src="/logo1.png"
+                    src={logoSrc}
                     alt="Vickins Technologies Logo"
                     width={70}
                     height={28}

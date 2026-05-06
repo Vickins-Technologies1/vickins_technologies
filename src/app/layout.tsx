@@ -5,6 +5,8 @@ import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActionsGate from "../components/FloatingActionsGate";
 import LenisRoot from "../components/LenisRoot";
 
+const siteUrl = "https://vickins-technologies.vercel.app";
+
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
@@ -27,6 +29,7 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Vickins Technologies | IT Solutions, Web & Mobile Development Kenya",
     template: "%s | Vickins Technologies",
@@ -43,22 +46,14 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Vickins Technologies",
-      url: "https://vickins-technologies.onrender.com",
+      url: siteUrl,
     },
   ],
   openGraph: {
     title: "Vickins Technologies",
     description: "Driving business success with cutting-edge IT solutions in Kenya.",
-    url: "https://vickins-technologies.onrender.com",
+    url: siteUrl,
     siteName: "Vickins Technologies",
-    images: [
-      {
-        url: "https://vickins-technologies.onrender.com/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Vickins Technologies Logo",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
@@ -66,7 +61,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vickins Technologies",
     description: "Innovative IT solutions for your business in Kenya.",
-    images: ["https://vickins-technologies.onrender.com/og-image.jpg"],
     creator: "@VickinsTech",
   },
   robots: {

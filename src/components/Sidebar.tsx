@@ -13,6 +13,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
+  const logoSrc = isDarkMode ? "/logo1.png" : "/logo-light.png";
   const navItems = [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
@@ -55,7 +56,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 <Link href="/" onClick={toggleSidebar} aria-label="Vickins Technologies Home">
                   <div className="flex items-center gap-3">
                     <Image
-                      src="/logo1.png"
+                      src={logoSrc}
                       alt="Vickins Technologies Logo"
                       width={90}
                       height={36}
@@ -76,7 +77,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 <button
                   onClick={toggleSidebar}
                   aria-label="Close menu"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/5 hover:bg-white/10 transition"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
                 >
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -116,7 +117,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
               </ul>
 
               <div className="mt-6 space-y-2">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-white/55 px-1">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--sidebar-text)]/55 px-1">
                   Products
                 </p>
                 <div className="grid grid-cols-2 gap-2">

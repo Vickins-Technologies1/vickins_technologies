@@ -31,24 +31,24 @@ type ProjectItem = DevProject | GraphicProject;
 const featuredProjects: ProjectItem[] = [
   {
     id: 2,
-    title: "Smart Choice Rental Portal",
+    title: "Sorana Property Managers Portal",
     category: "Fullstack Application",
     description:
-      "Secure client portal with real-time dashboards, authentication and business management features.",
+      "Secure client portal with real-time dashboards, authentication, and business operations tools.",
     image: "/projects/scr.png",
     tags: ["TypeScript", "React", "Dashboard", "Fullstack"],
-    link: "https://soranapropertymanagers.com",
+    link: "https://www.soranapropertymanagers.com/",
     isDev: true,
   },
   {
     id: 4,
-    title: "Macdee Entertainment Platform",
-    category: "Enterprise Web App",
+    title: "Baggit Web Platform",
+    category: "Web Application",
     description:
-      "Enterprise-level web application with robust backend, user management, and custom UI components.",
-    image: "/projects/k28.png",
-    tags: ["JavaScript", "Fullstack", "Enterprise", "Custom UI"],
-    link: "https://macdeeentertainment.com",
+      "Web platform build with a clean UI, fast performance, and a solid deployment setup.",
+    image: "/projects/Baggit.png",
+    tags: ["Next.js", "TypeScript", "UI", "Web"],
+    link: "https://baggit-psi.vercel.app/",
     isDev: true,
   },
 ];
@@ -243,7 +243,7 @@ export default function RecentProjectsSection() {
                   {graphicProject.subProjects.slice(0, 6).map((item) => (
                     <div
                       key={item.id ?? item.subTitle}
-                      className="relative h-20 sm:h-24 rounded-2xl overflow-hidden border border-white/10"
+                      className="relative h-20 sm:h-24 rounded-2xl overflow-hidden border border-[var(--glass-border)]"
                     >
                       <Image
                         src={item.subImage || FALLBACK_SQUARE}
