@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Sora, Space_Grotesk, Instrument_Sans } from "next/font/google";
+import { Inter, Space_Grotesk, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActionsGate from "../components/FloatingActionsGate";
+import LenisRoot from "../components/LenisRoot";
 
-const sora = Sora({
-  weight: ["300", "400", "500", "600", "700"],
+const inter = Inter({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-sora",
+  variable: "--font-inter",
 });
 
 const spaceGrotesk = Space_Grotesk({
@@ -111,12 +112,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full scroll-smooth`}
+      data-theme="dark"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>
-          {children}
-          <FloatingActionsGate />
+          <LenisRoot>
+            {children}
+            <FloatingActionsGate />
+          </LenisRoot>
         </ThemePreloaderProvider>
       </body>
     </html>

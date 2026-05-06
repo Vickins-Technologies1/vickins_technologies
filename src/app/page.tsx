@@ -34,7 +34,7 @@ export default function Home() {
       </div>
 
       {/* All other sections: Contained with proper inner padding */}
-      <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-16">
+      <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
         <ProcessSection />
         <AboutSection />
         <ServicesSection />

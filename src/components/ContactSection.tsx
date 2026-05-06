@@ -206,35 +206,31 @@ export default function ContactSection() {
   return (
     <motion.section
       id="contact"
-      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
       transition={{ duration: 0.6 }}
     >
       <div className="text-center max-w-3xl mx-auto">
-        <p className="text-[var(--button-bg)] uppercase tracking-[0.35em] text-xs sm:text-sm">
-          Contact
-        </p>
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
-          Start a premium build with our studio.
-        </h2>
-        <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-          Share your goals, scope, and timeline. We will respond with a tailored plan and next steps.
+        <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Contact</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Tell us what you’re building.</h2>
+        <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+          Share scope and timeline. We reply with next steps.
         </p>
       </div>
 
       <div className="max-w-6xl mx-auto mt-8">
-        <div className="relative overflow-hidden rounded-3xl border border-white/40 bg-white/40 backdrop-blur-2xl shadow-[var(--shadow-soft)]">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/20 to-transparent opacity-80" />
+        <div className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl shadow-[var(--shadow-soft)]">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/6 via-transparent to-transparent opacity-80" />
           <div className="relative z-10 p-6 sm:p-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-white/70 border border-white/60">
-                  <SparklesIcon className="h-5 w-5 text-[var(--button-bg)]" />
+                <div className="p-2 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)]">
+                  <SparklesIcon className="h-5 w-5 text-[var(--accent)]" />
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">Premium Intake</p>
+                  <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Project brief</p>
                   <p className="text-sm text-[var(--foreground)]/70">We reply within 24 hours.</p>
                 </div>
               </div>
@@ -251,7 +247,7 @@ export default function ContactSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
-                  className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]"
+                  className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]"
                 >
                   <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                     Contact Information
@@ -282,22 +278,22 @@ export default function ContactSection() {
                   </div>
                 </motion.div>
 
-                <div className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]">
+                <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                     <CalendarDaysIcon className="h-4 w-4" />
                     Engagement Snapshot
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-[var(--foreground)]/70">
-                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
                       Response time: <span className="font-semibold text-[var(--foreground)]">24 hrs</span>
                     </div>
-                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
                       Start window: <span className="font-semibold text-[var(--foreground)]">1-3 wks</span>
                     </div>
-                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
                       Project length: <span className="font-semibold text-[var(--foreground)]">4-12 wks</span>
                     </div>
-                    <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
                       Support: <span className="font-semibold text-[var(--foreground)]">Ongoing</span>
                     </div>
                   </div>
@@ -307,7 +303,7 @@ export default function ContactSection() {
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-white/40 bg-white/60 p-5 shadow-[var(--shadow-tight)]">
+                <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                   <h4 className="text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">What happens next</h4>
                   <ul className="mt-4 space-y-3 text-sm text-[var(--foreground)]/70">
                     <li className="flex items-start gap-2">
@@ -331,7 +327,7 @@ export default function ContactSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="rounded-3xl border border-white/40 bg-white/60 p-6 shadow-[var(--shadow-tight)]"
+                className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-6 shadow-[var(--shadow-tight)]"
               >
                 <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60 mb-4">
                   Project Brief
@@ -344,7 +340,7 @@ export default function ContactSection() {
                       value={formData.name}
                       onChange={handleInputChange}
                       placeholder="Your Name"
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                       required
                     />
                     <input
@@ -353,7 +349,7 @@ export default function ContactSection() {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="Your Email"
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                       required
                     />
                     <input
@@ -362,7 +358,7 @@ export default function ContactSection() {
                       value={formData.company}
                       onChange={handleInputChange}
                       placeholder="Company"
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     />
                     <input
                       type="text"
@@ -370,7 +366,7 @@ export default function ContactSection() {
                       value={formData.role}
                       onChange={handleInputChange}
                       placeholder="Role / Title"
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     />
                     <input
                       type="url"
@@ -378,9 +374,9 @@ export default function ContactSection() {
                       value={formData.website}
                       onChange={handleInputChange}
                       placeholder="Company Website"
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     />
-                    <div className="flex items-center gap-3 rounded-xl border border-white/50 bg-white/70 px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--button-bg)]">
+                    <div className="flex items-center gap-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-3 py-2 focus-within:ring-2 focus-within:ring-[var(--button-bg)]">
                       <PhoneIcon className="h-4 w-4 text-[var(--button-bg)]" />
                       <PhoneInput
                         placeholder="Phone Number"
@@ -399,7 +395,7 @@ export default function ContactSection() {
                       name="budget"
                       value={formData.budget}
                       onChange={handleInputChange}
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     >
                       <option value="">Budget Range</option>
                       <option value="Under KES 30k">Under KES 30k</option>
@@ -412,7 +408,7 @@ export default function ContactSection() {
                       name="timeline"
                       value={formData.timeline}
                       onChange={handleInputChange}
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     >
                       <option value="">Timeline</option>
                       <option value="ASAP">ASAP</option>
@@ -424,7 +420,7 @@ export default function ContactSection() {
                       name="contactMethod"
                       value={formData.contactMethod}
                       onChange={handleInputChange}
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     >
                       <option value="Email">Preferred Contact: Email</option>
                       <option value="Phone">Preferred Contact: Phone</option>
@@ -434,7 +430,7 @@ export default function ContactSection() {
                       name="referral"
                       value={formData.referral}
                       onChange={handleInputChange}
-                      className="w-full p-3 rounded-xl border border-white/50 bg-white/70 focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
+                      className="w-full p-3 rounded-xl border border-[var(--glass-border)] bg-[var(--glass-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--button-bg)] text-sm"
                     >
                       <option value="">How did you hear about us?</option>
                       <option value="Referral">Referral</option>
@@ -453,7 +449,7 @@ export default function ContactSection() {
                       <label
                         key={service}
                         htmlFor={`service-${index}`}
-                        className="flex items-center cursor-pointer select-none text-xs w-full p-2 rounded-lg hover:bg-white/60 transition-all duration-200"
+                        className="flex items-center cursor-pointer select-none text-xs w-full p-2 rounded-lg hover:bg-[var(--hover-bg)] transition-all duration-200"
                       >
                         <input
                           id={`service-${index}`}
@@ -483,7 +479,7 @@ export default function ContactSection() {
                     ))}
                   </div>
 
-                  <div className="rounded-2xl border border-white/50 bg-white/70 p-3">
+                  <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <button
@@ -492,7 +488,7 @@ export default function ContactSection() {
                           className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-semibold transition ${
                             editorMode === "write"
                               ? "bg-[var(--button-bg)] text-white"
-                              : "bg-white/60 text-[var(--foreground)]/70 hover:bg-white"
+                              : "bg-[var(--glass-surface)] text-[var(--foreground)]/70 hover:bg-[var(--glass-surface-strong)]"
                           }`}
                         >
                           Write
@@ -503,7 +499,7 @@ export default function ContactSection() {
                           className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-semibold transition ${
                             editorMode === "preview"
                               ? "bg-[var(--button-bg)] text-white"
-                              : "bg-white/60 text-[var(--foreground)]/70 hover:bg-white"
+                              : "bg-[var(--glass-surface)] text-[var(--foreground)]/70 hover:bg-[var(--glass-surface-strong)]"
                           }`}
                         >
                           Preview
@@ -525,7 +521,7 @@ export default function ContactSection() {
                       />
                     ) : (
                       <div
-                        className="min-h-[140px] text-sm text-[var(--foreground)]/80 leading-relaxed space-y-2 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:text-sm [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-white/70"
+                        className="min-h-[140px] text-sm text-[var(--foreground)]/80 leading-relaxed space-y-2 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:text-sm [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:bg-[var(--glass-surface)]"
                         dangerouslySetInnerHTML={{
                           __html: renderPreview || "<p>Start writing to see a preview.</p>",
                         }}
@@ -539,7 +535,7 @@ export default function ContactSection() {
                         type="checkbox"
                         checked={formData.discoveryCall}
                         onChange={() => handleToggle("discoveryCall")}
-                        className="h-4 w-4 rounded border-white/50"
+                        className="h-4 w-4 rounded border-[var(--glass-border)]"
                       />
                       Request a discovery call
                     </label>
@@ -548,7 +544,7 @@ export default function ContactSection() {
                         type="checkbox"
                         checked={formData.nda}
                         onChange={() => handleToggle("nda")}
-                        className="h-4 w-4 rounded border-white/50"
+                        className="h-4 w-4 rounded border-[var(--glass-border)]"
                       />
                       NDA required
                     </label>

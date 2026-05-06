@@ -24,22 +24,25 @@ interface ThemePreloaderProviderProps {
 }
 
 export default function ThemePreloaderProvider({ children }: ThemePreloaderProviderProps) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
 
-  // Load saved theme preference (default: light)
+  // Load saved theme preference (default: dark)
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const theme = savedTheme === "dark" ? "dark" : "light";
+    const theme = savedTheme === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", theme);
     setIsDarkMode(theme === "dark");
   }, []);
 
   // Hide preloader after 2 seconds
   useEffect(() => {
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false);
     const timer = setTimeout(() => {
       setIsPreloaderVisible(false);
-    }, 2000); // Adjust as needed
+    }, prefersReduced ? 250 : 900);
 
     return () => clearTimeout(timer);
   }, []);

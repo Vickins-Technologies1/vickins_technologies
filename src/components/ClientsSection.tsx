@@ -21,7 +21,7 @@ export default function ClientsSection() {
   return (
     <motion.section
       id="clients"
-      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
@@ -30,14 +30,12 @@ export default function ClientsSection() {
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
-              Clients
-            </p>
+            <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Clients</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Trusted partnerships with ambitious brands.
+              Teams we’ve worked with.
             </h2>
-            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-              We collaborate with teams that value premium craft, delivery velocity, and lasting impact.
+            <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+              Product, design, and delivery support across different industries.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
@@ -53,7 +51,7 @@ export default function ClientsSection() {
                 href={client.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-2xl border border-white/40 bg-white/60 p-4 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+                className="group rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
               >
                 <div className="relative h-12 sm:h-14">
                   <Image
@@ -71,20 +69,18 @@ export default function ClientsSection() {
             ))}
           </div>
 
-          <div className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+          <div className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.14),_transparent_60%)]" />
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
                   Brand Wall
                 </p>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
-                  Portfolio Partners
-                </span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">Partners</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold mt-3">A wider network of client brands.</h3>
-              <p className="text-sm text-[var(--foreground)]/75 mt-3">
-                A scrollable showcase of teams we have supported with strategy, engineering, and design.
+              <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
+                A quick scroll through some of the brands we’ve supported.
               </p>
 
               <div className="mt-6 overflow-hidden">

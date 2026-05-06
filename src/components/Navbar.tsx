@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useTheme } from "./ThemePreloaderProvider";
 
 interface NavbarProps {
@@ -12,12 +13,55 @@ interface NavbarProps {
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const navItems = ["Process", "About", "Services", "Security", "Portfolio", "Pricing", "Clients"];
+  const navItems = useMemo(() => [
+    { label: "Home", href: "/#home" },
+    { label: "Services", href: "/#services" },
+    { label: "Products", href: "/#products" },
+    { label: "Work", href: "/#work" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Security", href: "/#security" },
+    { label: "Contact", href: "/#contact" },
+  ], []);
+
+  const { scrollY } = useScroll();
+  const [isScrolled, setIsScrolled] = useState(false);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 12);
+  });
+
+  const [activeId, setActiveId] = useState("home");
+  useEffect(() => {
+    const ids = navItems.map((item) => item.href.replace("/#", ""));
+    const elements = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0));
+        if (visible[0]?.target?.id) setActiveId(visible[0].target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: [0.05, 0.12, 0.2] }
+    );
+
+    for (const element of elements) observer.observe(element);
+    return () => observer.disconnect();
+  }, [navItems]);
 
   return (
     <nav className="sticky top-0 z-50">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mt-4 mb-3 rounded-[28px] border border-[var(--navbar-border)] bg-[var(--navbar-bg)] px-4 sm:px-5 py-3 text-white backdrop-blur-2xl shadow-[var(--shadow-tight)]">
+      <div className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
+        <motion.div
+          initial={false}
+          animate={{
+            backgroundColor: isScrolled ? "rgba(2, 8, 23, 0.72)" : "rgba(2, 8, 23, 0.0)",
+            borderColor: isScrolled ? "rgba(226, 232, 240, 0.12)" : "rgba(226, 232, 240, 0.0)",
+            boxShadow: isScrolled ? "0 10px 30px rgba(0,0,0,0.35)" : "0 0 0 rgba(0,0,0,0)",
+          }}
+          transition={{ duration: 0.25 }}
+          className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 text-white backdrop-blur-2xl"
+        >
           <div className="grid grid-cols-[1fr_auto] lg:grid-cols-[auto_1fr_auto] items-center gap-3">
             <div className="flex items-center justify-between gap-3 lg:justify-start">
               <Link href="/" aria-label="Vickins Technologies Home">
@@ -32,15 +76,15 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                     alt="Vickins Technologies Logo"
                     width={70}
                     height={28}
-                    className="w-11 sm:w-12"
-                    sizes="(max-width: 640px) 48px, 56px"
+                    className="w-10 sm:w-11"
+                    sizes="(max-width: 640px) 44px, 48px"
                   />
                   <div className="hidden sm:flex flex-col leading-tight">
-                    <span className="text-[10px] uppercase tracking-[0.34em] opacity-70">
+                    <span className="text-[10px] uppercase tracking-[0.32em] opacity-75">
                       Vickins
                     </span>
-                    <span className="text-[10px] uppercase tracking-[0.28em] opacity-55">
-                      Digital Studio
+                    <span className="text-[10px] uppercase tracking-[0.24em] opacity-55">
+                      Technologies
                     </span>
                   </div>
                 </motion.div>
@@ -49,7 +93,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleSidebar}
                 aria-label="Toggle sidebar"
-                className="lg:hidden inline-flex items-center justify-center p-2 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition duration-300"
+                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}
@@ -65,24 +109,24 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               </motion.button>
             </div>
 
-            <ul className="hidden lg:flex items-center justify-center gap-1 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-2 py-1">
+            <ul className="hidden lg:flex items-center justify-center gap-0.5 rounded-full border border-white/12 bg-white/5 px-1.5 py-1">
               {navItems.map((item) => (
                 <motion.li
-                  key={item}
+                  key={item.label}
                   whileHover={{ y: -1 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   <Link
-                    href={
-                      item === "Portfolio"
-                        ? "/portfolio"
-                        : item === "Security"
-                        ? "/vickins-security"
-                        : `/#${item.toLowerCase()}`
-                    }
-                    className="inline-flex items-center rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.26em] font-semibold opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)] transition"
+                    href={item.href}
+                    aria-current={activeId === item.href.replace("/#", "") ? "page" : undefined}
+                    className={[
+                      "inline-flex items-center rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.26em] font-semibold transition",
+                      activeId === item.href.replace("/#", "")
+                        ? "bg-white/10 text-[var(--accent)]"
+                        : "opacity-85 hover:opacity-100 hover:text-[var(--accent)] hover:bg-white/8",
+                    ].join(" ")}
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </motion.li>
               ))}
@@ -92,7 +136,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleTheme}
                 aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-                className="inline-flex items-center justify-center p-2 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition duration-300"
+                className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border border-white/12 bg-white/5 hover:bg-white/10 transition"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}
@@ -123,21 +167,15 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               </motion.button>
 
               <Link
-                href="/chama"
-                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface-strong)] text-[10px] font-semibold uppercase tracking-[0.2em] opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition"
+                href="/#contact"
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)] hover:bg-[rgba(240,176,16,0.18)] transition"
               >
-                ChamaHub
-              </Link>
-
-              <Link
-                href="/vtix"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg hover:shadow-2xl transition-all duration-300"
-              >
-                V-Tix
+                Schedule Consultation
+                <span className="h-1 w-6 rounded-full bg-[var(--accent)]/70" />
               </Link>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </nav>
   );

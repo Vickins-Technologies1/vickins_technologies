@@ -56,47 +56,46 @@ export default function SecurityServiceSection() {
   return (
     <motion.section
       id="security"
-      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-120px" }}
       variants={container}
     >
       <motion.div variants={item} className="text-center max-w-3xl mx-auto">
-        <p className="text-[var(--button-bg)] uppercase tracking-[0.35em] text-xs sm:text-sm">
-          Vickins Security
-        </p>
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
-          Complete security solutions. Total peace of mind.
-        </h2>
-        <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-          End-to-end security solutions designed to protect what matters most — for homes, businesses, and institutions.
+        <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Security</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Vickins Security.</h2>
+        <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+          CCTV, alarms, access control and perimeter security — installed and supported.
         </p>
       </motion.div>
 
       <motion.div variants={item} className="mt-7 flex flex-wrap justify-center gap-2">
         {quickHighlights.map((label) => (
-          <span key={label} className="glass-chip px-4 py-2 text-xs sm:text-sm text-[var(--foreground)]/80">
+          <span
+            key={label}
+            className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
+          >
             {label}
           </span>
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mt-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-7">
         {services.map((service) => (
           <motion.div
             key={service.title}
             variants={item}
-            className="glass-panel p-5 sm:p-6 group hover:-translate-y-2 transition-all duration-300"
+            className="glass-panel p-5 sm:p-6 group hover:-translate-y-1.5 transition-all duration-300"
           >
-            <service.icon className="h-8 w-8 text-[var(--button-bg)] mb-3" />
+            <service.icon className="h-8 w-8 text-[var(--accent)] mb-3" />
             <h3 className="text-base sm:text-lg font-semibold mb-2">{service.title}</h3>
-            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mb-5">{service.description}</p>
+            <p className="text-[15px] text-[var(--foreground)]/75 mb-5">{service.description}</p>
             <Link
               href="/vickins-security"
-              className="text-[var(--button-bg)] font-semibold text-sm sm:text-base inline-flex items-center gap-2"
+              className="text-[var(--accent)] font-semibold text-sm inline-flex items-center gap-2"
             >
-              Explore service
+              Details
               <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -106,7 +105,7 @@ export default function SecurityServiceSection() {
       <motion.div variants={item} className="mt-8 flex justify-center">
         <Link
           href="/vickins-security"
-          className="inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--button-bg)] text-white font-semibold shadow-lg hover:shadow-2xl transition-all duration-300"
+          className="inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--accent)] text-[#0b1220] font-semibold shadow-lg hover:shadow-2xl transition-all duration-300"
         >
           View Vickins Security
           <ShieldCheckIcon className="w-5 h-5" />

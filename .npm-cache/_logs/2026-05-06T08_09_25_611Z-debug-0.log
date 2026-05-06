@@ -1,0 +1,87 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.9.0
+2 info using node@v24.14.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\ABCD\vickins-technologies\.npmrc
+5 silly config load:file:C:\Users\ABCD\.npmrc
+6 silly config load:file:C:\Users\ABCD\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm i lenis
+8 verbose argv "i" "lenis"
+9 verbose logfile logs-max:10 dir:C:\Users\ABCD\vickins-technologies\.npm-cache\_logs\2026-05-06T08_09_25_611Z-
+10 verbose logfile C:\Users\ABCD\vickins-technologies\.npm-cache\_logs\2026-05-06T08_09_25_611Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+14 silly idealTree buildDeps
+15 silly fetch manifest html5-qrcode@^2.3.8
+16 silly packumentCache full:https://registry.npmjs.org/html5-qrcode cache-miss
+17 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with EACCES
+18 http fetch GET https://registry.npmjs.org/html5-qrcode attempt 1 failed with EACCES
+19 http fetch GET https://registry.npmjs.org/npm attempt 2 failed with EACCES
+20 http fetch GET https://registry.npmjs.org/html5-qrcode attempt 2 failed with EACCES
+21 http fetch GET https://registry.npmjs.org/npm attempt 3 failed with EACCES
+22 http fetch GET https://registry.npmjs.org/html5-qrcode attempt 3 failed with EACCES
+23 silly fetch manifest qrcode@^1.5.4
+24 silly packumentCache full:https://registry.npmjs.org/qrcode cache-miss
+25 http fetch GET https://registry.npmjs.org/qrcode attempt 1 failed with EACCES
+26 http fetch GET https://registry.npmjs.org/qrcode attempt 2 failed with EACCES
+27 http fetch GET https://registry.npmjs.org/qrcode attempt 3 failed with EACCES
+28 silly fetch manifest lenis@*
+29 silly packumentCache full:https://registry.npmjs.org/lenis cache-miss
+30 http fetch GET https://registry.npmjs.org/lenis attempt 1 failed with EACCES
+31 http fetch GET https://registry.npmjs.org/lenis attempt 2 failed with EACCES
+32 http fetch GET https://registry.npmjs.org/lenis attempt 3 failed with EACCES
+33 silly fetch manifest @types/qrcode@^1.5.6
+34 silly packumentCache full:https://registry.npmjs.org/@types%2fqrcode cache-miss
+35 http fetch GET https://registry.npmjs.org/@types%2fqrcode attempt 1 failed with EACCES
+36 http fetch GET https://registry.npmjs.org/@types%2fqrcode attempt 2 failed with EACCES
+37 http fetch GET https://registry.npmjs.org/@types%2fqrcode attempt 3 failed with EACCES
+38 silly fetch manifest vitest@^4.1.2
+39 silly packumentCache full:https://registry.npmjs.org/vitest cache-miss
+40 http fetch GET https://registry.npmjs.org/vitest attempt 1 failed with EACCES
+41 http fetch GET https://registry.npmjs.org/vitest attempt 2 failed with EACCES
+42 http fetch GET https://registry.npmjs.org/vitest attempt 3 failed with EACCES
+43 silly placeDep ROOT @types/qrcode@ OK for: vickins-technologies@0.1.0 want: ^1.5.6
+44 silly placeDep ROOT html5-qrcode@ OK for: vickins-technologies@0.1.0 want: ^2.3.8
+45 silly placeDep ROOT lenis@ OK for: vickins-technologies@0.1.0 want: *
+46 silly placeDep ROOT qrcode@ OK for: vickins-technologies@0.1.0 want: ^1.5.4
+47 silly placeDep ROOT vitest@ OK for: vickins-technologies@0.1.0 want: ^4.1.2
+48 verbose type system
+49 verbose stack FetchError: request to https://registry.npmjs.org/@types%2fqrcode failed, reason: 
+49 verbose stack     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\index.js:130:14)
+49 verbose stack     at ClientRequest.emit (node:events:508:28)
+49 verbose stack     at emitErrorEvent (node:_http_client:108:11)
+49 verbose stack     at _destroy (node:_http_client:963:9)
+49 verbose stack     at onSocketNT (node:_http_client:983:5)
+49 verbose stack     at process.processTicksAndRejections (node:internal/process/task_queues:91:21)
+50 error code EACCES
+51 error errno EACCES
+52 error FetchError: request to https://registry.npmjs.org/@types%2fqrcode failed, reason: 
+52 error     at ClientRequest.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\index.js:130:14)
+52 error     at ClientRequest.emit (node:events:508:28)
+52 error     at emitErrorEvent (node:_http_client:108:11)
+52 error     at _destroy (node:_http_client:963:9)
+52 error     at onSocketNT (node:_http_client:983:5)
+52 error     at process.processTicksAndRejections (node:internal/process/task_queues:91:21) {
+52 error   code: 'EACCES',
+52 error   errno: 'EACCES',
+52 error   type: 'system',
+52 error   requiredBy: '.'
+52 error }
+53 error
+53 error The operation was rejected by your operating system.
+53 error It's possible that the file was already in use (by a text editor or antivirus),
+53 error or that you lack permissions to access it.
+53 error
+53 error If you believe this might be a permissions issue, please double-check the
+53 error permissions of the file and its containing directories, or try running
+53 error the command again as root/Administrator.
+54 silly unfinished npm timer reify 1778054966918
+55 silly unfinished npm timer reify:loadTrees 1778054966920
+56 verbose cwd C:\Users\ABCD\vickins-technologies
+57 verbose os Windows_NT 10.0.26200
+58 verbose node v24.14.0
+59 verbose npm  v11.9.0
+60 verbose exit 1
+61 verbose code 1
+62 error A complete log of this run can be found in: C:\Users\ABCD\vickins-technologies\.npm-cache\_logs\2026-05-06T08_09_25_611Z-debug-0.log

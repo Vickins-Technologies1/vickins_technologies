@@ -135,18 +135,14 @@ export default function RecentProjectsSection() {
   };
 
   return (
-    <section className="py-10 sm:py-14 lg:py-16">
+    <section id="work" className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-7">
           <div className="max-w-2xl">
-            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
-              Featured Work
-            </p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Premium delivery across product and visual design.
-            </h2>
-            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-              Selected partnerships highlighting fullstack engineering and brand-forward creative systems.
+            <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Work</p>
+            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Selected builds.</h2>
+            <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+              A few projects across product engineering and design.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -159,7 +155,7 @@ export default function RecentProjectsSection() {
             </a>
             <a
               href="/portfolio"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--button-bg)]"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--accent)] hover:text-[var(--accent)]/90 transition"
             >
               Explore Portfolio
               <ArrowRight className="h-4 w-4" />
@@ -167,8 +163,8 @@ export default function RecentProjectsSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
-          <div className="space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-5 lg:gap-6">
+          <div className="space-y-4">
             {devProjects.map((project, index) => (
               <motion.a
                 key={project.id}
@@ -179,7 +175,7 @@ export default function RecentProjectsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-120px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group flex flex-col sm:flex-row gap-4 rounded-3xl border border-white/40 bg-white/50 p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+                className="group flex flex-col sm:flex-row gap-4 rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
               >
                 <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden">
                   <Image
@@ -192,7 +188,7 @@ export default function RecentProjectsSection() {
                 </div>
                 <div className="flex flex-col flex-1">
                   <div className="flex items-center justify-between">
-                    <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+                    <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/60">
                       {project.category}
                     </p>
                     <ExternalLink className="h-4 w-4 text-[var(--button-bg)] opacity-70 group-hover:opacity-100" />
@@ -200,14 +196,14 @@ export default function RecentProjectsSection() {
                   <h3 className="text-lg sm:text-xl font-semibold mt-2 text-[var(--foreground)]">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-[var(--foreground)]/75 mt-2 line-clamp-2">
+                  <p className="text-[15px] text-[var(--foreground)]/75 mt-2 line-clamp-2">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] bg-white/70 text-[var(--foreground)]/70 rounded-full"
+                        className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] text-[var(--foreground)]/70 rounded-full"
                       >
                         {tag}
                       </span>
@@ -224,22 +220,22 @@ export default function RecentProjectsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-120px" }}
               transition={{ duration: 0.6 }}
-              className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+              className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-5 sm:p-6 shadow-[var(--shadow-soft)]"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,144,224,0.18),_transparent_60%)]" />
               <div className="relative z-10">
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
+                  <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/60">
                     Graphic Design
                   </p>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
                     Curated Collection
                   </span>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-semibold mt-3">
                   {graphicProject.title}
                 </h3>
-                <p className="text-sm text-[var(--foreground)]/75 mt-3">
+                <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
                   {graphicProject.description}
                 </p>
 
@@ -247,7 +243,7 @@ export default function RecentProjectsSection() {
                   {graphicProject.subProjects.slice(0, 6).map((item) => (
                     <div
                       key={item.id ?? item.subTitle}
-                      className="relative h-20 sm:h-24 rounded-2xl overflow-hidden"
+                      className="relative h-20 sm:h-24 rounded-2xl overflow-hidden border border-white/10"
                     >
                       <Image
                         src={item.subImage || FALLBACK_SQUARE}
@@ -263,7 +259,7 @@ export default function RecentProjectsSection() {
 
                 <button
                   onClick={openGallery}
-                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-white transition"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-[var(--glass-surface-strong)] transition"
                 >
                   Open Gallery
                   <ArrowRight className="h-4 w-4" />

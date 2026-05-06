@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "./ThemePreloaderProvider";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,114 +12,149 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const navItems = [
+    { label: "Home", href: "/#home" },
+    { label: "Services", href: "/#services" },
+    { label: "Products", href: "/#products" },
+    { label: "Work", href: "/#work" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Security", href: "/#security" },
+    { label: "Contact", href: "/#contact" },
+  ];
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ x: "-100%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-100%", opacity: 0 }}
-          transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed top-0 left-0 h-full w-72 bg-[var(--navbar-bg)] text-white z-50 p-6 border-r border-[var(--navbar-border)] shadow-[0_18px_45px_rgba(15,23,42,0.22)] backdrop-blur-2xl lg:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 lg:hidden"
+          aria-modal="true"
+          role="dialog"
         >
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/12 via-transparent to-transparent" />
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mb-6 relative z-10"
-          >
-            <Link href="/" onClick={toggleSidebar} aria-label="Vickins Technologies Home">
-              <Image
-                src="/logo1.png"
-                alt="Vickins Technologies Logo"
-                width={90}
-                height={36}
-                className="w-20 transition-transform duration-300 hover:scale-105"
-                sizes="80px"
-              />
-            </Link>
-            <div className="mt-3 flex items-center gap-2 text-[10px] uppercase tracking-[0.34em] opacity-60">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--button-bg)]" />
-              Premium Studio
-            </div>
-            <div className="mt-3 rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-3 py-2 text-[10px] uppercase tracking-[0.26em] opacity-75">
-              ChamaHub • Groups • Payments
-            </div>
-          </motion.div>
-
           <motion.button
+            aria-label="Close menu"
             onClick={toggleSidebar}
-            aria-label="Close sidebar"
-            className="absolute top-4 right-4 inline-flex items-center justify-center p-2 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition duration-300 z-10"
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          />
+
+          <motion.aside
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
+            className="absolute right-0 top-0 h-full w-[86vw] max-w-[380px] border-l border-white/12 bg-[rgba(2,8,23,0.86)] text-white shadow-2xl backdrop-blur-2xl"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </motion.button>
-
-          <ul className="mt-6 space-y-2.5 relative z-10">
-            {["Process", "About", "Services", "Security", "ChamaHub", "Portfolio", "Pricing", "Clients", "Contact"].map((item, index) => (
-              <motion.li
-                key={item}
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.08 * (index + 1), duration: 0.3 }}
-                whileHover={{ x: 5 }}
-              >
-                <Link
-                  href={
-                    item === "Portfolio"
-                      ? "/portfolio"
-                      : item === "ChamaHub"
-                      ? "/chama"
-                      : item === "Security"
-                      ? "/vickins-security"
-                      : `/#${item.toLowerCase()}`
-                  }
-                  className="flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition duration-300 group"
-                  onClick={toggleSidebar}
-                >
-                  {item}
-                  <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-30 group-hover:opacity-80 transition" />
+            <div className="relative h-full px-5 py-5">
+              <div className="flex items-center justify-between">
+                <Link href="/" onClick={toggleSidebar} aria-label="Vickins Technologies Home">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src="/logo1.png"
+                      alt="Vickins Technologies Logo"
+                      width={90}
+                      height={36}
+                      className="w-14"
+                      sizes="56px"
+                    />
+                    <div className="leading-tight">
+                      <p className="text-[10px] uppercase tracking-[0.34em] text-white/70">
+                        Vickins
+                      </p>
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-white/55">
+                        Technologies
+                      </p>
+                    </div>
+                  </div>
                 </Link>
-              </motion.li>
-            ))}
-          </ul>
 
-          <div className="mt-7 space-y-3 relative z-10">
-            <div className="rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-3 text-[10px] uppercase tracking-[0.24em] opacity-75">
-              ChamaHub Access
+                <button
+                  onClick={toggleSidebar}
+                  aria-label="Close menu"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/5 hover:bg-white/10 transition"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">Theme</p>
+                <button
+                  onClick={toggleTheme}
+                  aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
+                >
+                  {isDarkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+                </button>
+              </div>
+
+              <ul className="mt-5 space-y-2">
+                {navItems.map((item, index) => (
+                  <motion.li
+                    key={item.label}
+                    initial={{ x: 14, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.05 * index, duration: 0.25 }}
+                  >
+                    <Link
+                      href={item.href}
+                      className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-[10px] uppercase tracking-[0.28em] font-semibold text-white/85 hover:text-white hover:bg-white/10 transition"
+                      onClick={toggleSidebar}
+                    >
+                      {item.label}
+                      <span className="h-1 w-6 rounded-full bg-white/15" />
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <div className="mt-6 space-y-2">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-white/55 px-1">
+                  Products
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    href="/chama"
+                    onClick={toggleSidebar}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-white/80 hover:bg-white/10 transition text-center"
+                  >
+                    ChamaHub
+                  </Link>
+                  <Link
+                    href="/vtix"
+                    onClick={toggleSidebar}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-white/80 hover:bg-white/10 transition text-center"
+                  >
+                    V-Tix
+                  </Link>
+                </div>
+              </div>
+
+              <div className="absolute bottom-5 left-5 right-5 space-y-2">
+                <Link
+                  href="/#contact"
+                  onClick={toggleSidebar}
+                  className="flex items-center justify-center gap-2 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent)] hover:bg-[rgba(240,176,16,0.18)] transition"
+                >
+                  Schedule Consultation
+                </Link>
+                <Link
+                  href="/vickins-security"
+                  onClick={toggleSidebar}
+                  className="flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-white/80 hover:bg-white/10 transition"
+                >
+                  Vickins Security
+                </Link>
+              </div>
             </div>
-            <div className="grid grid-cols-1 gap-2">
-              <Link
-                href="/chama"
-                onClick={toggleSidebar}
-                className="inline-flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface-strong)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition"
-              >
-                ChamaHub
-                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-40" />
-              </Link>
-              <Link
-                href="/member-login"
-                onClick={toggleSidebar}
-                className="inline-flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface-strong)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold opacity-90 hover:opacity-100 hover:bg-[var(--navbar-surface-hover)] hover:text-[var(--accent-2)] transition"
-              >
-                Member Login
-                <span className="h-1 w-6 rounded-full bg-[var(--button-bg)] opacity-40" />
-              </Link>
-            </div>
-            <Link
-              href="/vtix"
-              onClick={toggleSidebar}
-              className="inline-flex items-center justify-center w-full px-4 py-3 rounded-full bg-[var(--button-bg)] text-white text-[10px] font-semibold uppercase tracking-[0.2em] shadow-lg"
-            >
-              V-Tix
-            </Link>
-          </div>
+          </motion.aside>
         </motion.div>
       )}
     </AnimatePresence>

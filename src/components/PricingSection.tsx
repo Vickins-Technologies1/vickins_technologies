@@ -250,7 +250,7 @@ export default function Pricing() {
   return (
     <motion.section
       id="pricing"
-      className="py-10 sm:py-14 lg:py-16 mt-16 sm:mt-20 scroll-mt-[80px]"
+      className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -259,14 +259,12 @@ export default function Pricing() {
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
-              Pricing
-            </p>
+            <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Pricing</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Premium packages for every stage.
+              Clear starting points.
             </h2>
-            <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-              Transparent scopes with an emphasis on quality, performance, and future-ready support.
+            <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+              Final price depends on scope. These ranges help you plan.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
@@ -283,20 +281,20 @@ export default function Pricing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-120px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`rounded-3xl border border-white/40 bg-white/55 p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
-                  plan.popular ? "ring-1 ring-[var(--button-bg)]" : ""
+                className={`rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
+                  plan.popular ? "ring-1 ring-[rgba(240,176,16,0.55)]" : ""
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+                    <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/60">
                       {plan.description}
                     </p>
                     <h3 className="text-lg sm:text-xl font-semibold mt-2">{plan.name}</h3>
                     <p className="text-sm text-[var(--foreground)]/70 mt-2">From {plan.price}</p>
                   </div>
                   {plan.popular && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--button-bg)]/15 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--button-bg)]">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
                       <SparklesIcon className="h-3 w-3" />
                       Popular
                     </span>
@@ -306,7 +304,7 @@ export default function Pricing() {
                   {plan.features.slice(0, 5).map((feature) => (
                     <span
                       key={feature}
-                      className="inline-flex items-center gap-1 rounded-full border border-white/50 bg-white/70 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[var(--foreground)]/70"
+                      className="inline-flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[var(--foreground)]/70"
                     >
                       <CheckCircleIcon className="h-3 w-3 text-[var(--button-bg)]" />
                       {feature}
@@ -327,28 +325,26 @@ export default function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+            className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.14),_transparent_60%)]" />
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
                   Signature Plans
                 </p>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
-                  Premium Suite
-                </span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">Scope</span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold mt-3">Enterprise-grade engagements.</h3>
-              <p className="text-sm text-[var(--foreground)]/75 mt-3">
-                Ideal for teams that need custom engineering, advanced integrations, and dedicated delivery squads.
+              <h3 className="text-xl sm:text-2xl font-semibold mt-3">Bigger builds.</h3>
+              <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
+                Best for custom platforms, complex integrations, or multi-phase delivery.
               </p>
 
               <div className="mt-6 space-y-3">
                 {pricingPlans.slice(4, 8).map((plan) => (
                   <div
                     key={plan.name}
-                    className="flex items-center justify-between rounded-2xl border border-white/40 bg-white/60 px-4 py-3"
+                    className="flex items-center justify-between rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3"
                   >
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
@@ -356,19 +352,19 @@ export default function Pricing() {
                       </p>
                       <p className="text-xs text-[var(--foreground)]/70 mt-1">From {plan.price}</p>
                     </div>
-                    <SparklesIcon className="h-4 w-4 text-[var(--button-bg)]" />
+                    <SparklesIcon className="h-4 w-4 text-[var(--accent)]" />
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 rounded-2xl border border-white/50 bg-white/70 p-4">
+              <div className="mt-6 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--foreground)]/60">Need a custom scope?</p>
-                <p className="text-sm text-[var(--foreground)]/75 mt-2">
-                  We will tailor a package around your timeline, platform requirements, and growth goals.
+                <p className="text-[15px] text-[var(--foreground)]/75 mt-2">
+                  Tell us what you’re building and your timeline. We’ll come back with a clear plan.
                 </p>
                 <a
                   href="#contact"
-                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-white"
+                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[#0b1220]"
                 >
                   Request Proposal
                   <SparklesIcon className="h-4 w-4" />
