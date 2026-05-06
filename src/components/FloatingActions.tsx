@@ -32,12 +32,12 @@ const serviceResponses: Array<{ keywords: string[]; response: string }> = [
   {
     keywords: ["mobile", "android", "ios", "app"],
     response:
-      "We design and build iOS + Android apps with premium UX, offline support, and secure integrations. We can take you from prototype to production and ongoing support.",
+      "Yes—iOS + Android apps with offline support, secure auth, and the integrations you need (payments, APIs, notifications).",
   },
   {
     keywords: ["brand", "branding", "ui", "ux", "design", "logo", "identity"],
     response:
-      "We craft brand identities, UI kits, and design systems that look premium and stay consistent across web and mobile experiences.",
+      "We do brand identity, UI kits, and design systems so your product stays consistent across web and mobile.",
   },
   {
     keywords: ["cloud", "devops", "deployment", "hosting", "infrastructure"],
@@ -47,7 +47,7 @@ const serviceResponses: Array<{ keywords: string[]; response: string }> = [
   {
     keywords: ["automation", "ai", "assistant", "chatbot", "workflow"],
     response:
-      "We deliver automation and AI assistants that streamline operations—integrations, workflows, and smart features tailored to your business.",
+      "We build automation and AI assistants for ops, support, sales, and internal workflows—built around your business.",
   },
   {
     keywords: ["data", "analytics", "dashboard", "reporting", "insights"],
@@ -67,7 +67,7 @@ const serviceResponses: Array<{ keywords: string[]; response: string }> = [
   {
     keywords: ["price", "pricing", "cost", "budget", "quote"],
     response:
-      "Pricing depends on scope, timeline, and complexity. Share your goals and requirements and we’ll provide a tailored estimate and phased plan.",
+      "Pricing depends on scope and timeline. Share what you’re building and we’ll give you a cost range and a clear plan.",
   },
   {
     keywords: ["timeline", "how long", "duration", "delivery"],

@@ -150,7 +150,7 @@ export default function RecentProjectsSection() {
               href="#contact"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold shadow-lg hover:shadow-xl transition"
             >
-              Plan a Product
+              Book a call
               <ArrowRight className="h-4 w-4" />
             </a>
             <a

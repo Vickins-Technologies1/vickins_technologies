@@ -312,7 +312,7 @@ export default function ContactSection() {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircleIcon className="h-4 w-4 text-[var(--button-bg)] mt-0.5" />
-                      You receive a tailored proposal and delivery timeline.
+                      We send scope, timeline, and a cost range.
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircleIcon className="h-4 w-4 text-[var(--button-bg)] mt-0.5" />

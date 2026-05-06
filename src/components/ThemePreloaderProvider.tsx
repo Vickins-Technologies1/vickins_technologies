@@ -24,13 +24,13 @@ interface ThemePreloaderProviderProps {
 }
 
 export default function ThemePreloaderProvider({ children }: ThemePreloaderProviderProps) {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
 
-  // Load saved theme preference (default: dark)
+  // Load saved theme preference (default: light)
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const theme = savedTheme === "light" ? "light" : "dark";
+    const theme = savedTheme === "dark" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", theme);
     setIsDarkMode(theme === "dark");
   }, []);

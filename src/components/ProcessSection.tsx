@@ -1,34 +1,44 @@
 import { motion } from "framer-motion";
-import { SparklesIcon, ChatBubbleLeftRightIcon, PencilSquareIcon, CodeBracketIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
+import {
+  SparklesIcon,
+  ChatBubbleLeftRightIcon,
+  PencilSquareIcon,
+  CodeBracketIcon,
+  RocketLaunchIcon,
+} from "@heroicons/react/24/outline";
+
+const processSteps = [
+  {
+    number: "01",
+    title: "Discovery",
+    description: "We clarify scope, users, constraints, and what success looks like.",
+    deliverable: "Scope + milestones",
+    icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    number: "02",
+    title: "Design",
+    description: "We map flows, design screens, and lock a clean UI system.",
+    deliverable: "UI + prototype",
+    icon: PencilSquareIcon,
+  },
+  {
+    number: "03",
+    title: "Build",
+    description: "We build, test, and review. Performance and security are not optional.",
+    deliverable: "Build + QA",
+    icon: CodeBracketIcon,
+  },
+  {
+    number: "04",
+    title: "Launch + Support",
+    description: "We launch, monitor, fix issues fast, and keep improving.",
+    deliverable: "Deploy + iterate",
+    icon: RocketLaunchIcon,
+  },
+];
 
 export default function ProcessSection() {
-  const processSteps = [
-    {
-      number: "01",
-      title: "Discovery",
-      description: "We clarify scope, users, constraints, and what success looks like.",
-      icon: ChatBubbleLeftRightIcon,
-    },
-    {
-      number: "02",
-      title: "Experience Design",
-      description: "We map flows, design screens, and lock a clean UI system.",
-      icon: PencilSquareIcon,
-    },
-    {
-      number: "03",
-      title: "Engineering",
-      description: "We build, test, and review. Performance and security are not optional.",
-      icon: CodeBracketIcon,
-    },
-    {
-      number: "04",
-      title: "Launch + Growth",
-      description: "We launch, monitor, fix issues fast, and keep improving.",
-      icon: RocketLaunchIcon,
-    },
-  ];
-
   return (
     <motion.section
       id="process"
@@ -39,7 +49,7 @@ export default function ProcessSection() {
       transition={{ duration: 0.6 }}
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Process</p>
             <h2 className="text-2xl sm:text-3xl font-semibold mt-3">How we ship.</h2>
@@ -53,48 +63,77 @@ export default function ProcessSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6 lg:gap-8">
-          <div className="glass-panel p-5 sm:p-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.14),_transparent_60%)]" />
-            <div className="relative z-10 space-y-6">
-              {processSteps.map((step) => (
-                <div key={step.title} className="flex items-start gap-4">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-[var(--accent)] text-sm font-semibold">
-                    {step.number}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <step.icon className="h-4 w-4 text-[var(--accent)]" />
-                      <h3 className="text-base sm:text-lg font-semibold">{step.title}</h3>
+        <div className="glass-panel p-5 sm:p-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.14),_transparent_60%)]" />
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-6 lg:gap-8">
+            <div className="relative">
+              <div className="absolute left-[18px] top-2 bottom-2 w-px bg-[var(--glass-border-strong)]" />
+              <div className="space-y-5">
+                {processSteps.map((step, index) => (
+                  <motion.div
+                    key={step.title}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-120px" }}
+                    transition={{ duration: 0.5, delay: index * 0.06 }}
+                    className="grid grid-cols-[44px_1fr] gap-3"
+                  >
+                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-strong)] text-[var(--accent-2)] text-sm font-semibold">
+                      {step.number}
                     </div>
-                    <p className="text-sm text-[var(--foreground)]/70 mt-2">{step.description}</p>
-                  </div>
-                </div>
-              ))}
+                    <div className="pt-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <step.icon className="h-4 w-4 text-[var(--accent)]" />
+                          <h3 className="text-base sm:text-lg font-semibold">{step.title}</h3>
+                        </div>
+                        <span className="hidden sm:inline-flex rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/65">
+                          {step.deliverable}
+                        </span>
+                      </div>
+                      <p className="text-[15px] text-[var(--foreground)]/75 mt-2">{step.description}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {processSteps.map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-120px" }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl"
+            <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5">
+              <div className="flex items-center gap-2">
+                <SparklesIcon className="h-4 w-4 text-[var(--accent)]" />
+                <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/60">
+                  What you get
+                </p>
+              </div>
+              <ul className="mt-4 space-y-2 text-[15px] text-[var(--foreground)]/75">
+                <li className="flex gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
+                  Clear scope, timeline, and milestones
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
+                  A compact UI system that stays consistent
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
+                  Performance, SEO, and security basics handled
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
+                  Support after launch, not just handoff
+                </li>
+              </ul>
+              <a
+                href="#contact"
+                className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[var(--button-bg)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-white shadow-[var(--shadow-tight)]"
               >
-                <div className="flex items-center justify-between">
-                  <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">Step {step.number}</p>
-                  <step.icon className="h-4 w-4 text-[var(--accent)]" />
-                </div>
-                <h3 className="text-base sm:text-lg font-semibold mt-3">{step.title}</h3>
-                <p className="text-sm text-[var(--foreground)]/70 mt-3">{step.description}</p>
-              </motion.div>
-            ))}
+                Book a call
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </motion.section>
   );
 }
+

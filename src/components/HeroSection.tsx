@@ -30,19 +30,17 @@ export default function HeroSection() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.1 }}
       id="home"
-      className="relative min-h-[78vh] flex items-center overflow-hidden text-white"
+      className="relative min-h-[78vh] flex items-center overflow-hidden text-[var(--foreground)]"
     >
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#030815] via-[#020612] to-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,144,224,0.22),_transparent_58%)] opacity-90" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,_rgba(240,176,16,0.16),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_32%,_rgba(31,109,255,0.22),_transparent_56%)]" />
+        <div className="absolute inset-0 bg-[var(--page-bg)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,_rgba(212,175,55,0.18),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_0%,_rgba(10,22,51,0.10),_transparent_60%)]" />
         <motion.div
           className="absolute inset-0 opacity-35"
           style={{
             y: gridY,
-            backgroundImage:
-              "linear-gradient(rgba(226,232,240,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(226,232,240,0.07) 1px, transparent 1px)",
+            backgroundImage: "var(--page-grid)",
             backgroundSize: "28px 28px",
           }}
         />
@@ -56,7 +54,7 @@ export default function HeroSection() {
           left: "-7%",
           width: "360px",
           height: "360px",
-          background: "rgba(31,109,255,0.35)",
+          background: "rgba(10,22,51,0.18)",
         }}
       />
       <motion.div
@@ -67,7 +65,7 @@ export default function HeroSection() {
           right: "-6%",
           width: "420px",
           height: "420px",
-          background: "rgba(240,176,16,0.26)",
+          background: "rgba(212,175,55,0.22)",
         }}
       />
 
@@ -77,20 +75,20 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.2 }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs uppercase tracking-[0.28em] text-white/70">
-            Kenyan tech studio
-            <span className="h-1 w-6 rounded-full bg-[var(--accent)]/70" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-[10px] sm:text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/70">
+            Nairobi-built tech studio
+            <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-5 leading-[1.06]">
-            Build it right.
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/70"> Ship it fast.</span>
+            Build fast. Keep it solid.
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-2)] via-[var(--accent-2)] to-[var(--accent)]"> No drama.</span>
           </h1>
-          <p className="text-[15px] sm:text-base text-white/78 max-w-2xl mt-4">
-            We design and build web platforms, mobile apps, and internal tools. Clear scope, tight timelines, and solid engineering.
+          <p className="text-[15px] sm:text-base text-[var(--foreground)]/78 max-w-2xl mt-4">
+            Web platforms, mobile apps, and internal tools for teams that want speed without shortcuts.
           </p>
-          <p className="text-sm text-white/62 max-w-2xl mt-3">
+          <p className="text-sm text-[var(--foreground)]/62 max-w-2xl mt-3">
             Need physical security too?{" "}
-            <Link href="/vickins-security" className="text-white/85 underline underline-offset-4 hover:text-white">
+            <Link href="/vickins-security" className="text-[var(--accent-2)] underline underline-offset-4 hover:opacity-90">
               Vickins Security
             </Link>
             {" "}covers CCTV, access control, alarms, electric fence and more.
@@ -100,7 +98,7 @@ export default function HeroSection() {
             {["Strategy", "Design", "Engineering", "Automation", "Security"].map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-white/72"
+                className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-[var(--foreground)]/72"
               >
                 {item}
               </span>
@@ -110,28 +108,28 @@ export default function HeroSection() {
           <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-2.5">
             <a
               href="#contact"
-              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full bg-[var(--accent)] text-[#0b1220] font-semibold shadow-[0_18px_46px_rgba(0,0,0,0.35)] transition-all duration-500 hover:-translate-y-0.5"
+              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full bg-[var(--button-bg)] text-white font-semibold shadow-[var(--shadow-tight)] transition-all duration-500 hover:-translate-y-0.5"
             >
-              Start a project
+              Schedule consultation
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
               href="#services"
-              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-white/18 text-white/86 font-semibold backdrop-blur-md hover:bg-white/7 transition-all duration-500"
+              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[var(--glass-border)] text-[var(--foreground)]/86 font-semibold backdrop-blur-md hover:bg-[var(--hover-bg)] transition-all duration-500"
             >
               Services
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
               href="#work"
-              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-white/18 text-white/86 font-semibold backdrop-blur-md hover:bg-white/7 transition-all duration-500"
+              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[var(--glass-border)] text-[var(--foreground)]/86 font-semibold backdrop-blur-md hover:bg-[var(--hover-bg)] transition-all duration-500"
             >
               See work
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <Link
               href="/vickins-security"
-              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[rgba(240,176,16,0.35)] text-[var(--accent)] font-semibold backdrop-blur-md hover:bg-[rgba(240,176,16,0.10)] transition-all duration-500"
+              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[rgba(212,175,55,0.45)] text-[var(--accent-2)] font-semibold backdrop-blur-md hover:bg-[rgba(212,175,55,0.10)] transition-all duration-500"
             >
               Security
               <ShieldCheckIcon className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
@@ -142,14 +140,14 @@ export default function HeroSection() {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="shimmer-line rounded-2xl border border-white/12 bg-white/5 px-4 py-3"
+                className="shimmer-line rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3"
               >
-                <div className="text-xl font-semibold text-white">
+                <div className="text-xl font-semibold text-[var(--accent-2)]">
                   {stat.prefix ?? ""}
                   <AnimatedNumber to={stat.value} />
                   {stat.suffix ?? ""}
                 </div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-white/60 mt-1">
+                <div className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/55 mt-1">
                   {stat.label}
                 </div>
               </div>
@@ -168,10 +166,10 @@ export default function HeroSection() {
             How we work
           </div>
           <h2 className="text-xl sm:text-2xl font-semibold mt-3">
-            Calm execution. Strong delivery.
+            Clear plan. Clean build.
           </h2>
           <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-            We keep the build tight: scope, timelines, and weekly updates. You always know what’s shipping next.
+            Scope, milestones, and weekly updates. You always know what’s next.
           </p>
 
           <div className="mt-5 space-y-3.5">

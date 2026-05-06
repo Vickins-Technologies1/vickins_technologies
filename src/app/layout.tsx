@@ -112,7 +112,6 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
       <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">

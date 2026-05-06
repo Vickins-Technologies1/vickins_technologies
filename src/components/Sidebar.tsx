@@ -48,7 +48,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 420, damping: 34 }}
-            className="absolute right-0 top-0 h-full w-[86vw] max-w-[380px] border-l border-white/12 bg-[rgba(2,8,23,0.86)] text-white shadow-2xl backdrop-blur-2xl"
+            className="absolute right-0 top-0 h-full w-[86vw] max-w-[380px] border-l border-[var(--navbar-border)] bg-[var(--sidebar-bg)] text-[var(--sidebar-text)] shadow-2xl backdrop-blur-2xl"
           >
             <div className="relative h-full px-5 py-5">
               <div className="flex items-center justify-between">
@@ -63,10 +63,10 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                       sizes="56px"
                     />
                     <div className="leading-tight">
-                      <p className="text-[10px] uppercase tracking-[0.34em] text-white/70">
+                      <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--sidebar-text)]/70">
                         Vickins
                       </p>
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-white/55">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--sidebar-text)]/55">
                         Technologies
                       </p>
                     </div>
@@ -84,12 +84,12 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 </button>
               </div>
 
-              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-white/60">Theme</p>
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-3 py-2">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--sidebar-text)]/60">Theme</p>
                 <button
                   onClick={toggleTheme}
                   aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
                 >
                   {isDarkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
                 </button>
@@ -105,11 +105,11 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                   >
                     <Link
                       href={item.href}
-                      className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-[10px] uppercase tracking-[0.28em] font-semibold text-white/85 hover:text-white hover:bg-white/10 transition"
+                      className="flex items-center justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-3 text-[10px] uppercase tracking-[0.28em] font-semibold text-[var(--sidebar-text)]/85 hover:text-[var(--sidebar-text)] hover:bg-[var(--navbar-surface-hover)] transition"
                       onClick={toggleSidebar}
                     >
                       {item.label}
-                      <span className="h-1 w-6 rounded-full bg-white/15" />
+                      <span className="h-1 w-6 rounded-full bg-[var(--accent)]/35" />
                     </Link>
                   </motion.li>
                 ))}
@@ -123,14 +123,14 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                   <Link
                     href="/chama"
                     onClick={toggleSidebar}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-white/80 hover:bg-white/10 transition text-center"
+                    className="rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-[var(--sidebar-text)]/80 hover:bg-[var(--navbar-surface-hover)] transition text-center"
                   >
                     ChamaHub
                   </Link>
                   <Link
                     href="/vtix"
                     onClick={toggleSidebar}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-white/80 hover:bg-white/10 transition text-center"
+                    className="rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-3 py-3 text-[10px] uppercase tracking-[0.24em] font-semibold text-[var(--sidebar-text)]/80 hover:bg-[var(--navbar-surface-hover)] transition text-center"
                   >
                     V-Tix
                   </Link>
@@ -141,14 +141,14 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 <Link
                   href="/#contact"
                   onClick={toggleSidebar}
-                  className="flex items-center justify-center gap-2 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent)] hover:bg-[rgba(240,176,16,0.18)] transition"
+                  className="flex items-center justify-center gap-2 rounded-full border border-[rgba(212,175,55,0.45)] bg-[rgba(212,175,55,0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent-2)] hover:bg-[rgba(212,175,55,0.18)] transition"
                 >
                   Schedule Consultation
                 </Link>
                 <Link
                   href="/vickins-security"
                   onClick={toggleSidebar}
-                  className="flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-white/80 hover:bg-white/10 transition"
+                  className="flex items-center justify-center rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--sidebar-text)]/80 hover:bg-[var(--navbar-surface-hover)] transition"
                 >
                   Vickins Security
                 </Link>

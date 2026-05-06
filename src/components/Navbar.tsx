@@ -55,12 +55,12 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
         <motion.div
           initial={false}
           animate={{
-            backgroundColor: isScrolled ? "rgba(2, 8, 23, 0.72)" : "rgba(2, 8, 23, 0.0)",
-            borderColor: isScrolled ? "rgba(226, 232, 240, 0.12)" : "rgba(226, 232, 240, 0.0)",
-            boxShadow: isScrolled ? "0 10px 30px rgba(0,0,0,0.35)" : "0 0 0 rgba(0,0,0,0)",
+            backgroundColor: isScrolled ? "var(--navbar-bg)" : "rgba(0,0,0,0)",
+            borderColor: isScrolled ? "var(--navbar-border)" : "rgba(0,0,0,0)",
+            boxShadow: isScrolled ? "var(--shadow-tight)" : "0 0 0 rgba(0,0,0,0)",
           }}
           transition={{ duration: 0.25 }}
-          className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 text-white backdrop-blur-2xl"
+          className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 text-[var(--navbar-text)] backdrop-blur-2xl"
         >
           <div className="grid grid-cols-[1fr_auto] lg:grid-cols-[auto_1fr_auto] items-center gap-3">
             <div className="flex items-center justify-between gap-3 lg:justify-start">
@@ -93,7 +93,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleSidebar}
                 aria-label="Toggle sidebar"
-                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition"
+                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}
@@ -109,7 +109,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               </motion.button>
             </div>
 
-            <ul className="hidden lg:flex items-center justify-center gap-0.5 rounded-full border border-white/12 bg-white/5 px-1.5 py-1">
+            <ul className="hidden lg:flex items-center justify-center gap-0.5 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-1.5 py-1">
               {navItems.map((item) => (
                 <motion.li
                   key={item.label}
@@ -122,8 +122,8 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                     className={[
                       "inline-flex items-center rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.26em] font-semibold transition",
                       activeId === item.href.replace("/#", "")
-                        ? "bg-white/10 text-[var(--accent)]"
-                        : "opacity-85 hover:opacity-100 hover:text-[var(--accent)] hover:bg-white/8",
+                        ? "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
+                        : "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]",
                     ].join(" ")}
                   >
                     {item.label}
@@ -136,7 +136,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleTheme}
                 aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-                className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border border-white/12 bg-white/5 hover:bg-white/10 transition"
+                className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}
@@ -168,10 +168,10 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
 
               <Link
                 href="/#contact"
-                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent)] hover:bg-[rgba(240,176,16,0.18)] transition"
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.45)] bg-[rgba(212,175,55,0.14)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)] hover:bg-[rgba(212,175,55,0.18)] transition"
               >
                 Schedule Consultation
-                <span className="h-1 w-6 rounded-full bg-[var(--accent)]/70" />
+                <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
               </Link>
             </div>
           </div>
