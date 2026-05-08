@@ -14,48 +14,48 @@ import {
 export default function ServicesSection() {
   const services = [
     {
-      title: "Product Strategy",
-      description: "Roadmap, discovery sessions, and technical planning before we build.",
+      title: "Platform Strategy & Architecture",
+      description: "Discovery, roadmap, and architecture decisions that reduce long-term cost and risk.",
       icon: ComputerDesktopIcon,
     },
     {
-      title: "Web Platforms",
-      description: "Fast Next.js builds with clean UX, SEO, and solid backend integrations.",
+      title: "Web Apps & Portals",
+      description: "Secure portals, dashboards, and customer platforms with performance, SEO, and clean UX.",
       icon: CodeBracketIcon,
     },
     {
-      title: "Mobile Experiences",
-      description: "iOS + Android apps with offline support, payments, and secure auth.",
+      title: "Mobile Apps",
+      description: "iOS + Android experiences with offline flows, payments, and enterprise-grade auth patterns.",
       icon: DevicePhoneMobileIcon,
     },
     {
-      title: "Cloud & DevOps",
-      description: "Deployments, monitoring, and reliable infrastructure that’s easy to maintain.",
+      title: "Cloud, DevOps & Reliability",
+      description: "CI/CD, monitoring, and scalable infrastructure with sensible SLOs and operational readiness.",
       icon: CloudIcon,
     },
     {
       title: "Automation & AI",
-      description: "Automations and AI assistants for ops, support, sales, and internal workflows.",
+      description: "Automations and AI enablement for ops, support, sales, and internal workflows — safely and measurably.",
       icon: CpuChipIcon,
     },
     {
       title: "Data & Analytics",
-      description: "Dashboards, reporting, and tracking so you can make decisions with data.",
+      description: "Dashboards, reporting, and instrumentation so decisions are grounded in reliable data.",
       icon: ChartBarIcon,
     },
     {
-      title: "Brand & UI Systems",
-      description: "Brand identity, UI kits, and design systems that stay consistent as you grow.",
+      title: "Design Systems & UX",
+      description: "Design systems, UI kits, and UX improvements that keep teams fast and interfaces consistent.",
       icon: PaintBrushIcon,
     },
     {
-      title: "Security & Compliance",
-      description: "Security checks, best practices, and reviews baked into delivery.",
+      title: "Security, Privacy & Compliance",
+      description: "Threat-aware patterns, secure reviews, and compliance-ready delivery aligned to your requirements.",
       icon: ShieldCheckIcon,
     },
     {
       title: "Growth Enablement",
-      description: "SEO, performance tuning, and conversion fixes after launch.",
+      description: "Performance tuning, conversion optimization, and post-launch iteration with measurable ROI.",
       icon: RocketLaunchIcon,
     },
   ];
@@ -85,9 +85,9 @@ export default function ServicesSection() {
     >
       <motion.div variants={item} className="text-center max-w-3xl mx-auto">
         <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Services</p>
-        <h2 className="text-2xl sm:text-3xl font-semibold mt-3">What we build.</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold mt-3">What we deliver.</h2>
         <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-          Clear deliverables, tight timelines, and a clean finish.
+          Outcome-focused delivery for teams that care about quality, security, and long-term maintainability.
         </p>
       </motion.div>
 

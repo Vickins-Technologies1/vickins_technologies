@@ -68,7 +68,7 @@ export default function OpenGraphImage() {
           </div>
 
           <div style={{ fontSize: 30, lineHeight: 1.3, color: "rgba(18,24,38,0.78)" }}>
-            Web platforms, mobile apps, and security-first builds for Kenyan teams.
+            Enterprise-ready web platforms, mobile apps, and automation — engineered in Nairobi.
           </div>
 
           <div style={{ display: "flex", gap: 12, marginTop: 18, flexWrap: "wrap" }}>
@@ -110,4 +110,3 @@ export default function OpenGraphImage() {
     size
   );
 }
-

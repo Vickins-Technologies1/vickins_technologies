@@ -5,7 +5,7 @@ import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActionsGate from "../components/FloatingActionsGate";
 import LenisRoot from "../components/LenisRoot";
 
-const siteUrl = "https://vickins-technologies.vercel.app";
+const siteUrl = "https://www.vickinstechnologies.com";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -31,17 +31,19 @@ const instrumentSans = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Vickins Technologies | IT Solutions, Web & Mobile Development Kenya",
+    default: "Vickins Technologies | Enterprise Web & Mobile Platforms (Kenya)",
     template: "%s | Vickins Technologies",
   },
   description:
-    "Vickins Technologies provides innovative IT solutions, web and mobile development services in Kenya.",
+    "Vickins Technologies is a Nairobi-based technology partner building secure, scalable web platforms, mobile apps, and automation for enterprises and high-growth teams.",
   keywords: [
-    "IT solutions",
-    "web development",
-    "mobile development",
-    "Kenya",
-    "software innovation",
+    "enterprise software development Kenya",
+    "Nairobi software company",
+    "platform engineering Kenya",
+    "web development Kenya",
+    "mobile app development Kenya",
+    "automation and AI Kenya",
+    "DevOps Kenya",
   ],
   authors: [
     {
@@ -51,7 +53,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Vickins Technologies",
-    description: "Driving business success with cutting-edge IT solutions in Kenya.",
+    description:
+      "Enterprise-ready web platforms, mobile apps, and automation — engineered in Nairobi for reliability, security, and scale.",
     url: siteUrl,
     siteName: "Vickins Technologies",
     locale: "en_US",
@@ -60,8 +63,12 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Vickins Technologies",
-    description: "Innovative IT solutions for your business in Kenya.",
+    description:
+      "Enterprise-ready web platforms, mobile apps, and automation — engineered in Nairobi for reliability, security, and scale.",
     creator: "@VickinsTech",
+  },
+  alternates: {
+    canonical: siteUrl,
   },
   robots: {
     index: true,
@@ -95,7 +102,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export default function RootLayout({

@@ -9,12 +9,14 @@ import ProductsSection from "../components/ProductsSection";
 import ProcessSection from "../components/ProcessSection";
 import AboutSection from "../components/AboutSection";
 import ServicesSection from "../components/ServicesSection";
+import EnterpriseSection from "../components/EnterpriseSection";
 import SecurityServiceSection from "../components/SecurityServiceSection";
 import TechnologySection from "../components/TechnologySection";
 import ClientsSection from "../components/ClientsSection";
 import PricingSection from "../components/PricingSection";
 import ContactSection from "../components/ContactSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
+import ProofSection from "../components/ProofSection";
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,8 +40,10 @@ export default function Home() {
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
+        <EnterpriseSection />
         <SecurityServiceSection />
         <RecentProjectsSection />
+        <ProofSection />
         <TechnologySection />
         <ClientsSection />
         <PricingSection />

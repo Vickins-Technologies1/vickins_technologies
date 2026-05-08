@@ -32,10 +32,10 @@ export default function ClientsSection() {
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Clients</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Teams we’ve worked with.
+              Teams we’ve supported.
             </h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              Product, design, and delivery support across different industries.
+              Product engineering, design systems, and delivery support across multiple industries.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
@@ -80,7 +80,7 @@ export default function ClientsSection() {
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold mt-3">A wider network of client brands.</h3>
               <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
-                A quick scroll through some of the brands we’ve supported.
+                A quick scroll through brands we’ve contributed to — with confidentiality respected where needed.
               </p>
 
               <div className="mt-6 overflow-hidden">

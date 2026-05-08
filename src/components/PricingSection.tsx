@@ -12,6 +12,20 @@ interface PricingPlan {
   popular?: boolean;
 }
 
+const enterpriseTier: PricingPlan = {
+  name: "Enterprise / Custom",
+  description: "Multi-phase delivery",
+  price: "KES 750,000+",
+  features: [
+    "Architecture review + technical roadmap",
+    "Security review + compliance alignment (requirements-based)",
+    "CI/CD, testing strategy, and release governance",
+    "Observability (logging, metrics, alerting) + runbooks",
+    "Documentation, handover, and support options (SLAs by agreement)",
+  ],
+  idealFor: "Enterprises, institutions, complex integrations",
+};
+
 const pricingPlans: PricingPlan[] = [
   {
     name: "E-commerce",
@@ -261,16 +275,70 @@ export default function Pricing() {
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Pricing</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              Clear starting points.
+              Clear starting points — plus enterprise delivery.
             </h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              Final price depends on scope. These ranges help you plan.
+              Final price depends on scope, timelines, and risk. These ranges help you budget and start a conversation.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
             Tailored Engagements
           </div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-120px" }}
+          transition={{ duration: 0.6 }}
+          className="relative overflow-hidden rounded-3xl border border-[rgba(240,176,16,0.35)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)] mb-6"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.18),_transparent_60%)]" />
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 items-start">
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
+                  {enterpriseTier.description}
+                </p>
+                <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
+                  <SparklesIcon className="h-3 w-3" />
+                  Enterprise
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold mt-3">{enterpriseTier.name}</h3>
+              <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
+                For modernization, regulated environments, and complex integrations — with documentation, governance,
+                and support options.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5">
+              <p className="text-xs uppercase tracking-[0.3em] text-[var(--foreground)]/60">Starting from</p>
+              <p className="text-lg font-semibold mt-2">{enterpriseTier.price}</p>
+              <p className="mt-2 text-xs text-[var(--foreground)]/60">
+                Ideal for: <span className="font-medium">{enterpriseTier.idealFor}</span>
+              </p>
+              <a
+                href="#contact"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-[var(--button-bg)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-white shadow-[var(--shadow-tight)]"
+              >
+                Request enterprise proposal
+              </a>
+            </div>
+          </div>
+
+          <div className="relative z-10 mt-5 flex flex-wrap gap-2">
+            {enterpriseTier.features.map((feature) => (
+              <span
+                key={feature}
+                className="inline-flex items-center gap-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[var(--foreground)]/70"
+              >
+                <CheckCircleIcon className="h-3 w-3 text-[var(--button-bg)]" />
+                {feature}
+              </span>
+            ))}
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8">
           <div className="space-y-5">

@@ -140,9 +140,9 @@ export default function RecentProjectsSection() {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-7">
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Work</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Selected builds.</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Selected case studies.</h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              A few projects across product engineering and design.
+              NDA-friendly highlights across product engineering and design.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -150,7 +150,7 @@ export default function RecentProjectsSection() {
               href="#contact"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold shadow-lg hover:shadow-xl transition"
             >
-              Book a call
+              Request a call
               <ArrowRight className="h-4 w-4" />
             </a>
             <a

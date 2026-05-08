@@ -48,7 +48,7 @@ export default function TwitterImage() {
               color: "rgba(18,24,38,0.72)",
             }}
           >
-            Premium Kenyan Tech Studio
+            Nairobi-based technology partner
             <span style={{ width: 42, height: 6, borderRadius: 999, background: "#d4af37" }} />
           </div>
 
@@ -57,7 +57,7 @@ export default function TwitterImage() {
           </div>
 
           <div style={{ fontSize: 28, lineHeight: 1.3, color: "rgba(18,24,38,0.78)" }}>
-            Build fast. Stay secure. Ship clean UI.
+            Enterprise-ready web platforms, mobile apps, and automation.
           </div>
         </div>
       </div>
@@ -65,4 +65,3 @@ export default function TwitterImage() {
     size
   );
 }
-

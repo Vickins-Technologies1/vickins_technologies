@@ -10,30 +10,30 @@ import {
 const processSteps = [
   {
     number: "01",
-    title: "Discovery",
-    description: "We clarify scope, users, constraints, and what success looks like.",
-    deliverable: "Scope + milestones",
+    title: "Discovery & Alignment",
+    description: "We align on goals, constraints, stakeholders, and success metrics — before writing code.",
+    deliverable: "Brief + plan",
     icon: ChatBubbleLeftRightIcon,
   },
   {
     number: "02",
-    title: "Design",
-    description: "We map flows, design screens, and lock a clean UI system.",
-    deliverable: "UI + prototype",
+    title: "Architecture & Design",
+    description: "We map flows, define the architecture, and design a UI system your teams can extend.",
+    deliverable: "Arch + prototype",
     icon: PencilSquareIcon,
   },
   {
     number: "03",
-    title: "Build",
-    description: "We build, test, and review. Performance and security are not optional.",
+    title: "Build & Validate",
+    description: "We build, test, and review. Performance, security, and maintainability are non-negotiable.",
     deliverable: "Build + QA",
     icon: CodeBracketIcon,
   },
   {
     number: "04",
-    title: "Launch + Support",
-    description: "We launch, monitor, fix issues fast, and keep improving.",
-    deliverable: "Deploy + iterate",
+    title: "Launch & Operate",
+    description: "We launch, monitor, and keep improving — with documentation, runbooks, and support options.",
+    deliverable: "Deploy + operate",
     icon: RocketLaunchIcon,
   },
 ];
@@ -54,7 +54,7 @@ export default function ProcessSection() {
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Process</p>
             <h2 className="text-2xl sm:text-3xl font-semibold mt-3">How we ship.</h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              Simple steps. Clear outputs. Weekly updates.
+              Clear outputs, senior-led delivery, and weekly updates — built for fast execution and safe scale.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
@@ -108,19 +108,19 @@ export default function ProcessSection() {
               <ul className="mt-4 space-y-2 text-[15px] text-[var(--foreground)]/75">
                 <li className="flex gap-2">
                   <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
-                  Clear scope, timeline, and milestones
+                  Clear scope, timeline, milestones, and risk notes
                 </li>
                 <li className="flex gap-2">
                   <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
-                  A compact UI system that stays consistent
+                  Architecture choices documented and reviewable
                 </li>
                 <li className="flex gap-2">
                   <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
-                  Performance, SEO, and security basics handled
+                  Performance, security, and QA baked into delivery
                 </li>
                 <li className="flex gap-2">
                   <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--accent)]/70" />
-                  Support after launch, not just handoff
+                  Handover docs, runbooks, and support options after launch
                 </li>
               </ul>
               <a
@@ -136,4 +136,3 @@ export default function ProcessSection() {
     </motion.section>
   );
 }
-

@@ -17,6 +17,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
   const navItems = useMemo(() => [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
+    { label: "Enterprise", href: "/#enterprise" },
     { label: "Products", href: "/#products" },
     { label: "Work", href: "/#work" },
     { label: "Pricing", href: "/#pricing" },
@@ -171,7 +172,7 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                 href="/#contact"
                 className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(212,175,55,0.45)] bg-[rgba(212,175,55,0.14)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)] hover:bg-[rgba(212,175,55,0.18)] transition"
               >
-                Schedule Consultation
+                Book Strategy Call
                 <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
               </Link>
             </div>

@@ -29,10 +29,10 @@ import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
 
 const valueProps = [
-  { label: "Advanced technology", icon: ShieldCheckIcon },
+  { label: "Professional installation", icon: ShieldCheckIcon },
   { label: "Reliable protection", icon: LockClosedIcon },
-  { label: "24/7 monitoring & support", icon: ClockIcon },
-  { label: "Expert team you can trust", icon: UserGroupIcon },
+  { label: "Maintenance plans", icon: ClockIcon },
+  { label: "Responsive support", icon: UserGroupIcon },
 ];
 
 const solutions = [
@@ -93,7 +93,7 @@ const trustBand = [
   { label: "Tailored for homes, businesses & institutions", icon: BuildingOffice2Icon },
   { label: "Scalable & future-ready", icon: ChartBarIcon },
   { label: "Dedicated support & maintenance", icon: WrenchScrewdriverIcon },
-  { label: "Affordable. Reliable. Trusted.", icon: CurrencyDollarIcon },
+  { label: "Transparent pricing + service plans", icon: CurrencyDollarIcon },
 ];
 
 export default function VickinsSecurityPage() {
@@ -160,16 +160,17 @@ export default function VickinsSecurityPage() {
               </div>
 
               <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-[var(--brand-navy-900)]">
-                VICKINS SECURITY
+                Vickins Security
               </h1>
               <p className="mt-3 text-xs sm:text-sm uppercase tracking-[0.38em] text-[var(--foreground)]/70">
-                Complete Security Solutions. Total Peace of Mind.
+                Security systems installed, commissioned, and supported in Kenya.
               </p>
 
               <p className="mt-6 text-sm sm:text-base text-[var(--foreground)]/80 max-w-2xl">
-                End-to-end security solutions designed to protect what matters most.
+                End-to-end physical security for homes, businesses, and institutions — delivered with tidy installs,
+                reliable hardware, and support you can depend on.
                 <span className="block mt-1 font-semibold text-[var(--brand-blue-600)]">
-                  For Homes. For Businesses. For You.
+                  Site survey → installation → maintenance plans.
                 </span>
               </p>
 
@@ -178,7 +179,7 @@ export default function VickinsSecurityPage() {
                   href="#contact"
                   className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--brand-blue-600)] text-white font-semibold shadow-[0_18px_45px_rgba(0,80,240,0.22)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(0,80,240,0.28)]"
                 >
-                  Request a Quote
+                  Request a site survey
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <a
@@ -209,7 +210,7 @@ export default function VickinsSecurityPage() {
               </div>
 
               <div className="mt-7 text-xs text-[var(--foreground)]/65">
-                Looking for our digital studio?{" "}
+                Looking for software engineering?{" "}
                 <Link href="/" className="text-[var(--brand-blue-600)] underline underline-offset-4 hover:opacity-90">
                   Back to Vickins Technologies
                 </Link>

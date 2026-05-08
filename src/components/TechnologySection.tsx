@@ -43,7 +43,7 @@ export default function TechnologySection() {
         <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Technology</p>
         <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Tools we ship with.</h2>
         <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-          Stable, maintainable, and fast — without over-engineering.
+          Stable, maintainable, and fast — with sensible architecture and an enterprise-ready engineering baseline.
         </p>
       </div>
 

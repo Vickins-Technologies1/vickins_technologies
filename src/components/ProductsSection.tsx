@@ -36,13 +36,13 @@ const vtixHighlights = [
 const productTracks = [
   {
     title: "Custom Platforms",
-    description: "Web and mobile platforms built to launch, modernize, and scale operations.",
+    description: "Web and mobile platforms built to modernize operations, integrate systems, and scale with confidence.",
     icon: RocketLaunchIcon,
     tags: ["Web", "Mobile", "Subscription"],
   },
   {
     title: "Automation Suites",
-    description: "Workflow automation, AI copilots, and analytics maintained for reliable scale.",
+    description: "Workflow automation, AI enablement, and analytics — maintained for reliability and long-term adoption.",
     icon: CpuChipIcon,
     tags: ["Integrations", "AI", "Insights"],
   },
@@ -75,10 +75,11 @@ export default function ProductsSection() {
             <div>
               <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Products</p>
               <h2 className="text-2xl sm:text-3xl font-semibold mt-3">
-                Vickins-built platforms, shipped and maintained in-house.
+                Vickins-built platforms — shipped, operated, and improved in-house.
               </h2>
               <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                ChamaHub and V‑Tix are live products we run day to day. The same team can build yours.
+                ChamaHub and V‑Tix are live platforms we run day to day. The same team can build and support yours —
+                from architecture to launch to operations.
               </p>
             </div>
 
@@ -249,4 +250,3 @@ export default function ProductsSection() {
     </motion.section>
   );
 }
-

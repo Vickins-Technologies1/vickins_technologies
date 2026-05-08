@@ -17,6 +17,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const navItems = [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
+    { label: "Enterprise", href: "/#enterprise" },
     { label: "Products", href: "/#products" },
     { label: "Work", href: "/#work" },
     { label: "Pricing", href: "/#pricing" },
@@ -144,7 +145,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                   onClick={toggleSidebar}
                   className="flex items-center justify-center gap-2 rounded-full border border-[rgba(212,175,55,0.45)] bg-[rgba(212,175,55,0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent-2)] hover:bg-[rgba(212,175,55,0.18)] transition"
                 >
-                  Schedule Consultation
+                  Book Strategy Call
                 </Link>
                 <Link
                   href="/vickins-security"

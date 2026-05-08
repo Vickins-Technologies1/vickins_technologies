@@ -66,7 +66,7 @@ export default function SecurityServiceSection() {
         <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Security</p>
         <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Vickins Security.</h2>
         <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-          CCTV, alarms, access control and perimeter security — installed and supported.
+          CCTV, alarms, access control, and perimeter security — professionally installed, commissioned, and supported.
         </p>
       </motion.div>
 

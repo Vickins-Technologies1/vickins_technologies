@@ -65,10 +65,11 @@ export default function AboutSection() {
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">About</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              A Kenyan studio that ships.
+              A Nairobi-based technology partner for long-term systems.
             </h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              We do strategy, design, and engineering — with tight execution and clean handover.
+              We help teams modernize, integrate, and scale — with senior-led delivery, clean architecture, and
+              documentation your engineers will thank you for.
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
@@ -85,13 +86,14 @@ export default function AboutSection() {
                 <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/60">Who we are</p>
               </div>
               <p className="text-[15px] text-[var(--foreground)]/78 mt-4">
-                We build web and mobile products for teams that want speed without cutting corners.
+                We build web and mobile products for teams that want speed without shortcuts — and quality that lasts.
               </p>
               <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-                You get clear milestones, clean UI, and engineering you can maintain.
+                You get clear milestones, clean UI systems, and engineering that is maintainable, testable, and
+                operationally sound.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
-                {["Strategy", "Design systems", "Engineering", "Support"].map((item) => (
+                {["Architecture", "Design systems", "Engineering", "Security", "Support"].map((item) => (
                   <span
                     key={item}
                     className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
@@ -105,23 +107,23 @@ export default function AboutSection() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <ShieldCheckIcon className="h-5 w-5 text-[var(--accent)]" />
-                <h3 className="text-sm font-semibold mt-3">Security first</h3>
+                <h3 className="text-sm font-semibold mt-3">Security & compliance</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">
-                  Basic security checks and clean auth patterns from day one.
+                  Secure-by-design patterns, privacy-aware data handling, and review baked into delivery.
                 </p>
               </div>
               <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <ChartBarIcon className="h-5 w-5 text-[var(--accent)]" />
-                <h3 className="text-sm font-semibold mt-3">Real metrics</h3>
+                <h3 className="text-sm font-semibold mt-3">Outcome-driven</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">
-                  Analytics and reporting wired up so you can track progress.
+                  KPIs, analytics, and reporting wired up so your investment is measurable.
                 </p>
               </div>
               <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <SparklesIcon className="h-5 w-5 text-[var(--accent)]" />
-                <h3 className="text-sm font-semibold mt-3">Clean finish</h3>
+                <h3 className="text-sm font-semibold mt-3">Clean handover</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">
-                  Compact UI, strong hierarchy, and consistent components.
+                  Documentation, runbooks, and a codebase your team can confidently own.
                 </p>
               </div>
             </div>
@@ -140,19 +142,19 @@ export default function AboutSection() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <AnimatedCounter target={40} label="Projects shipped" suffix="+" />
-              <AnimatedCounter target={25} label="Clients served" delay={0.2} suffix="+" />
-              <AnimatedCounter target={4} label="Years running" delay={0.4} suffix="+" />
-              <AnimatedCounter target={400} label="Active users" delay={0.6} suffix="+" />
-              <AnimatedCounter target={92} label="Retention" delay={0.8} suffix="%" />
-              <AnimatedCounter target={12} label="Industries" delay={1.0} suffix="+" />
+              <AnimatedCounter target={40} label="Platforms delivered" suffix="+" />
+              <AnimatedCounter target={25} label="Client teams supported" delay={0.2} suffix="+" />
+              <AnimatedCounter target={4} label="Years operating" delay={0.4} suffix="+" />
+              <AnimatedCounter target={400} label="Monthly active users" delay={0.6} suffix="+" />
+              <AnimatedCounter target={92} label="Repeat engagements" delay={0.8} suffix="%" />
+              <AnimatedCounter target={12} label="Industries served" delay={1.0} suffix="+" />
             </div>
 
             <a
               href="#contact"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.22em] font-semibold text-[#0b1220]"
             >
-              Schedule a Consultation
+              Talk to our team
               <SparklesIcon className="h-4 w-4" />
             </a>
           </div>

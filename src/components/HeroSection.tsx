@@ -3,20 +3,20 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { ArrowRightIcon, ShieldCheckIcon, CpuChipIcon } from "@heroicons/react/24/outline";
-import AnimatedNumber from "./marketing/AnimatedNumber";
 
 const highlights = [
-  "Clear scope + milestones",
+  "Architecture + delivery plan",
   "Design system + UI polish",
-  "Full-stack build (web + mobile)",
+  "Secure, scalable engineering",
   "Automation where it saves time",
-  "Security baked in",
+  "Docs, handover, and support",
 ];
 
-const stats = [
-  { label: "Projects shipped", value: 40, suffix: "+" },
-  { label: "Typical MVP", value: 3, prefix: "1–", suffix: " wks" },
-  { label: "Client retention", value: 99, suffix: "%" },
+const trustSignals = [
+  { title: "Senior-led delivery", description: "Clear ownership, crisp communication, reliable execution." },
+  { title: "Security-first builds", description: "Best-practice auth, data handling, and review baked in." },
+  { title: "Maintainable architecture", description: "Clean boundaries, testing strategy, and future-proof patterns." },
+  { title: "NDA-friendly", description: "Confidential delivery with references available on request." },
 ];
 
 export default function HeroSection() {
@@ -76,15 +76,19 @@ export default function HeroSection() {
           transition={{ duration: 0.9, delay: 0.2 }}
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-[10px] sm:text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/70">
-            Nairobi-built tech studio
+            Nairobi-based platform engineering
             <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-5 leading-[1.06]">
-            Build fast. Keep it solid.
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-2)] via-[var(--accent-2)] to-[var(--accent)]"> No drama.</span>
+            Enterprise-ready platforms,
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-2)] via-[var(--accent-2)] to-[var(--accent)]">
+              {" "}
+              engineered to scale.
+            </span>
           </h1>
           <p className="text-[15px] sm:text-base text-[var(--foreground)]/78 max-w-2xl mt-4">
-            Web platforms, mobile apps, and internal tools for teams that want speed without shortcuts.
+            We partner with ambitious teams to design, build, and improve secure web platforms, mobile apps, and
+            internal tools — built for reliability, maintainability, and measurable outcomes.
           </p>
           <p className="text-sm text-[var(--foreground)]/62 max-w-2xl mt-3">
             Need physical security too?{" "}
@@ -95,7 +99,7 @@ export default function HeroSection() {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2">
-            {["Strategy", "Design", "Engineering", "Automation", "Security"].map((item) => (
+            {["Architecture", "Engineering", "Reliability", "Compliance-ready", "Design systems"].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-[var(--foreground)]/72"
@@ -110,14 +114,14 @@ export default function HeroSection() {
               href="#contact"
               className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full bg-[var(--button-bg)] text-white font-semibold shadow-[var(--shadow-tight)] transition-all duration-500 hover:-translate-y-0.5"
             >
-              Schedule consultation
+              Request enterprise proposal
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
-              href="#services"
+              href="#enterprise"
               className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[var(--glass-border)] text-[var(--foreground)]/86 font-semibold backdrop-blur-md hover:bg-[var(--hover-bg)] transition-all duration-500"
             >
-              Services
+              Enterprise delivery
               <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
@@ -136,19 +140,17 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {stats.map((stat) => (
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {trustSignals.map((signal) => (
               <div
-                key={stat.label}
+                key={signal.title}
                 className="shimmer-line rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3"
               >
-                <div className="text-xl font-semibold text-[var(--accent-2)]">
-                  {stat.prefix ?? ""}
-                  <AnimatedNumber to={stat.value} />
-                  {stat.suffix ?? ""}
-                </div>
                 <div className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/55 mt-1">
-                  {stat.label}
+                  {signal.title}
+                </div>
+                <div className="text-sm text-[var(--foreground)]/72 mt-2 leading-snug">
+                  {signal.description}
                 </div>
               </div>
             ))}
@@ -166,10 +168,10 @@ export default function HeroSection() {
             How we work
           </div>
           <h2 className="text-xl sm:text-2xl font-semibold mt-3">
-            Clear plan. Clean build.
+            Clear plan. Production-grade build.
           </h2>
           <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-            Scope, milestones, and weekly updates. You always know what’s next.
+            Scope, milestones, risk notes, and weekly updates. You always know what’s next — and what’s blocked.
           </p>
 
           <div className="mt-5 space-y-3.5">
@@ -187,19 +189,19 @@ export default function HeroSection() {
             <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <CpuChipIcon className="w-4 h-4 text-[var(--accent)]" />
-                Engineering Excellence
+                Engineering quality
               </div>
               <p className="text-xs text-[var(--foreground)]/70 mt-2">
-                Performance budgets, clean architecture, and security checks that actually ship.
+                Performance budgets, clean boundaries, testing strategy, and security checks that actually ship.
               </p>
             </div>
             <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <ShieldCheckIcon className="w-4 h-4 text-[var(--accent)]" />
-                Design Polish
+                Maintainable UX
               </div>
               <p className="text-xs text-[var(--foreground)]/70 mt-2">
-                Compact UI, clean typography, and a system you can extend without breaking consistency.
+                Compact UI, clean typography, and a design system your team can extend without breaking consistency.
               </p>
             </div>
           </div>

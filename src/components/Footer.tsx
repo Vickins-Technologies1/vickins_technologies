@@ -30,14 +30,15 @@ const Footer: FC = () => {
                   Vickins Technologies
                 </p>
                 <h3 className="text-2xl sm:text-3xl font-semibold mt-3 text-center lg:text-left">
-                  Build, ship, support.
+                  Build, scale, support.
                 </h3>
                 <p className="text-[15px] text-[var(--foreground)]/75 mt-3 max-w-xl text-center lg:text-left">
-                  Web platforms, mobile apps, automation, and security — delivered by a Kenyan team that moves fast.
+                  Web platforms, mobile apps, automation, and security — delivered by a Nairobi-based team built for
+                  long-term maintainability.
                 </p>
 
                 <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/70 mx-auto lg:mx-0">
-                  Based in Kenya · Working globally
+                  Kenya-rooted · Global-ready
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 items-stretch sm:items-center justify-center lg:justify-start">
@@ -74,6 +75,11 @@ const Footer: FC = () => {
                     <li>
                       <Link href="/#services" className="hover:text-[var(--button-bg)] transition">
                         Services
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#enterprise" className="hover:text-[var(--button-bg)] transition">
+                        Enterprise
                       </Link>
                     </li>
                     <li>
