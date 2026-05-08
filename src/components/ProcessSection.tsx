@@ -127,7 +127,7 @@ export default function ProcessSection() {
                 href="#contact"
                 className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[var(--button-bg)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-white shadow-[var(--shadow-tight)]"
               >
-                Book a call
+                Book strategy call
               </a>
             </div>
           </div>

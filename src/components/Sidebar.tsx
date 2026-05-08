@@ -13,7 +13,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const logoSrc = isDarkMode ? "/logo1.png" : "/logo-light.png";
+  const logoSrc = isDarkMode ? "/logo1.png" : "/logo2.png";
   const navItems = [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },

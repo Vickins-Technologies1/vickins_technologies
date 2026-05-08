@@ -1,48 +1,32 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import { SparklesIcon, ShieldCheckIcon, ChartBarIcon } from "@heroicons/react/24/outline";
+import AnimatedNumber from "./marketing/AnimatedNumber";
 
-function AnimatedCounter({
-  target,
+function CounterCard({
+  value,
   label,
   delay = 0,
   prefix,
   suffix,
 }: {
-  target: number;
+  value: number;
   label: string;
   delay?: number;
   prefix?: string;
   suffix?: string;
 }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    let start = 0;
-    const duration = 2000;
-    const stepTime = Math.abs(Math.floor(duration / target));
-    const timeout = setTimeout(() => {
-      const timer = setInterval(() => {
-        start += 1;
-        setCount(start);
-        if (start >= target) {
-          clearInterval(timer);
-        }
-      }, stepTime);
-    }, delay * 1000);
-    return () => clearTimeout(timeout);
-  }, [target, delay]);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "0px 0px -15% 0px" }}
       transition={{ duration: 0.5, delay }}
       className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)]"
     >
-      <span className="text-xl font-semibold text-[var(--accent)]">
+      <span className="text-xl font-semibold text-[var(--accent)] tabular-nums">
         {prefix ?? ""}
-        {count}
+        <AnimatedNumber to={value} />
         {suffix ?? ""}
       </span>
       <p className="text-xs sm:text-sm text-[var(--foreground)]/70 mt-1">{label}</p>
@@ -142,12 +126,12 @@ export default function AboutSection() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <AnimatedCounter target={40} label="Platforms delivered" suffix="+" />
-              <AnimatedCounter target={25} label="Client teams supported" delay={0.2} suffix="+" />
-              <AnimatedCounter target={4} label="Years operating" delay={0.4} suffix="+" />
-              <AnimatedCounter target={400} label="Monthly active users" delay={0.6} suffix="+" />
-              <AnimatedCounter target={92} label="Repeat engagements" delay={0.8} suffix="%" />
-              <AnimatedCounter target={12} label="Industries served" delay={1.0} suffix="+" />
+              <CounterCard value={40} label="Platforms delivered" suffix="+" />
+              <CounterCard value={25} label="Client teams supported" delay={0.1} suffix="+" />
+              <CounterCard value={4} label="Years operating" delay={0.2} suffix="+" />
+              <CounterCard value={400} label="Monthly active users" delay={0.3} suffix="+" />
+              <CounterCard value={92} label="Repeat engagements" delay={0.4} suffix="%" />
+              <CounterCard value={12} label="Industries served" delay={0.5} suffix="+" />
             </div>
 
             <a

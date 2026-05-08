@@ -105,7 +105,7 @@ export default function ServicesSection() {
               href="#contact"
               className="text-[var(--accent)] font-semibold text-sm inline-flex items-center gap-2"
             >
-              Talk to us
+              Speak with us
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </a>
           </motion.div>

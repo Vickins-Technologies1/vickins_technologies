@@ -13,7 +13,7 @@ interface NavbarProps {
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const logoSrc = isDarkMode ? "/logo1.png" : "/logo-light.png";
+  const logoSrc = isDarkMode ? "/logo1.png" : "/logo2.png";
   const navItems = useMemo(() => [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
@@ -64,77 +64,56 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
           transition={{ duration: 0.25 }}
           className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 text-[var(--navbar-text)] backdrop-blur-2xl"
         >
-          <div className="grid grid-cols-[1fr_auto] lg:grid-cols-[auto_1fr_auto] items-center gap-3">
-            <div className="flex items-center justify-between gap-3 lg:justify-start">
-              <Link href="/" aria-label="Vickins Technologies Home">
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                  className="flex items-center gap-3"
-                >
-                  <Image
-                    src={logoSrc}
-                    alt="Vickins Technologies Logo"
-                    width={70}
-                    height={28}
-                    className="w-10 sm:w-11"
-                    sizes="(max-width: 640px) 44px, 48px"
-                  />
-                  <div className="hidden sm:flex flex-col leading-tight">
-                    <span className="text-[10px] uppercase tracking-[0.32em] opacity-75">
-                      Vickins
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.24em] opacity-55">
-                      Technologies
-                    </span>
-                  </div>
-                </motion.div>
-              </Link>
-
-              <motion.button
-                onClick={toggleSidebar}
-                aria-label="Toggle sidebar"
-                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                transition={{ type: "spring", stiffness: 380, damping: 18 }}
+          <div className="flex items-center justify-between gap-3 min-h-[44px]">
+            <Link href="/" aria-label="Vickins Technologies Home" className="shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="flex items-center gap-3"
               >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.6}
-                    d="M4 7h16 M4 12h10 m-10 5h16"
-                  />
-                </svg>
-              </motion.button>
+                <Image
+                  src={logoSrc}
+                  alt="Vickins Technologies Logo"
+                  width={76}
+                  height={30}
+                  priority
+                  className="w-10 sm:w-11"
+                  sizes="(max-width: 640px) 44px, 48px"
+                />
+                <div className="hidden sm:flex flex-col leading-tight">
+                  <span className="text-[10px] uppercase tracking-[0.32em] opacity-75">Vickins</span>
+                  <span className="text-[10px] uppercase tracking-[0.24em] opacity-55">Technologies</span>
+                </div>
+              </motion.div>
+            </Link>
+
+            <div className="hidden lg:flex flex-1 justify-center">
+              <ul className="flex items-center justify-center gap-0.5 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-1.5 py-1">
+                {navItems.map((item) => (
+                  <motion.li
+                    key={item.label}
+                    whileHover={{ y: -1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <Link
+                      href={item.href}
+                      aria-current={activeId === item.href.replace("/#", "") ? "page" : undefined}
+                      className={[
+                        "inline-flex items-center rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.26em] font-semibold transition whitespace-nowrap",
+                        activeId === item.href.replace("/#", "")
+                          ? "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
+                          : "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]",
+                      ].join(" ")}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
             </div>
 
-            <ul className="hidden lg:flex items-center justify-center gap-0.5 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-1.5 py-1">
-              {navItems.map((item) => (
-                <motion.li
-                  key={item.label}
-                  whileHover={{ y: -1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <Link
-                    href={item.href}
-                    aria-current={activeId === item.href.replace("/#", "") ? "page" : undefined}
-                    className={[
-                      "inline-flex items-center rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.26em] font-semibold transition",
-                      activeId === item.href.replace("/#", "")
-                        ? "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
-                        : "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]",
-                    ].join(" ")}
-                  >
-                    {item.label}
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2 shrink-0">
               <motion.button
                 onClick={toggleTheme}
                 aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -166,6 +145,24 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </motion.button>
+
+              <motion.button
+                onClick={toggleSidebar}
+                aria-label="Open menu"
+                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 380, damping: 18 }}
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.6}
+                    d="M4 7h16 M4 12h10 m-10 5h16"
+                  />
+                </svg>
               </motion.button>
 
               <Link

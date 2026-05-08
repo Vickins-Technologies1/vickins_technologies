@@ -46,7 +46,7 @@ const Footer: FC = () => {
                     href="/#contact"
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-[#0b1220] shadow-lg"
                   >
-                    Book a Call
+                    Book Strategy Call
                     <ArrowRightIcon className="h-4 w-4" />
                   </Link>
                   <a
