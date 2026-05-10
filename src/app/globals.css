@@ -67,21 +67,21 @@
   --dash-sidebar-text: rgba(255, 255, 255, 0.92);
   --dash-sidebar-muted: rgba(255, 255, 255, 0.66);
   --dash-sidebar-hover: rgba(255, 255, 255, 0.06);
-  --dash-sidebar-active: rgba(0, 80, 240, 0.24);
-  --dash-sidebar-active-border: rgba(0, 144, 224, 0.6);
+  --dash-sidebar-active: rgba(var(--accent-rgb), 0.22);
+  --dash-sidebar-active-border: rgba(var(--accent-sky-rgb), 0.6);
   --dash-topbar-bg: rgba(255, 255, 255, 0.92);
   --dash-topbar-border: rgba(15, 23, 42, 0.08);
-  --dash-icon: rgba(0, 80, 240, 0.92);
+  --dash-icon: rgba(var(--accent-rgb), 0.92);
 }
 
 :root[data-theme="dark"] {
   --background: #070a12;
   --foreground: #eef2ff;
-  --accent: #d4af37;
-  --accent-rgb: 212, 175, 55;
-  --accent-sky: #1f6dff;
-  --accent-sky-rgb: 31, 109, 255;
-  --accent-contrast: #0b1220;
+  --accent: #1f6dff;
+  --accent-rgb: 31, 109, 255;
+  --accent-sky: #0090e0;
+  --accent-sky-rgb: 0, 144, 224;
+  --accent-contrast: #ffffff;
   --accent-2: #9fb0d5;
   --accent-2-rgb: 159, 176, 213;
 
@@ -113,8 +113,8 @@
   --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.55);
   --shadow-tight: 0 10px 28px rgba(0, 0, 0, 0.5);
   --page-bg:
-    radial-gradient(900px 620px at 15% -10%, rgba(212, 175, 55, 0.14), transparent 55%),
-    radial-gradient(900px 620px at 85% 0%, rgba(31, 109, 255, 0.14), transparent 55%),
+    radial-gradient(900px 620px at 15% -10%, rgba(var(--accent-sky-rgb), 0.16), transparent 55%),
+    radial-gradient(900px 620px at 85% 0%, rgba(var(--accent-rgb), 0.14), transparent 55%),
     linear-gradient(180deg, #070a12 0%, #050710 100%);
   --page-grid: linear-gradient(rgba(226, 232, 240, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(226, 232, 240, 0.06) 1px, transparent 1px);
@@ -127,11 +127,11 @@
   --dash-sidebar-text: rgba(255, 255, 255, 0.92);
   --dash-sidebar-muted: rgba(255, 255, 255, 0.68);
   --dash-sidebar-hover: rgba(255, 255, 255, 0.07);
-  --dash-sidebar-active: rgba(212, 175, 55, 0.16);
-  --dash-sidebar-active-border: rgba(212, 175, 55, 0.45);
+  --dash-sidebar-active: rgba(var(--accent-rgb), 0.18);
+  --dash-sidebar-active-border: rgba(var(--accent-sky-rgb), 0.55);
   --dash-topbar-bg: rgba(10, 22, 51, 0.62);
   --dash-topbar-border: rgba(226, 232, 240, 0.16);
-  --dash-icon: rgba(212, 175, 55, 0.92);
+  --dash-icon: rgba(var(--accent-rgb), 0.92);
 }
 
 /* Dark mode readability overrides for light glass utilities */

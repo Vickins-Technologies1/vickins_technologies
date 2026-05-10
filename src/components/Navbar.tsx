@@ -164,14 +164,6 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                   />
                 </svg>
               </motion.button>
-
-              <Link
-                href="/#contact"
-                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(var(--accent-rgb),0.45)] bg-[rgba(var(--accent-rgb),0.14)] text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)] hover:bg-[rgba(var(--accent-rgb),0.18)] transition"
-              >
-                Book Strategy Call
-                <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
-              </Link>
             </div>
           </div>
         </motion.div>

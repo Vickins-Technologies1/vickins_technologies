@@ -10,9 +10,9 @@ export const metadata: Metadata = {
       "Complete security solutions. Total peace of mind — CCTV, alarms, access control, electric fence, and more.",
     images: [
       {
-        url: "/images/vickins-security-promo.png",
-        width: 1536,
-        height: 1536,
+        url: "/images/vickins-security-promo-v2.png",
+        width: 1200,
+        height: 900,
         alt: "Vickins Security",
       },
     ],
@@ -22,11 +22,10 @@ export const metadata: Metadata = {
     title: "Vickins Security",
     description:
       "Complete security solutions. Total peace of mind — CCTV, alarms, access control, electric fence, and more.",
-    images: ["/images/vickins-security-promo.png"],
+    images: ["/images/vickins-security-promo-v2.png"],
   },
 };
 
 export default function VickinsSecurityLayout({ children }: { children: React.ReactNode }) {
   return children;
 }
-

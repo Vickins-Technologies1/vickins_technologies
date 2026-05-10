@@ -76,7 +76,7 @@ export default function HeroSection() {
           transition={{ duration: 0.9, delay: 0.2 }}
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-[10px] sm:text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/70">
-            Nairobi-based platform engineering
+            Smart solutions. Stronger futures.
             <span className="h-1 w-6 rounded-full bg-[var(--accent)]/80" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-5 leading-[1.06]">

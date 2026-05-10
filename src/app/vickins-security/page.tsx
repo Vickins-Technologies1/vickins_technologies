@@ -112,27 +112,27 @@ export default function VickinsSecurityPage() {
         transition={{ duration: 1.05 }}
         className="relative overflow-hidden"
       >
-        <div className="absolute inset-0 -z-10 bg-white" />
+        <div className="absolute inset-0 -z-10 bg-[var(--background)]" />
         <div
           className="absolute inset-0 -z-10 opacity-60"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(0,16,48,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,16,48,0.05) 1px, transparent 1px)",
+              "linear-gradient(rgba(var(--accent-2-rgb),0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--accent-2-rgb),0.05) 1px, transparent 1px)",
             backgroundSize: "34px 34px",
           }}
         />
 
         <div className="hidden lg:block absolute inset-y-0 right-0 w-[46%] -z-10">
-          <div className="absolute inset-0 rounded-l-[180px] bg-gradient-to-b from-[var(--brand-navy-900)] to-[var(--brand-navy-950)] shadow-[0_40px_90px_rgba(0,0,0,0.35)] overflow-hidden">
+          <div className="absolute inset-0 rounded-l-[180px] bg-gradient-to-b from-[var(--navy)] to-[var(--navy-2)] shadow-[0_40px_90px_rgba(0,0,0,0.35)] overflow-hidden">
             <Image
-              src="/images/vickins-security-promo.png"
+              src="/images/vickins-security-promo-v2.png"
               alt="Vickins Security"
               fill
               className="object-cover opacity-90"
               priority
               sizes="(max-width: 1024px) 100vw, 680px"
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--brand-navy-950)]/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[var(--navy-2)]/70 via-transparent to-transparent" />
             <div className="absolute inset-0 ring-1 ring-white/10 rounded-l-[180px]" />
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function VickinsSecurityPage() {
                   priority
                 />
                 <div className="leading-tight">
-                  <div className="text-[10px] uppercase tracking-[0.38em] text-[var(--brand-blue-600)] font-semibold">
+                  <div className="text-[10px] uppercase tracking-[0.38em] text-[var(--accent)] font-semibold">
                     Vickins
                   </div>
                   <div className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/70">
@@ -159,7 +159,7 @@ export default function VickinsSecurityPage() {
                 </div>
               </div>
 
-              <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-[var(--brand-navy-900)]">
+              <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-[var(--navy)]">
                 Vickins Security
               </h1>
               <p className="mt-3 text-xs sm:text-sm uppercase tracking-[0.38em] text-[var(--foreground)]/70">
@@ -169,7 +169,7 @@ export default function VickinsSecurityPage() {
               <p className="mt-6 text-sm sm:text-base text-[var(--foreground)]/80 max-w-2xl">
                 End-to-end physical security for homes, businesses, and institutions — delivered with tidy installs,
                 reliable hardware, and support you can depend on.
-                <span className="block mt-1 font-semibold text-[var(--brand-blue-600)]">
+                <span className="block mt-1 font-semibold text-[var(--accent)]">
                   Site survey → installation → maintenance plans.
                 </span>
               </p>
@@ -177,14 +177,14 @@ export default function VickinsSecurityPage() {
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <a
                   href="#contact"
-                  className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--brand-blue-600)] text-white font-semibold shadow-[0_18px_45px_rgba(0,80,240,0.22)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(0,80,240,0.28)]"
+                  className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--accent)] text-[var(--accent-contrast)] font-semibold shadow-[0_18px_45px_rgba(var(--accent-rgb),0.22)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(var(--accent-rgb),0.28)]"
                 >
                   Request a site survey
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <a
                   href="#solutions"
-                  className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full border border-[var(--border)] bg-white/70 backdrop-blur-xl text-[var(--foreground)] font-semibold hover:bg-white transition-all duration-300"
+                  className="group inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] backdrop-blur-xl text-[var(--foreground)] font-semibold hover:bg-[var(--glass-surface-strong)] transition-all duration-300"
                 >
                   View Solutions
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -195,11 +195,11 @@ export default function VickinsSecurityPage() {
                 {valueProps.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-[var(--border)] bg-white/70 backdrop-blur-xl px-4 py-3 shadow-[var(--shadow-tight)]"
+                    className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] backdrop-blur-xl px-4 py-3 shadow-[var(--shadow-tight)]"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-[var(--brand-blue-600)]/10 p-2 border border-[var(--brand-blue-600)]/15">
-                        <item.icon className="w-4 h-4 text-[var(--brand-blue-600)]" />
+                      <div className="rounded-full bg-[var(--accent)]/10 p-2 border border-[var(--accent)]/15">
+                        <item.icon className="w-4 h-4 text-[var(--accent)]" />
                       </div>
                       <div className="text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[var(--foreground)]/75">
                         {item.label}
@@ -211,7 +211,7 @@ export default function VickinsSecurityPage() {
 
               <div className="mt-7 text-xs text-[var(--foreground)]/65">
                 Looking for software engineering?{" "}
-                <Link href="/" className="text-[var(--brand-blue-600)] underline underline-offset-4 hover:opacity-90">
+                <Link href="/" className="text-[var(--accent)] underline underline-offset-4 hover:opacity-90">
                   Back to Vickins Technologies
                 </Link>
               </div>
@@ -225,7 +225,7 @@ export default function VickinsSecurityPage() {
             >
               <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden border border-white/15 bg-white/5">
                 <Image
-                  src="/images/vickins-security-promo.png"
+                  src="/images/vickins-security-promo-v2.png"
                   alt="Vickins Security"
                   fill
                   className="object-cover"
@@ -249,7 +249,7 @@ export default function VickinsSecurityPage() {
           transition={{ duration: 0.6 }}
         >
           <div className="text-center max-w-3xl mx-auto">
-            <p className="text-[var(--brand-blue-600)] uppercase tracking-[0.35em] text-xs sm:text-sm">
+            <p className="text-[var(--accent)] uppercase tracking-[0.35em] text-xs sm:text-sm">
               Our Comprehensive Security Solutions
             </p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-4">
@@ -265,10 +265,10 @@ export default function VickinsSecurityPage() {
             {solutions.map((solution) => (
               <div
                 key={solution.title}
-                className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-[var(--brand-navy-900)] to-[var(--brand-navy-950)] text-white shadow-[0_20px_55px_rgba(0,0,0,0.28)]"
+                className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-[var(--navy)] to-[var(--navy-2)] text-white shadow-[0_20px_55px_rgba(0,0,0,0.28)]"
               >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.42),_transparent_58%)] opacity-80" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_40%,_rgba(0,144,224,0.22),_transparent_55%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.42),_transparent_58%)] opacity-80" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_40%,_rgba(var(--accent-sky-rgb),0.22),_transparent_55%)]" />
                 <div className="relative p-5">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
@@ -297,12 +297,12 @@ export default function VickinsSecurityPage() {
           viewport={{ once: true, margin: "-120px" }}
           transition={{ duration: 0.6 }}
         >
-          <div className="relative overflow-hidden rounded-[32px] border border-white/30 bg-white/60 backdrop-blur-2xl shadow-[var(--shadow-soft)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/70 via-white/45 to-transparent opacity-80" />
+          <div className="relative overflow-hidden rounded-[32px] border border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl shadow-[var(--shadow-soft)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-sky-rgb),0.14),_transparent_55%)]" />
             <div className="relative p-6 sm:p-8">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 <div className="max-w-2xl">
-                  <p className="text-[var(--brand-blue-600)] uppercase tracking-[0.32em] text-xs sm:text-sm">
+                  <p className="text-[var(--accent)] uppercase tracking-[0.32em] text-xs sm:text-sm">
                     Total Peace of Mind
                   </p>
                   <h3 className="text-xl sm:text-2xl font-semibold mt-3">
@@ -324,16 +324,16 @@ export default function VickinsSecurityPage() {
 
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                 {trustBand.map((item) => (
-                  <div key={item.label} className="rounded-2xl border border-white/40 bg-white/70 p-4">
+                  <div key={item.label} className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
                     <div className="flex items-start gap-2 text-xs sm:text-sm font-semibold text-[var(--foreground)]">
-                      <item.icon className="w-4 h-4 text-[var(--brand-blue-600)] mt-0.5" />
+                      <item.icon className="w-4 h-4 text-[var(--accent)] mt-0.5" />
                       <span className="leading-snug">{item.label}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8 rounded-3xl border border-white/35 bg-gradient-to-r from-[var(--brand-navy-900)] to-[var(--brand-navy-950)] text-white px-5 py-4">
+              <div className="mt-8 rounded-3xl border border-white/35 bg-gradient-to-r from-[var(--navy)] to-[var(--navy-2)] text-white px-5 py-4">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                   <div className="text-sm font-semibold uppercase tracking-[0.22em]">
                     Innovative solutions. <span className="text-[var(--accent-2)]">Real impact.</span>

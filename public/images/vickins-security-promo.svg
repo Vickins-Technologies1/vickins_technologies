@@ -1,0 +1,111 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(360 260) rotate(90) scale(520 620)">
+      <stop stop-color="#0090E0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#0090E0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(820 540) rotate(90) scale(520 620)">
+      <stop stop-color="#1D4ED8" stop-opacity="0.48"/>
+      <stop offset="1" stop-color="#1D4ED8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="strokeBlue" x1="250" y1="140" x2="950" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BFE9FF" stop-opacity="0.9"/>
+      <stop offset="0.38" stop-color="#60A5FA" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#1D4ED8" stop-opacity="0.86"/>
+    </linearGradient>
+    <linearGradient id="strokeSky" x1="170" y1="760" x2="1030" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0090E0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#1F6DFF" stop-opacity="0.62"/>
+    </linearGradient>
+    <filter id="softBlur" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="glowStroke" x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- ambient glows (transparent background; intended to sit over a dark gradient) -->
+  <circle cx="360" cy="260" r="520" fill="url(#glowA)"/>
+  <circle cx="820" cy="540" r="520" fill="url(#glowB)"/>
+
+  <!-- subtle grid -->
+  <g opacity="0.18">
+    <path d="M80 150H1120" stroke="#E6F4FF" stroke-opacity="0.35" stroke-width="1"/>
+    <path d="M80 250H1120" stroke="#E6F4FF" stroke-opacity="0.28" stroke-width="1"/>
+    <path d="M80 350H1120" stroke="#E6F4FF" stroke-opacity="0.22" stroke-width="1"/>
+    <path d="M80 450H1120" stroke="#E6F4FF" stroke-opacity="0.18" stroke-width="1"/>
+    <path d="M80 550H1120" stroke="#E6F4FF" stroke-opacity="0.16" stroke-width="1"/>
+    <path d="M80 650H1120" stroke="#E6F4FF" stroke-opacity="0.14" stroke-width="1"/>
+    <path d="M180 90V810" stroke="#E6F4FF" stroke-opacity="0.22" stroke-width="1"/>
+    <path d="M320 90V810" stroke="#E6F4FF" stroke-opacity="0.18" stroke-width="1"/>
+    <path d="M460 90V810" stroke="#E6F4FF" stroke-opacity="0.14" stroke-width="1"/>
+    <path d="M600 90V810" stroke="#E6F4FF" stroke-opacity="0.12" stroke-width="1"/>
+    <path d="M740 90V810" stroke="#E6F4FF" stroke-opacity="0.14" stroke-width="1"/>
+    <path d="M880 90V810" stroke="#E6F4FF" stroke-opacity="0.18" stroke-width="1"/>
+    <path d="M1020 90V810" stroke="#E6F4FF" stroke-opacity="0.22" stroke-width="1"/>
+  </g>
+
+  <!-- network path -->
+  <g opacity="0.62" filter="url(#glowStroke)">
+    <path d="M250 220C360 170 430 200 500 260C575 325 640 300 710 260C785 215 860 230 950 295" stroke="url(#strokeSky)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 10"/>
+    <path d="M270 700C365 650 440 665 520 620C600 565 680 590 750 640C835 700 920 680 1010 630" stroke="url(#strokeSky)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 10"/>
+    <path d="M180 430C300 380 420 430 520 470C610 505 700 520 820 480C930 443 1010 460 1090 520" stroke="url(#strokeSky)" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 10"/>
+  </g>
+
+  <!-- node chips -->
+  <g opacity="0.92">
+    <g filter="url(#softBlur)" opacity="0.55">
+      <circle cx="250" cy="220" r="26" fill="#1F6DFF"/>
+      <circle cx="500" cy="260" r="26" fill="#0090E0"/>
+      <circle cx="710" cy="260" r="26" fill="#1D4ED8"/>
+      <circle cx="950" cy="295" r="26" fill="#0090E0"/>
+      <circle cx="270" cy="700" r="26" fill="#0090E0"/>
+      <circle cx="520" cy="620" r="26" fill="#1D4ED8"/>
+      <circle cx="750" cy="640" r="26" fill="#1F6DFF"/>
+      <circle cx="1010" cy="630" r="26" fill="#0090E0"/>
+    </g>
+
+    <g>
+      <circle cx="250" cy="220" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="500" cy="260" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="710" cy="260" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="950" cy="295" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="270" cy="700" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="520" cy="620" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="750" cy="640" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+      <circle cx="1010" cy="630" r="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.2"/>
+    </g>
+  </g>
+
+  <!-- main shield + lock -->
+  <g filter="url(#glowStroke)">
+    <path d="M600 170C665 170 720 205 720 205V420C720 545 650 650 600 676C550 650 480 545 480 420V205C480 205 535 170 600 170Z"
+      stroke="url(#strokeBlue)" stroke-width="5" stroke-linejoin="round" fill="rgba(255,255,255,0.02)"/>
+
+    <path d="M600 255C632 255 658 281 658 313V348H542V313C542 281 568 255 600 255Z"
+      stroke="rgba(255,255,255,0.72)" stroke-width="4" stroke-linejoin="round" fill="rgba(255,255,255,0.03)"/>
+    <path d="M540 348H660V470C660 507 630 537 593 537H607C570 537 540 507 540 470V348Z"
+      stroke="rgba(255,255,255,0.72)" stroke-width="4" stroke-linejoin="round" fill="rgba(255,255,255,0.03)"/>
+    <circle cx="600" cy="430" r="14" fill="rgba(255,255,255,0.78)"/>
+    <path d="M600 444V470" stroke="rgba(11,18,32,0.65)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- corner micro-icons (simple line art) -->
+  <g opacity="0.78" filter="url(#glowStroke)">
+    <!-- camera -->
+    <path d="M190 300H310C326 300 340 314 340 330V376C340 392 326 406 310 406H190C174 406 160 392 160 376V330C160 314 174 300 190 300Z" stroke="rgba(255,255,255,0.55)" stroke-width="2.8" fill="rgba(255,255,255,0.02)"/>
+    <path d="M340 340L390 312V394L340 366" stroke="rgba(255,255,255,0.55)" stroke-width="2.8" stroke-linejoin="round"/>
+    <circle cx="250" cy="353" r="22" stroke="rgba(255,255,255,0.65)" stroke-width="2.8"/>
+
+    <!-- access -->
+    <path d="M905 510C905 472 936 441 974 441C1012 441 1043 472 1043 510V565C1043 603 1012 634 974 634C936 634 905 603 905 565V510Z" stroke="rgba(255,255,255,0.55)" stroke-width="2.8" fill="rgba(255,255,255,0.02)"/>
+    <path d="M942 505C942 486 957 471 976 471C995 471 1010 486 1010 505V517H942V505Z" stroke="rgba(255,255,255,0.65)" stroke-width="2.8" fill="rgba(255,255,255,0.03)"/>
+    <circle cx="974" cy="563" r="10" fill="rgba(255,255,255,0.7)"/>
+  </g>
+</svg>
+

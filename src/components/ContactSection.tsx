@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -19,6 +19,7 @@ export default function ContactSection() {
   const [phone, setPhone] = useState<string | undefined>("");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [editorMode, setEditorMode] = useState<"write" | "preview">("write");
+  const messageRef = useRef<HTMLTextAreaElement | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -83,6 +84,68 @@ export default function ContactSection() {
       ...prev,
       [name]: !prev[name],
     }));
+  };
+
+  const updateMessageWithSelection = (
+    nextMessage: string,
+    selection?: { start: number; end: number }
+  ) => {
+    setFormData((prev) => ({ ...prev, message: nextMessage }));
+    if (!selection) return;
+
+    requestAnimationFrame(() => {
+      const el = messageRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(selection.start, selection.end);
+    });
+  };
+
+  const getMessageSelection = () => {
+    const el = messageRef.current;
+    const message = formData.message ?? "";
+    if (!el) return { message, start: message.length, end: message.length };
+    return { message, start: el.selectionStart ?? 0, end: el.selectionEnd ?? 0 };
+  };
+
+  const wrapMessageSelection = (prefix: string, suffix = prefix) => {
+    const { message, start, end } = getMessageSelection();
+    const selected = message.slice(start, end);
+    const next = message.slice(0, start) + prefix + selected + suffix + message.slice(end);
+    const cursorStart = start + prefix.length;
+    const cursorEnd = end + prefix.length;
+    updateMessageWithSelection(next, { start: cursorStart, end: cursorEnd });
+  };
+
+  const insertMessageAtCursor = (snippet: string, selectInner?: { startOffset: number; endOffset: number }) => {
+    const { message, start, end } = getMessageSelection();
+    const next = message.slice(0, start) + snippet + message.slice(end);
+    const nextCursor = start + snippet.length;
+    if (!selectInner) {
+      updateMessageWithSelection(next, { start: nextCursor, end: nextCursor });
+      return;
+    }
+    updateMessageWithSelection(next, {
+      start: start + selectInner.startOffset,
+      end: start + selectInner.endOffset,
+    });
+  };
+
+  const prefixSelectedLines = (prefix: string) => {
+    const { message, start, end } = getMessageSelection();
+    const selectionStart = Math.min(start, end);
+    const selectionEnd = Math.max(start, end);
+
+    const lineStart = message.lastIndexOf("\n", selectionStart - 1) + 1;
+    const lineEndIdx = message.indexOf("\n", selectionEnd);
+    const lineEnd = lineEndIdx === -1 ? message.length : lineEndIdx;
+
+    const block = message.slice(lineStart, lineEnd);
+    const lines = block.split("\n").map((line) => (line.trim().length ? `${prefix}${line}` : line));
+    const replaced = lines.join("\n");
+
+    const next = message.slice(0, lineStart) + replaced + message.slice(lineEnd);
+    updateMessageWithSelection(next, { start: lineStart, end: lineStart + replaced.length });
   };
 
   const renderPreview = useMemo(() => {
@@ -505,13 +568,81 @@ export default function ContactSection() {
                           Preview
                         </button>
                       </div>
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/50">
-                        Markdown
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {editorMode === "write" && (
+                          <div className="hidden sm:flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => wrapMessageSelection("**")}
+                              className="h-7 w-7 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[11px] font-black text-[var(--foreground)]/80"
+                              aria-label="Bold"
+                              title="Bold"
+                            >
+                              B
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => wrapMessageSelection("*")}
+                              className="h-7 w-7 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[11px] italic font-semibold text-[var(--foreground)]/80"
+                              aria-label="Italic"
+                              title="Italic"
+                            >
+                              I
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => prefixSelectedLines("## ")}
+                              className="h-7 px-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[10px] font-semibold text-[var(--foreground)]/75"
+                              aria-label="Heading"
+                              title="Heading"
+                            >
+                              H2
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => prefixSelectedLines("- ")}
+                              className="h-7 w-7 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[12px] font-semibold text-[var(--foreground)]/75"
+                              aria-label="Bullet list"
+                              title="Bullet list"
+                            >
+                              •
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => wrapMessageSelection("`")}
+                              className="h-7 w-7 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[11px] font-semibold text-[var(--foreground)]/75"
+                              aria-label="Inline code"
+                              title="Inline code"
+                            >
+                              {"</>"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const { message, start, end } = getMessageSelection();
+                                const selected = message.slice(start, end) || "link text";
+                                const snippet = `[${selected}](https://)`;
+                                const startOffset = 1;
+                                const endOffset = 1 + selected.length;
+                                insertMessageAtCursor(snippet, { startOffset, endOffset });
+                              }}
+                              className="h-7 px-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] hover:bg-[var(--glass-surface-strong)] transition text-[10px] font-semibold text-[var(--foreground)]/75"
+                              aria-label="Link"
+                              title="Link"
+                            >
+                              Link
+                            </button>
+                          </div>
+                        )}
+                        <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/50">
+                          Markdown
+                        </span>
+                      </div>
                     </div>
 
                     {editorMode === "write" ? (
                       <textarea
+                        ref={messageRef}
                         name="message"
                         value={formData.message}
                         onChange={handleInputChange}
