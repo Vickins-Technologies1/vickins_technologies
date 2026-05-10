@@ -34,7 +34,7 @@ export default function HeroSection() {
     >
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[var(--page-bg)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,_rgba(212,175,55,0.18),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_10%,_rgba(var(--accent-rgb),0.18),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_86%_0%,_rgba(10,22,51,0.10),_transparent_60%)]" />
         <motion.div
           className="absolute inset-0 opacity-35"
@@ -65,7 +65,7 @@ export default function HeroSection() {
           right: "-6%",
           width: "420px",
           height: "420px",
-          background: "rgba(212,175,55,0.22)",
+          background: "rgba(var(--accent-rgb),0.22)",
         }}
       />
 
@@ -133,7 +133,7 @@ export default function HeroSection() {
             </a>
             <Link
               href="/vickins-security"
-              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[rgba(212,175,55,0.45)] text-[var(--accent-2)] font-semibold backdrop-blur-md hover:bg-[rgba(212,175,55,0.10)] transition-all duration-500"
+              className="group inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full border border-[rgba(var(--accent-rgb),0.45)] text-[var(--accent-2)] font-semibold backdrop-blur-md hover:bg-[rgba(var(--accent-rgb),0.10)] transition-all duration-500"
             >
               Security
               <ShieldCheckIcon className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />

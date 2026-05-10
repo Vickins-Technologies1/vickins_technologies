@@ -60,7 +60,7 @@ export default function ProductsSection() {
     >
       <div className="relative overflow-hidden rounded-[36px] border border-[var(--glass-border)] bg-[var(--card-bg)] shadow-[var(--shadow-soft)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.18),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_20%,_rgba(240,176,16,0.18),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_20%,_rgba(var(--accent-sky-rgb),0.16),_transparent_50%)]" />
         <div
           className="absolute inset-0 opacity-35"
           style={{

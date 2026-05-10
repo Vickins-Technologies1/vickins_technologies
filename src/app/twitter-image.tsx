@@ -16,7 +16,7 @@ export default function TwitterImage() {
         style={{
           height: "100%",
           width: "100%",
-          background: "#faf9f6",
+          background: "#f7f9ff",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -32,7 +32,7 @@ export default function TwitterImage() {
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(900px 520px at 18% 10%, rgba(212,175,55,0.18), transparent 58%), radial-gradient(900px 520px at 88% 15%, rgba(10,22,51,0.14), transparent 58%), linear-gradient(180deg, #faf9f6 0%, #f8f7f5 100%)",
+              "radial-gradient(900px 520px at 18% 10%, rgba(0,144,224,0.18), transparent 58%), radial-gradient(900px 520px at 88% 15%, rgba(10,22,51,0.14), transparent 58%), linear-gradient(180deg, #f7f9ff 0%, #f2f6ff 100%)",
           }}
         />
 
@@ -49,7 +49,7 @@ export default function TwitterImage() {
             }}
           >
             Nairobi-based technology partner
-            <span style={{ width: 42, height: 6, borderRadius: 999, background: "#d4af37" }} />
+            <span style={{ width: 42, height: 6, borderRadius: 999, background: "#1d4ed8" }} />
           </div>
 
           <div style={{ fontSize: 68, fontWeight: 700, letterSpacing: -1.2, lineHeight: 1.05 }}>

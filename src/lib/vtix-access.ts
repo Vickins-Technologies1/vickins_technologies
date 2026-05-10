@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { Types } from "mongoose";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { connectMongoose } from "@/lib/mongoose";
 import VtixOrganizerMemberModel from "@/lib/models/vtix-organizer-member";
 
@@ -12,6 +12,7 @@ export type SessionUser = {
 };
 
 export const getSessionUser = async () => {
+  const auth = await getAuth();
   const session = await auth.api.getSession({
     headers: await headers(),
   });

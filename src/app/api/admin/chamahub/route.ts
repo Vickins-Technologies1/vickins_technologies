@@ -4,7 +4,7 @@ import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import ChamaRoundModel from "@/lib/models/chama-round";
 import ChamaContributionModel from "@/lib/models/chama-contribution";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
 import transporter from "@/lib/nodemailer";
 
@@ -200,6 +200,7 @@ export async function PATCH(request: Request) {
 
       const normalizedEmail = email.trim().toLowerCase();
 
+      const auth = await getAuth();
       const context = await auth.$context;
       const adapter = context.internalAdapter as unknown as {
         listUsers: (
@@ -326,6 +327,7 @@ export async function PATCH(request: Request) {
         );
       }
 
+      const auth = await getAuth();
       const context = await auth.$context;
       const adapter = context.internalAdapter as unknown as {
         listUsers: (
@@ -381,6 +383,7 @@ export async function PATCH(request: Request) {
         );
       }
 
+      const auth = await getAuth();
       const context = await auth.$context;
       const adapter = context.internalAdapter as unknown as {
         listUsers: (

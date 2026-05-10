@@ -291,16 +291,16 @@ export default function Pricing() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-120px" }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl border border-[rgba(240,176,16,0.35)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)] mb-6"
+          className="relative overflow-hidden rounded-3xl border border-[rgba(var(--accent-rgb),0.35)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)] mb-6"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.18),_transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.18),_transparent_60%)]" />
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6 items-start">
             <div>
               <div className="flex items-center justify-between gap-3">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
                   {enterpriseTier.description}
                 </p>
-                <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
+                <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(var(--accent-rgb),0.35)] bg-[rgba(var(--accent-rgb),0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
                   <SparklesIcon className="h-3 w-3" />
                   Enterprise
                 </span>
@@ -350,7 +350,7 @@ export default function Pricing() {
                 viewport={{ once: true, margin: "-120px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className={`rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
-                  plan.popular ? "ring-1 ring-[rgba(240,176,16,0.55)]" : ""
+                  plan.popular ? "ring-1 ring-[rgba(var(--accent-rgb),0.55)]" : ""
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -362,7 +362,7 @@ export default function Pricing() {
                     <p className="text-sm text-[var(--foreground)]/70 mt-2">From {plan.price}</p>
                   </div>
                   {plan.popular && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(240,176,16,0.35)] bg-[rgba(240,176,16,0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[rgba(var(--accent-rgb),0.35)] bg-[rgba(var(--accent-rgb),0.12)] px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
                       <SparklesIcon className="h-3 w-3" />
                       Popular
                     </span>
@@ -395,7 +395,7 @@ export default function Pricing() {
             transition={{ duration: 0.6 }}
             className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.14),_transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-sky-rgb),0.14),_transparent_60%)]" />
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
@@ -432,7 +432,7 @@ export default function Pricing() {
                 </p>
                 <a
                   href="#contact"
-                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[#0b1220]"
+                  className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-[var(--accent-contrast)]"
                 >
                   Request Proposal
                   <SparklesIcon className="h-4 w-4" />

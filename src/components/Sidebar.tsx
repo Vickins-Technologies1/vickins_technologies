@@ -143,7 +143,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 <Link
                   href="/#contact"
                   onClick={toggleSidebar}
-                  className="flex items-center justify-center gap-2 rounded-full border border-[rgba(212,175,55,0.45)] bg-[rgba(212,175,55,0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent-2)] hover:bg-[rgba(212,175,55,0.18)] transition"
+                  className="flex items-center justify-center gap-2 rounded-full border border-[rgba(var(--accent-rgb),0.45)] bg-[rgba(var(--accent-rgb),0.14)] px-4 py-3 text-[10px] uppercase tracking-[0.26em] font-semibold text-[var(--accent-2)] hover:bg-[rgba(var(--accent-rgb),0.18)] transition"
                 >
                   Book Strategy Call
                 </Link>

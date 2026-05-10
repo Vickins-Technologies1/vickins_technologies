@@ -1,28 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  /* Premium light palette */
-  --bg-cream: #faf9f6;
-  --bg-cream-2: #f8f7f5;
-  --ink: #121826;
-  --ink-soft: rgba(18, 24, 38, 0.78);
+  /* Premium light palette (blue-forward) */
+  --bg-cream: #f7f9ff;
+  --bg-cream-2: #f2f6ff;
+  --ink: #0b1220;
+  --ink-soft: rgba(11, 18, 32, 0.78);
   --navy: #0a1633;
   --navy-2: #0b1b3d;
   --gold: #d4af37;
 
   --background: var(--bg-cream);
   --foreground: var(--ink);
-  --accent: var(--gold);
+  --accent: #1d4ed8;
+  --accent-rgb: 29, 78, 216;
+  --accent-sky: #0090e0;
+  --accent-sky-rgb: 0, 144, 224;
+  --accent-contrast: #ffffff;
   --accent-2: var(--navy);
+  --accent-2-rgb: 10, 22, 51;
 
-  --navbar-bg: rgba(250, 249, 246, 0.62);
+  --navbar-bg: rgba(247, 249, 255, 0.62);
   --navbar-text: var(--foreground);
   --navbar-border: rgba(18, 24, 38, 0.12);
   --navbar-surface: rgba(255, 255, 255, 0.45);
   --navbar-surface-strong: rgba(255, 255, 255, 0.62);
   --navbar-surface-hover: rgba(255, 255, 255, 0.72);
 
-  --button-bg: var(--navy);
+  --button-bg: var(--accent);
   --card-bg: rgba(255, 255, 255, 0.62);
   --card-solid: rgba(255, 255, 255, 0.92);
   --glass-border: rgba(18, 24, 38, 0.12);
@@ -36,9 +41,9 @@
 
   --primary: var(--button-bg);
   --border: rgba(18, 24, 38, 0.12);
-  --hover-bg: rgba(18, 24, 38, 0.05);
+  --hover-bg: rgba(var(--accent-rgb), 0.06);
   --muted: rgba(18, 24, 38, 0.62);
-  --sidebar-bg: rgba(250, 249, 246, 0.9);
+  --sidebar-bg: rgba(247, 249, 255, 0.9);
   --sidebar-text: var(--foreground);
   --shadow-soft: 0 18px 45px rgba(18, 24, 38, 0.08);
   --shadow-tight: 0 10px 24px rgba(18, 24, 38, 0.09);
@@ -47,8 +52,8 @@
   --nav-offset: 84;
 
   --page-bg:
-    radial-gradient(900px 640px at 12% -12%, rgba(212, 175, 55, 0.12), transparent 60%),
-    radial-gradient(900px 640px at 86% 0%, rgba(10, 22, 51, 0.08), transparent 55%),
+    radial-gradient(900px 640px at 12% -12%, rgba(var(--accent-sky-rgb), 0.14), transparent 60%),
+    radial-gradient(900px 640px at 86% 0%, rgba(var(--accent-2-rgb), 0.08), transparent 55%),
     linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-cream-2) 100%);
   --page-grid: linear-gradient(rgba(18, 24, 38, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(18, 24, 38, 0.035) 1px, transparent 1px);
@@ -73,7 +78,12 @@
   --background: #070a12;
   --foreground: #eef2ff;
   --accent: #d4af37;
+  --accent-rgb: 212, 175, 55;
+  --accent-sky: #1f6dff;
+  --accent-sky-rgb: 31, 109, 255;
+  --accent-contrast: #0b1220;
   --accent-2: #9fb0d5;
+  --accent-2-rgb: 159, 176, 213;
 
   --navbar-bg: rgba(10, 22, 51, 0.62);
   --navbar-text: var(--foreground);
@@ -483,8 +493,8 @@ h4 {
 }
 
 .dash-signout:hover {
-  background: rgba(240, 176, 16, 0.15);
-  border-color: rgba(240, 176, 16, 0.35);
+  background: rgba(var(--accent-rgb), 0.12);
+  border-color: rgba(var(--accent-rgb), 0.35);
   transform: translateY(-1px);
 }
 
@@ -603,9 +613,9 @@ h4 {
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  border: 1px solid rgba(240, 176, 16, 0.35);
-  color: rgba(240, 176, 16, 0.95);
-  background: rgba(240, 176, 16, 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  color: rgba(var(--accent-rgb), 0.92);
+  background: rgba(var(--accent-rgb), 0.08);
 }
 
 .dashboard-shell .glass-panel {

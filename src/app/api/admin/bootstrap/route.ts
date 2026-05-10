@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 
 export async function GET() {
   try {
+    const auth = await getAuth();
     const context = await auth.$context;
     const adapter = context.internalAdapter as unknown as {
       countTotalUsers: (
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
   };
 
   try {
+    const auth = await getAuth();
     const context = await auth.$context;
     const adapter = context.internalAdapter as unknown as {
       countTotalUsers: (
@@ -62,6 +64,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    const auth = await getAuth();
     const result = await auth.api.signUpEmail({
       body: {
         email: email.trim().toLowerCase(),

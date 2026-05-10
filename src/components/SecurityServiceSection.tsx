@@ -105,7 +105,7 @@ export default function SecurityServiceSection() {
       <motion.div variants={item} className="mt-8 flex justify-center">
         <Link
           href="/vickins-security"
-          className="inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--accent)] text-[#0b1220] font-semibold shadow-lg hover:shadow-2xl transition-all duration-300"
+          className="inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[var(--accent)] text-[var(--accent-contrast)] font-semibold shadow-lg hover:shadow-2xl transition-all duration-300"
         >
           View Vickins Security
           <ShieldCheckIcon className="w-5 h-5" />

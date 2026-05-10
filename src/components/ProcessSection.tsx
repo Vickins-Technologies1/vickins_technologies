@@ -64,7 +64,7 @@ export default function ProcessSection() {
         </div>
 
         <div className="glass-panel p-5 sm:p-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.14),_transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.14),_transparent_60%)]" />
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-6 lg:gap-8">
             <div className="relative">
               <div className="absolute left-[18px] top-2 bottom-2 w-px bg-[var(--glass-border-strong)]" />

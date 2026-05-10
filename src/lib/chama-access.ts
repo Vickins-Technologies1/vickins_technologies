@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { Types } from "mongoose";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import ChamaMemberModel from "@/lib/models/chama-member";
 import { connectMongoose } from "@/lib/mongoose";
 
@@ -12,6 +12,7 @@ export type SessionUser = {
 };
 
 export const getSessionUser = async () => {
+  const auth = await getAuth();
   const session = await auth.api.getSession({
     headers: await headers(),
   });

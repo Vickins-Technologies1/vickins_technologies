@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { connectMongoose } from "@/lib/mongoose";
 import ChamaGroupModel from "@/lib/models/chama-group";
 import ChamaMemberModel from "@/lib/models/chama-member";
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    const auth = await getAuth();
     const result = await auth.api.signUpEmail({
       body: {
         email: email.trim().toLowerCase(),

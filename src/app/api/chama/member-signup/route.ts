@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { linkMemberToUser } from "@/lib/chama-access";
 
 export async function POST(request: Request) {
@@ -18,6 +18,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    const auth = await getAuth();
     const result = await auth.api.signUpEmail({
       body: {
         email: email.trim().toLowerCase(),

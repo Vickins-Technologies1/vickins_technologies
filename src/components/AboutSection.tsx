@@ -136,7 +136,7 @@ export default function AboutSection() {
 
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.22em] font-semibold text-[#0b1220]"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.22em] font-semibold text-[var(--accent-contrast)]"
             >
               Talk to our team
               <SparklesIcon className="h-4 w-4" />

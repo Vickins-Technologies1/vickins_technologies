@@ -4,33 +4,54 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { admin } from "better-auth/plugins";
 import connectToDatabase from "@/lib/mongodb";
 
-export const auth = betterAuth({
-  database: mongodbAdapter(await connectToDatabase()),
-  emailAndPassword: {
-    enabled: true,
-    // Optional: strengthen password requirements
-    // minPasswordLength: 8,
-  },
-  plugins: [
-    admin({
-      adminRoles: ["admin"],
-      defaultRole: "user", // All new users start as "user"
-    }),
-  ],
-  baseURL:
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_SITE_URL ||
-        process.env.BETTER_AUTH_BASE_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
-        "https://vickins-technologies.vercel.app"
-      : "http://localhost:3000",
-  trustedOrigins: [
-    "http://localhost:3000",
-    "https://vickins-technologies.vercel.app",
-    process.env.NEXT_PUBLIC_SITE_URL,
-    process.env.BETTER_AUTH_BASE_URL,
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
-  ].filter(Boolean) as string[],
-  // Optional: enable if deploying on Vercel/Netlify/etc.
-  // trustHost: true,
-});
+async function createAuth() {
+  const db = await connectToDatabase();
+  return betterAuth({
+    database: mongodbAdapter(db),
+    emailAndPassword: {
+      enabled: true,
+      // Optional: strengthen password requirements
+      // minPasswordLength: 8,
+    },
+    plugins: [
+      admin({
+        adminRoles: ["admin"],
+        defaultRole: "user", // All new users start as "user"
+      }),
+    ],
+    baseURL:
+      process.env.NODE_ENV === "production"
+        ? process.env.NEXT_PUBLIC_SITE_URL ||
+          process.env.BETTER_AUTH_BASE_URL ||
+          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
+          "https://vickins-technologies.vercel.app"
+        : "http://localhost:3000",
+    trustedOrigins: [
+      "http://localhost:3000",
+      "https://vickins-technologies.vercel.app",
+      process.env.NEXT_PUBLIC_SITE_URL,
+      process.env.BETTER_AUTH_BASE_URL,
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+    ].filter(Boolean) as string[],
+    // Optional: enable if deploying on Vercel/Netlify/etc.
+    // trustHost: true,
+  });
+}
+
+type AuthInstance = Awaited<ReturnType<typeof createAuth>>;
+
+let cachedAuth: AuthInstance | null = null;
+let cachedAuthPromise: ReturnType<typeof createAuth> | null = null;
+
+export async function getAuth() {
+  if (cachedAuth) return cachedAuth;
+
+  if (!cachedAuthPromise) {
+    cachedAuthPromise = createAuth().then((auth) => {
+      cachedAuth = auth;
+      return auth;
+    });
+  }
+
+  return cachedAuthPromise;
+}

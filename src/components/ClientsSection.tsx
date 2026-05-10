@@ -70,7 +70,7 @@ export default function ClientsSection() {
           </div>
 
           <div className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(240,176,16,0.14),_transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.14),_transparent_60%)]" />
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">

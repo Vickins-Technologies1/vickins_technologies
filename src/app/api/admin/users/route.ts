@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 
 type InternalAdapter = {
   listUsers: (
@@ -17,6 +17,7 @@ type InternalAdapter = {
 
 export async function GET() {
   try {
+    const auth = await getAuth();
     const context = await auth.$context;
     const adapter = context.internalAdapter as unknown as InternalAdapter;
     const users = await adapter.listUsers(100, 0, {

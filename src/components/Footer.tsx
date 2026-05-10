@@ -15,8 +15,8 @@ const Footer: FC = () => {
   return (
     <footer className="mt-12">
       <div className="relative w-full overflow-hidden border-t border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(240,176,16,0.14),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(0,144,224,0.16),_transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-rgb),0.14),_transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(var(--accent-sky-rgb),0.16),_transparent_60%)]" />
         <div className="relative z-10 px-4 sm:px-6 lg:px-10 py-8 sm:py-10">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16">
@@ -44,7 +44,7 @@ const Footer: FC = () => {
                 <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 items-stretch sm:items-center justify-center lg:justify-start">
                   <Link
                     href="/#contact"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-[#0b1220] shadow-lg"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--accent-contrast)] shadow-lg"
                   >
                     Book Strategy Call
                     <ArrowRightIcon className="h-4 w-4" />
