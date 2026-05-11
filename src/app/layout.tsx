@@ -82,14 +82,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/logo1.png", type: "image/png", sizes: "32x32" },
-      { url: "/logo1.png", type: "image/png", sizes: "16x16" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
+    icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
     other: [
       {
         rel: "manifest",
