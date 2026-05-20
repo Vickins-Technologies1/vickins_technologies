@@ -76,10 +76,10 @@
   /* Global sticky backdrop (light) */
   --backdrop-glow-a: rgba(var(--accent-sky-rgb), 0.18);
   --backdrop-glow-b: rgba(var(--accent-rgb), 0.14);
-  --backdrop-grid: rgba(18, 24, 38, 0.06);
-  --backdrop-dots: rgba(18, 24, 38, 0.08);
-  --backdrop-panel: rgba(var(--accent-rgb), 0.08);
-  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.30);
+  --backdrop-grid: rgba(18, 24, 38, 0.09);
+  --backdrop-dots: rgba(18, 24, 38, 0.14);
+  --backdrop-panel: rgba(var(--accent-rgb), 0.11);
+  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.40);
   --backdrop-noise: 0.06;
 }
 
@@ -145,11 +145,15 @@
   /* Global sticky backdrop (dark) */
   --backdrop-glow-a: rgba(var(--accent-sky-rgb), 0.20);
   --backdrop-glow-b: rgba(var(--accent-rgb), 0.16);
-  --backdrop-grid: rgba(226, 232, 240, 0.07);
-  --backdrop-dots: rgba(226, 232, 240, 0.08);
-  --backdrop-panel: rgba(var(--accent-sky-rgb), 0.10);
-  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.34);
+  --backdrop-grid: rgba(226, 232, 240, 0.10);
+  --backdrop-dots: rgba(226, 232, 240, 0.14);
+  --backdrop-panel: rgba(var(--accent-sky-rgb), 0.14);
+  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.45);
   --backdrop-noise: 0.08;
+}
+
+:root[data-theme="dark"] .site-backdrop__grid {
+  mix-blend-mode: screen;
 }
 
 /* Dark mode readability overrides for light glass utilities */
@@ -975,7 +979,7 @@ h4 {
 .site-backdrop__base {
   position: absolute;
   inset: 0;
-  background: var(--page-bg);
+  background: transparent;
 }
 
 .site-backdrop__glow {
@@ -1006,23 +1010,36 @@ h4 {
 .site-backdrop__grid {
   position: absolute;
   inset: 0;
-  opacity: 0.55;
+  opacity: 0.85;
   background-image: linear-gradient(var(--backdrop-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--backdrop-grid) 1px, transparent 1px);
   background-size: 34px 34px;
-  mask-image: radial-gradient(68% 56% at 50% 18%, #000 56%, transparent 100%);
+  mix-blend-mode: multiply;
+  mask-image: radial-gradient(88% 72% at 50% 18%, #000 70%, transparent 100%);
 }
 
 .site-backdrop__panels {
   position: absolute;
   inset: 0;
-  opacity: 0.75;
+  opacity: 0.9;
   background-image:
     radial-gradient(circle at 22% 38%, var(--backdrop-panel), transparent 42%),
     radial-gradient(circle at 78% 32%, var(--backdrop-panel), transparent 46%),
-    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.02) 40%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.02) 45%, transparent 100%);
-  mask-image: radial-gradient(70% 60% at 50% 20%, #000 52%, transparent 100%);
+    linear-gradient(180deg, transparent 0%, rgba(var(--accent-sky-rgb), 0.05) 44%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, rgba(var(--accent-rgb), 0.04) 45%, transparent 100%);
+  mask-image: radial-gradient(86% 72% at 50% 18%, #000 66%, transparent 100%);
+}
+
+.site-backdrop__strokes {
+  position: absolute;
+  inset: -10%;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 84px, var(--backdrop-stroke) 84px 85px, transparent 85px 170px),
+    repeating-linear-gradient(0deg, transparent 0 72px, rgba(var(--accent-rgb), 0.18) 72px 73px, transparent 73px 146px);
+  transform: rotate(-6deg);
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(78% 66% at 50% 18%, #000 56%, transparent 100%);
 }
 
 .site-backdrop__noise {
@@ -1042,7 +1059,7 @@ h4 {
   background:
     linear-gradient(to bottom, var(--background) 0%, transparent 26%),
     linear-gradient(to top, var(--background) 0%, transparent 24%);
-  opacity: 0.9;
+  opacity: 0.45;
 }
 
 @media (max-width: 768px) {

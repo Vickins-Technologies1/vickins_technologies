@@ -22,19 +22,17 @@ export default function LenisRoot({ children }: { children: ReactNode }) {
     if (prefersReducedMotion()) return;
 
     const lenis = new Lenis({
-      duration: 1.05,
+      lerp: 0.085,
       smoothWheel: true,
-      syncTouch: false,
-      wheelMultiplier: 0.9,
+      syncTouch: true,
+      syncTouchLerp: 0.08,
+      touchMultiplier: 1.15,
+      wheelMultiplier: 0.95,
+      autoRaf: true,
     });
     lenisRef.current = lenis;
 
-    let rafId = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = window.requestAnimationFrame(raf);
-    };
-    rafId = window.requestAnimationFrame(raf);
+    // Lenis handles RAF when autoRaf is enabled.
 
     const handleAnchorClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
@@ -70,7 +68,6 @@ export default function LenisRoot({ children }: { children: ReactNode }) {
 
     return () => {
       document.removeEventListener("click", handleAnchorClick);
-      window.cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
     };
@@ -78,4 +75,3 @@ export default function LenisRoot({ children }: { children: ReactNode }) {
 
   return <>{children}</>;
 }
-

@@ -14,6 +14,7 @@ export default function SiteBackdrop() {
 
       <div className="site-backdrop__grid" />
       <div className="site-backdrop__panels" />
+      <div className="site-backdrop__strokes" />
       <div className="site-backdrop__noise" />
 
       <div className="site-backdrop__fade" />
