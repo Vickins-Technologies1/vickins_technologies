@@ -4,6 +4,7 @@ import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActionsGate from "../components/FloatingActionsGate";
 import LenisRoot from "../components/LenisRoot";
+import SiteBackdrop from "../components/SiteBackdrop";
 
 const siteUrl = "https://www.vickinstechnologies.com";
 
@@ -108,7 +109,8 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
-      <body className="antialiased min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
+      <body className="antialiased relative min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
+        <SiteBackdrop />
         <ThemePreloaderProvider>
           <LenisRoot>
             {children}
