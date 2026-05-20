@@ -10,7 +10,7 @@
   --navy-2: #0b1b3d;
   --gold: #d4af37;
 
-  --background: rgba(247, 249, 255, 0.92);
+  --background: var(--bg-cream);
   --foreground: var(--ink);
   --accent: #1d4ed8;
   --accent-rgb: 29, 78, 216;
@@ -72,19 +72,10 @@
   --dash-topbar-bg: rgba(255, 255, 255, 0.92);
   --dash-topbar-border: rgba(15, 23, 42, 0.08);
   --dash-icon: rgba(var(--accent-rgb), 0.92);
-
-  /* Global sticky backdrop (light) */
-  --backdrop-glow-a: rgba(var(--accent-sky-rgb), 0.18);
-  --backdrop-glow-b: rgba(var(--accent-rgb), 0.14);
-  --backdrop-grid: rgba(18, 24, 38, 0.09);
-  --backdrop-dots: rgba(18, 24, 38, 0.14);
-  --backdrop-panel: rgba(var(--accent-rgb), 0.11);
-  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.40);
-  --backdrop-noise: 0.06;
 }
 
 :root[data-theme="dark"] {
-  --background: rgba(7, 10, 18, 0.92);
+  --background: #070a12;
   --foreground: #eef2ff;
   --accent: #1f6dff;
   --accent-rgb: 31, 109, 255;
@@ -141,19 +132,6 @@
   --dash-topbar-bg: rgba(10, 22, 51, 0.62);
   --dash-topbar-border: rgba(226, 232, 240, 0.16);
   --dash-icon: rgba(var(--accent-rgb), 0.92);
-
-  /* Global sticky backdrop (dark) */
-  --backdrop-glow-a: rgba(var(--accent-sky-rgb), 0.20);
-  --backdrop-glow-b: rgba(var(--accent-rgb), 0.16);
-  --backdrop-grid: rgba(226, 232, 240, 0.10);
-  --backdrop-dots: rgba(226, 232, 240, 0.14);
-  --backdrop-panel: rgba(var(--accent-sky-rgb), 0.14);
-  --backdrop-stroke: rgba(var(--accent-sky-rgb), 0.45);
-  --backdrop-noise: 0.08;
-}
-
-:root[data-theme="dark"] .site-backdrop__grid {
-  mix-blend-mode: screen;
 }
 
 /* Dark mode readability overrides for light glass utilities */
@@ -964,110 +942,5 @@ h4 {
   .float-slower,
   .shimmer-line::after {
     animation: none !important;
-  }
-}
-
-/* Sticky, blended holo backdrop (all pages) */
-.site-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.site-backdrop__base {
-  position: absolute;
-  inset: 0;
-  background: transparent;
-}
-
-.site-backdrop__glow {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(54px);
-  opacity: 0.9;
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-.site-backdrop__glow--a {
-  width: 520px;
-  height: 520px;
-  top: -12%;
-  left: -10%;
-  background: var(--backdrop-glow-a);
-}
-
-.site-backdrop__glow--b {
-  width: 620px;
-  height: 620px;
-  bottom: -18%;
-  right: -12%;
-  background: var(--backdrop-glow-b);
-}
-
-.site-backdrop__grid {
-  position: absolute;
-  inset: 0;
-  opacity: 0.85;
-  background-image: linear-gradient(var(--backdrop-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--backdrop-grid) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mix-blend-mode: multiply;
-  mask-image: radial-gradient(88% 72% at 50% 18%, #000 70%, transparent 100%);
-}
-
-.site-backdrop__panels {
-  position: absolute;
-  inset: 0;
-  opacity: 0.9;
-  background-image:
-    radial-gradient(circle at 22% 38%, var(--backdrop-panel), transparent 42%),
-    radial-gradient(circle at 78% 32%, var(--backdrop-panel), transparent 46%),
-    linear-gradient(180deg, transparent 0%, rgba(var(--accent-sky-rgb), 0.05) 44%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, rgba(var(--accent-rgb), 0.04) 45%, transparent 100%);
-  mask-image: radial-gradient(86% 72% at 50% 18%, #000 66%, transparent 100%);
-}
-
-.site-backdrop__strokes {
-  position: absolute;
-  inset: -10%;
-  opacity: 0.55;
-  background-image:
-    repeating-linear-gradient(90deg, transparent 0 84px, var(--backdrop-stroke) 84px 85px, transparent 85px 170px),
-    repeating-linear-gradient(0deg, transparent 0 72px, rgba(var(--accent-rgb), 0.18) 72px 73px, transparent 73px 146px);
-  transform: rotate(-6deg);
-  mix-blend-mode: screen;
-  mask-image: radial-gradient(78% 66% at 50% 18%, #000 56%, transparent 100%);
-}
-
-.site-backdrop__noise {
-  position: absolute;
-  inset: 0;
-  opacity: var(--backdrop-noise);
-  background-image:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 4px);
-  mix-blend-mode: overlay;
-  mask-image: radial-gradient(80% 70% at 50% 18%, #000 50%, transparent 100%);
-}
-
-.site-backdrop__fade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom, var(--background) 0%, transparent 26%),
-    linear-gradient(to top, var(--background) 0%, transparent 24%);
-  opacity: 0.45;
-}
-
-@media (max-width: 768px) {
-  .site-backdrop__noise {
-    opacity: calc(var(--backdrop-noise) * 0.65);
-  }
-
-  .site-backdrop__panels {
-    opacity: 0.62;
   }
 }
