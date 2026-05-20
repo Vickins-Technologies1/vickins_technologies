@@ -69,7 +69,7 @@ export default function PolicyPage() {
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-[32px] border border-[var(--glass-border)] bg-[var(--card-bg)] shadow-[var(--shadow-soft)] p-6 sm:p-10"
+            className="relative overflow-hidden rounded-[32px] bg-[var(--card-bg)] shadow-[var(--shadow-soft)] p-6 sm:p-10"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,_rgba(20,184,166,0.2),_transparent_55%)]" />
@@ -103,7 +103,7 @@ export default function PolicyPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="rounded-3xl border border-white/40 bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
+                  className="rounded-3xl bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
                 >
                   <div className="flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
                     <Icon className="h-5 w-5 text-[var(--button-bg)]" />
@@ -126,7 +126,7 @@ export default function PolicyPage() {
                 return (
                   <div
                     key={item.title}
-                    className="rounded-3xl border border-[var(--glass-border)] bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
+                    className="rounded-3xl bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
                   >
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <Icon className="h-5 w-5 text-[var(--button-bg)]" />
@@ -138,7 +138,7 @@ export default function PolicyPage() {
               })}
             </div>
 
-            <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-8 shadow-[var(--shadow-soft)]">
+            <div className="rounded-3xl bg-[var(--card-bg)] p-6 sm:p-8 shadow-[var(--shadow-soft)]">
               <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--button-bg)]">
                 Transparency
               </p>
@@ -149,7 +149,7 @@ export default function PolicyPage() {
                 If you need a copy of your data or want us to delete it, email us and we will take care of
                 it quickly. We only keep what we need to serve you well.
               </p>
-              <div className="mt-6 rounded-2xl border border-white/40 bg-white/70 p-4">
+              <div className="mt-6 rounded-2xl bg-white/70 p-4 shadow-[var(--shadow-tight)]">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">
                   <EnvelopeOpenIcon className="h-4 w-4" />
                   Contact

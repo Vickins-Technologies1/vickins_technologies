@@ -50,7 +50,7 @@ export default function ChamaHubSection() {
       viewport={{ once: true, margin: "-120px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="relative overflow-hidden rounded-[32px] border border-[var(--glass-border)] bg-[var(--card-bg)] shadow-[var(--shadow-soft)]">
+      <div className="relative overflow-hidden rounded-[32px] bg-[var(--card-bg)] shadow-[var(--shadow-soft)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(27,92,255,0.18),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,_rgba(20,184,166,0.2),_transparent_50%)]" />
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
@@ -79,7 +79,7 @@ export default function ChamaHubSection() {
 
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
               {highlights.map((item) => (
-                <div key={item.title} className="rounded-2xl border border-white/40 bg-white/70 p-4">
+                <div key={item.title} className="rounded-2xl bg-white/70 p-4 shadow-[var(--shadow-tight)]">
                   <p className="text-xs uppercase tracking-[0.25em] text-[var(--button-bg)]">
                     {item.title}
                   </p>

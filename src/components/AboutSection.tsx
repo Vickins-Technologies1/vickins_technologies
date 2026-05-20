@@ -22,7 +22,7 @@ function CounterCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -15% 0px" }}
       transition={{ duration: 0.5, delay }}
-      className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)]"
+      className="rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)]"
     >
       <span className="text-xl font-semibold text-[var(--accent)] tabular-nums">
         {prefix ?? ""}
@@ -89,21 +89,21 @@ export default function AboutSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
+              <div className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <ShieldCheckIcon className="h-5 w-5 text-[var(--accent)]" />
                 <h3 className="text-sm font-semibold mt-3">Security & compliance</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">
                   Secure-by-design patterns, privacy-aware data handling, and review baked into delivery.
                 </p>
               </div>
-              <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
+              <div className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <ChartBarIcon className="h-5 w-5 text-[var(--accent)]" />
                 <h3 className="text-sm font-semibold mt-3">Outcome-driven</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">
                   KPIs, analytics, and reporting wired up so your investment is measurable.
                 </p>
               </div>
-              <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
+              <div className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                 <SparklesIcon className="h-5 w-5 text-[var(--accent)]" />
                 <h3 className="text-sm font-semibold mt-3">Clean handover</h3>
                 <p className="text-xs text-[var(--foreground)]/70 mt-2">

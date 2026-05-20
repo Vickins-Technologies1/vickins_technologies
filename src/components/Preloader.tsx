@@ -47,7 +47,7 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(120deg, ${gridLine}, transparent), linear-gradient(90deg, ${gridLine} 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(120deg, ${gridLine}, transparent), linear-gradient(90deg, ${gridLine} 1px, transparent 1px)`,
           backgroundSize: "44px 44px",
         }}
       />

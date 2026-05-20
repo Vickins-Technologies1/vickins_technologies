@@ -9,11 +9,11 @@ import { useTheme } from "./ThemePreloaderProvider";
 
 interface NavbarProps {
   toggleSidebar: () => void;
+  appearance?: "auto" | "onDark";
 }
 
-export default function Navbar({ toggleSidebar }: NavbarProps) {
+export default function Navbar({ toggleSidebar, appearance = "auto" }: NavbarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
-  const logoSrc = isDarkMode ? "/logo1.png" : "/logo2.png";
   const navItems = useMemo(() => [
     { label: "Home", href: "/#home" },
     { label: "Services", href: "/#services" },
@@ -30,6 +30,9 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 12);
   });
+
+  const darkChromeActive = appearance === "onDark" && !isScrolled;
+  const logoSrc = isDarkMode || darkChromeActive ? "/logo1.png" : "/logo2.png";
 
   const [activeId, setActiveId] = useState("home");
   useEffect(() => {
@@ -57,12 +60,21 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
         <motion.div
           initial={false}
           animate={{
-            backgroundColor: isScrolled ? "var(--navbar-bg)" : "rgba(0,0,0,0)",
-            borderColor: isScrolled ? "var(--navbar-border)" : "rgba(0,0,0,0)",
+            backgroundColor: isScrolled
+              ? "var(--navbar-bg)"
+              : darkChromeActive
+                ? "rgba(8,14,28,0.38)"
+                : "rgba(0,0,0,0)",
+            borderColor: isScrolled
+              ? "var(--navbar-border)"
+              : darkChromeActive
+                ? "rgba(255,255,255,0.14)"
+                : "rgba(0,0,0,0)",
             boxShadow: isScrolled ? "var(--shadow-tight)" : "0 0 0 rgba(0,0,0,0)",
+            color: isScrolled ? "var(--navbar-text)" : darkChromeActive ? "rgba(255,255,255,0.92)" : "var(--navbar-text)",
           }}
           transition={{ duration: 0.25 }}
-          className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 text-[var(--navbar-text)] backdrop-blur-2xl"
+          className="mt-3 mb-2 rounded-[20px] border px-3 sm:px-4 py-2 backdrop-blur-2xl"
         >
           <div className="flex items-center justify-between gap-3 min-h-[44px]">
             <Link href="/" aria-label="Vickins Technologies Home" className="shrink-0">
@@ -89,7 +101,16 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
             </Link>
 
             <div className="hidden lg:flex flex-1 justify-center">
-              <ul className="flex items-center justify-center gap-0.5 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] px-1.5 py-1">
+              <ul
+                className={[
+                  "flex items-center justify-center gap-0.5 rounded-full border px-1.5 py-1",
+                  isScrolled
+                    ? "border-[var(--navbar-border)] bg-[var(--navbar-surface)]"
+                    : darkChromeActive
+                      ? "border-white/12 bg-white/[0.03]"
+                      : "border-[rgba(0,0,0,0)] bg-transparent",
+                ].join(" ")}
+              >
                 {navItems.map((item) => (
                   <motion.li
                     key={item.label}
@@ -102,8 +123,16 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
                       className={[
                         "inline-flex items-center rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.26em] font-semibold transition whitespace-nowrap",
                         activeId === item.href.replace("/#", "")
-                          ? "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
-                          : "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]",
+                          ? isScrolled
+                            ? "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
+                            : darkChromeActive
+                              ? "bg-white/[0.06] text-white"
+                              : "bg-[var(--navbar-surface-strong)] text-[var(--accent-2)]"
+                          : isScrolled
+                            ? "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]"
+                            : darkChromeActive
+                              ? "text-white/75 hover:text-white hover:bg-white/[0.05]"
+                              : "opacity-85 hover:opacity-100 hover:text-[var(--accent-2)] hover:bg-[var(--navbar-surface-hover)]",
                       ].join(" ")}
                     >
                       {item.label}
@@ -117,7 +146,14 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleTheme}
                 aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-                className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
+                className={[
+                  "hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border transition",
+                  isScrolled
+                    ? "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]"
+                    : darkChromeActive
+                      ? "border-white/12 bg-white/[0.03] hover:bg-white/[0.06]"
+                      : "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]",
+                ].join(" ")}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}
@@ -150,7 +186,14 @@ export default function Navbar({ toggleSidebar }: NavbarProps) {
               <motion.button
                 onClick={toggleSidebar}
                 aria-label="Open menu"
-                className="lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)] transition"
+                className={[
+                  "lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border transition",
+                  isScrolled
+                    ? "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]"
+                    : darkChromeActive
+                      ? "border-white/12 bg-white/[0.03] hover:bg-white/[0.06]"
+                      : "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]",
+                ].join(" ")}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 380, damping: 18 }}

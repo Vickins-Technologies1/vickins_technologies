@@ -60,7 +60,7 @@ export default function EnterpriseSection() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+          <div className="rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
             <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">Engagements</p>
             <h3 className="text-xl sm:text-2xl font-semibold mt-3">Build, modernize, or integrate.</h3>
             <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
@@ -78,7 +78,7 @@ export default function EnterpriseSection() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-6 sm:p-7 shadow-[var(--shadow-tight)]">
+          <div className="rounded-3xl bg-[var(--glass-surface)] p-6 sm:p-7 shadow-[var(--shadow-tight)]">
             <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">How we run delivery</p>
             <ul className="mt-4 space-y-2 text-[15px] text-[var(--foreground)]/75">
               {[
@@ -105,4 +105,3 @@ export default function EnterpriseSection() {
     </motion.section>
   );
 }
-

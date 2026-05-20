@@ -95,7 +95,7 @@ export default function ProofSection() {
               </div>
 
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
+                <div className="rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)]">
                   <div className="flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                     <ShieldCheckIcon className="h-4 w-4 text-[var(--accent)]" />
                     Approach
@@ -130,7 +130,7 @@ export default function ProofSection() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+          <div className="rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
             <div className="flex items-center justify-between">
               <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">Metrics</p>
               <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">Examples</span>
@@ -143,7 +143,7 @@ export default function ProofSection() {
               {proofMetrics.map((metric) => (
                 <div
                   key={metric.label}
-                  className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4"
+                  className="rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)]"
                 >
                   <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
                     {metric.label}
@@ -154,14 +154,14 @@ export default function ProofSection() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-6 sm:p-7 shadow-[var(--shadow-tight)]">
+          <div className="rounded-3xl bg-[var(--glass-surface)] p-6 sm:p-7 shadow-[var(--shadow-tight)]">
             <div className="flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">
               <ChatBubbleLeftRightIcon className="h-4 w-4 text-[var(--accent)]" />
               Testimonials (Placeholders)
             </div>
             <div className="mt-4 space-y-3">
               {testimonialPlaceholders.map((t) => (
-                <div key={t.author} className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
+                <div key={t.author} className="rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)]">
                   <p className="text-sm text-[var(--foreground)]/80 leading-relaxed">“{t.quote}”</p>
                   <p className="mt-3 text-xs text-[var(--foreground)]/60">
                     {t.author} · <span className="font-medium">{t.company}</span>
@@ -181,4 +181,3 @@ export default function ProofSection() {
     </motion.section>
   );
 }
-

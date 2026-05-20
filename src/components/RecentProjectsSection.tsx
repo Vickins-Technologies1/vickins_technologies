@@ -35,7 +35,7 @@ const featuredProjects: ProjectItem[] = [
     category: "Fullstack Application",
     description:
       "Secure client portal with real-time dashboards, authentication, and business operations tools.",
-    image: "/projects/scr.png",
+    image: "/clients/sorana.png",
     tags: ["TypeScript", "React", "Dashboard", "Fullstack"],
     link: "https://www.soranapropertymanagers.com/",
     isDev: true,
@@ -46,7 +46,7 @@ const featuredProjects: ProjectItem[] = [
     category: "Web Application",
     description:
       "Web platform build with a clean UI, fast performance, and a solid deployment setup.",
-    image: "/projects/Baggit.png",
+    image: "/Baggit.png",
     tags: ["Next.js", "TypeScript", "UI", "Web"],
     link: "https://baggit-psi.vercel.app/",
     isDev: true,
@@ -144,6 +144,49 @@ export default function RecentProjectsSection() {
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
               NDA-friendly highlights across product engineering and design.
             </p>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              {[
+                {
+                  src: "/clients/sorana.png",
+                  alt: "Sorana Property Managers",
+                  href: "https://www.soranapropertymanagers.com/",
+                },
+                { src: "/Baggit.png", alt: "Baggit", href: "https://baggit-psi.vercel.app/" },
+                { src: "/clients/vmart.png", alt: "V-Mart", href: undefined },
+              ].map((brand) => {
+                const content = (
+                  <span className="inline-flex items-center rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)] backdrop-blur-xl">
+                    <span className="relative h-8 w-32 sm:w-36">
+                      <Image
+                        src={brand.src}
+                        alt={brand.alt}
+                        fill
+                        className="object-contain opacity-85"
+                        sizes="160px"
+                      />
+                    </span>
+                  </span>
+                );
+
+                return brand.href ? (
+                  <a
+                    key={brand.alt}
+                    href={brand.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:-translate-y-0.5 transition"
+                    aria-label={brand.alt}
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <div key={brand.alt} aria-label={brand.alt}>
+                    {content}
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <a
@@ -175,14 +218,14 @@ export default function RecentProjectsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-120px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group flex flex-col sm:flex-row gap-4 rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+                className="group flex flex-col sm:flex-row gap-4 rounded-3xl bg-[var(--glass-surface)] p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
               >
-                <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden">
+                <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden bg-white/55 shadow-[var(--shadow-tight)]">
                   <Image
                     src={project.image || FALLBACK_MAIN}
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-contain p-3 transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, 160px"
                   />
                 </div>
@@ -220,7 +263,7 @@ export default function RecentProjectsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-120px" }}
               transition={{ duration: 0.6 }}
-              className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-5 sm:p-6 shadow-[var(--shadow-soft)]"
+              className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-5 sm:p-6 shadow-[var(--shadow-soft)]"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,144,224,0.18),_transparent_60%)]" />
               <div className="relative z-10">

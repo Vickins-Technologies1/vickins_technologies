@@ -24,7 +24,7 @@ export default function Home() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
+      <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
       {/* Navbar stays on top, full width */}
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

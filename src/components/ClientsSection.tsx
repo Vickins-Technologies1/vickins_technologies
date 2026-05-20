@@ -4,8 +4,9 @@ import Image from "next/image";
 export default function ClientsSection() {
   const clients = [
     { src: "/Macdee.png", alt: "Macdee", url: "https://macdeeentertainment.com" },
-    { src: "/scr.png", alt: "SCR", url: "https://smartchoicerentalmanagement.com" },
-    { src: "/Baggit.png", alt: "Baggit", url: "https://baggit-ashy.vercel.app/" },
+    { src: "/clients/sorana.png", alt: "Sorana Property Managers", url: "https://www.soranapropertymanagers.com/" },
+    { src: "/Baggit.png", alt: "Baggit", url: "https://baggit-psi.vercel.app/" },
+    { src: "/clients/vmart.png", alt: "V-Mart", url: "#" },
     { src: "/2.png", alt: "Client 4", url: "https://leasecaptain.com" },
     { src: "/black.png", alt: "Client 5", url: "https://vickins-technologies.onrender.com" },
     { src: "/flexi.png", alt: "Flexi", url: "#" },
@@ -51,7 +52,7 @@ export default function ClientsSection() {
                 href={client.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+                className="group rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
               >
                 <div className="relative h-12 sm:h-14">
                   <Image
@@ -69,7 +70,7 @@ export default function ClientsSection() {
             ))}
           </div>
 
-          <div className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+          <div className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.14),_transparent_60%)]" />
             <div className="relative z-10">
               <div className="flex items-center justify-between">

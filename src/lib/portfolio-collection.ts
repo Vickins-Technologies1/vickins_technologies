@@ -56,13 +56,13 @@ export const getDefaultGraphicCollection = (): GraphicCollection => ({
 export const getDefaultDevProjects = (): DevProject[] => [
   {
     id: "dev-1",
-    title: "Smart Choice Rental Management SaaS",
+    title: "Sorana Property Managers Portal",
     category: "Fullstack + UI/UX",
     description:
       "Kenya's leading property management platform: tenant tracking, M-Pesa payments, invoicing, SMS notifications, property listings, and admin dashboard.",
-    image: "/projects/scr.png",
+    image: "/clients/sorana.png",
     tags: ["TypeScript", "React/Next.js", "Dashboard", "Authentication", "Fullstack"],
-    link: "https://soranapropertymanagers.com",
+    link: "https://www.soranapropertymanagers.com/",
   },
   {
     id: "dev-2",
@@ -70,9 +70,9 @@ export const getDefaultDevProjects = (): DevProject[] => [
     category: "Fullstack + E-commerce",
     description:
       "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
-    image: "/projects/Baggit.png",
+    image: "/Baggit.png",
     tags: ["Next.js", "React", "Tailwind", "E-commerce", "UI/UX", "Responsive"],
-    link: "https://baggit-ashy.vercel.app/",
+    link: "https://baggit-psi.vercel.app/",
   },
   {
     id: "dev-3",

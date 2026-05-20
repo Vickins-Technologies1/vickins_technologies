@@ -349,7 +349,7 @@ export default function Pricing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-120px" }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
+                className={`rounded-3xl bg-[var(--glass-surface)] p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl ${
                   plan.popular ? "ring-1 ring-[rgba(var(--accent-rgb),0.55)]" : ""
                 }`}
               >
@@ -393,7 +393,7 @@ export default function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+            className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-sky-rgb),0.14),_transparent_60%)]" />
             <div className="relative z-10">
@@ -412,7 +412,7 @@ export default function Pricing() {
                 {pricingPlans.slice(4, 8).map((plan) => (
                   <div
                     key={plan.name}
-                    className="flex items-center justify-between rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-3"
+                    className="flex items-center justify-between rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)]"
                   >
                     <div>
                       <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
@@ -425,7 +425,7 @@ export default function Pricing() {
                 ))}
               </div>
 
-              <div className="mt-6 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4">
+              <div className="mt-6 rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)]">
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--foreground)]/60">Need a custom scope?</p>
                 <p className="text-[15px] text-[var(--foreground)]/75 mt-2">
                   Tell us what you’re building and your timeline. We’ll come back with a clear plan.

@@ -284,7 +284,7 @@ export default function ContactSection() {
       </div>
 
       <div className="max-w-6xl mx-auto mt-8">
-        <div className="relative overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl shadow-[var(--shadow-soft)]">
+        <div className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] backdrop-blur-2xl shadow-[var(--shadow-soft)]">
           <div className="absolute inset-0 bg-gradient-to-br from-white/6 via-transparent to-transparent opacity-80" />
           <div className="relative z-10 p-6 sm:p-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
@@ -310,7 +310,7 @@ export default function ContactSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
-                  className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]"
+                  className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]"
                 >
                   <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                     Contact Information
@@ -341,22 +341,22 @@ export default function ContactSection() {
                   </div>
                 </motion.div>
 
-                <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
+                <div className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                     <CalendarDaysIcon className="h-4 w-4" />
                     Engagement Snapshot
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-[var(--foreground)]/70">
-                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
+                    <div className="rounded-2xl bg-[var(--glass-surface)] p-3 shadow-[var(--shadow-tight)]">
                       Response time: <span className="font-semibold text-[var(--foreground)]">24 hrs</span>
                     </div>
-                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
+                    <div className="rounded-2xl bg-[var(--glass-surface)] p-3 shadow-[var(--shadow-tight)]">
                       Start window: <span className="font-semibold text-[var(--foreground)]">1-3 wks</span>
                     </div>
-                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
+                    <div className="rounded-2xl bg-[var(--glass-surface)] p-3 shadow-[var(--shadow-tight)]">
                       Project length: <span className="font-semibold text-[var(--foreground)]">4-12 wks</span>
                     </div>
-                    <div className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-3">
+                    <div className="rounded-2xl bg-[var(--glass-surface)] p-3 shadow-[var(--shadow-tight)]">
                       Support: <span className="font-semibold text-[var(--foreground)]">Ongoing</span>
                     </div>
                   </div>
@@ -366,7 +366,7 @@ export default function ContactSection() {
                   </div>
                 </div>
 
-                <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
+                <div className="rounded-3xl bg-[var(--glass-surface)] p-5 shadow-[var(--shadow-tight)]">
                   <h4 className="text-xs uppercase tracking-[0.28em] text-[var(--foreground)]/60">What happens next</h4>
                   <ul className="mt-4 space-y-3 text-sm text-[var(--foreground)]/70">
                     <li className="flex items-start gap-2">
@@ -390,7 +390,7 @@ export default function ContactSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-6 shadow-[var(--shadow-tight)]"
+                className="rounded-3xl bg-[var(--glass-surface)] p-6 shadow-[var(--shadow-tight)]"
               >
                 <h3 className="text-sm uppercase tracking-[0.28em] text-[var(--foreground)]/60 mb-4">
                   Project Brief

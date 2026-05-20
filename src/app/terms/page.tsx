@@ -74,7 +74,7 @@ export default function TermsPage() {
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-[32px] border border-[var(--glass-border)] bg-[var(--card-bg)] shadow-[var(--shadow-soft)] p-6 sm:p-10"
+            className="relative overflow-hidden rounded-[32px] bg-[var(--card-bg)] shadow-[var(--shadow-soft)] p-6 sm:p-10"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(27,92,255,0.2),_transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(20,184,166,0.18),_transparent_55%)]" />
@@ -108,7 +108,7 @@ export default function TermsPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="rounded-3xl border border-white/40 bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
+                  className="rounded-3xl bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
                 >
                   <div className="flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
                     <Icon className="h-5 w-5 text-[var(--button-bg)]" />
@@ -125,7 +125,7 @@ export default function TermsPage() {
       <section className="pb-16 sm:pb-20">
         <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-6 lg:gap-10">
-            <div className="rounded-3xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 sm:p-8 shadow-[var(--shadow-soft)]">
+            <div className="rounded-3xl bg-[var(--card-bg)] p-6 sm:p-8 shadow-[var(--shadow-soft)]">
               <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--button-bg)]">
                 Quick Summary
               </p>
@@ -136,7 +136,7 @@ export default function TermsPage() {
                 We work in phases, align on milestones, and communicate clearly. You keep ownership of your
                 brand and data, and we keep you updated with realistic timelines.
               </p>
-              <div className="mt-6 rounded-2xl border border-white/40 bg-white/70 p-4">
+              <div className="mt-6 rounded-2xl bg-white/70 p-4 shadow-[var(--shadow-tight)]">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--button-bg)]">
                   <ShieldCheckIcon className="h-4 w-4" />
                   Support Promise
@@ -153,7 +153,7 @@ export default function TermsPage() {
                 return (
                   <div
                     key={item.title}
-                    className="rounded-3xl border border-[var(--glass-border)] bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
+                    className="rounded-3xl bg-white/70 p-5 sm:p-6 shadow-[var(--shadow-tight)]"
                   >
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <Icon className="h-5 w-5 text-[var(--button-bg)]" />

@@ -115,11 +115,54 @@ export default function Portfolio() {
                 Portfolio
               </p>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-3">
-                Selected work crafted with premium execution.
+                Selected case studies — shipped with production-grade execution.
               </h1>
               <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-                Explore platform builds and visual design systems delivered for brands across Kenya and beyond.
+                A curated view of platforms and design systems we’ve delivered — with confidentiality respected where needed.
               </p>
+
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                {[
+                  {
+                    src: "/clients/sorana.png",
+                    alt: "Sorana Property Managers",
+                    href: "https://www.soranapropertymanagers.com/",
+                  },
+                  { src: "/Baggit.png", alt: "Baggit", href: "https://baggit-psi.vercel.app/" },
+                  { src: "/clients/vmart.png", alt: "V-Mart", href: undefined },
+                ].map((brand) => {
+                  const content = (
+                    <span className="inline-flex items-center rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)] backdrop-blur-xl">
+                      <span className="relative h-8 w-32 sm:w-36">
+                        <Image
+                          src={brand.src}
+                          alt={brand.alt}
+                          fill
+                          className="object-contain opacity-85"
+                          sizes="160px"
+                        />
+                      </span>
+                    </span>
+                  );
+
+                  return brand.href ? (
+                    <a
+                      key={brand.alt}
+                      href={brand.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:-translate-y-0.5 transition"
+                      aria-label={brand.alt}
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={brand.alt} aria-label={brand.alt}>
+                      {content}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
             <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
               <Sparkles className="h-4 w-4" />
@@ -138,8 +181,8 @@ export default function Portfolio() {
                 onClick={() => setActiveCategory(cat)}
                 className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.24em] font-semibold transition-all ${
                   activeCategory === cat
-                    ? "bg-[var(--button-bg)] text-white shadow-md"
-                    : "bg-white/60 text-[var(--foreground)]/70 hover:bg-white"
+                    ? "bg-[var(--button-bg)] text-white shadow-[var(--shadow-tight)]"
+                    : "bg-[var(--glass-surface)] text-[var(--foreground)]/70 shadow-[var(--shadow-tight)] hover:bg-[var(--glass-surface-strong)]"
                 }`}
               >
                 {cat}
@@ -171,14 +214,14 @@ export default function Portfolio() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.08 }}
-                      className="group flex flex-col sm:flex-row gap-4 rounded-3xl border border-white/40 bg-white/55 p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
+                      className="group flex flex-col sm:flex-row gap-4 rounded-3xl bg-[var(--glass-surface)] p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
                     >
-                      <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden">
+                      <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden bg-[var(--glass-surface)] shadow-[var(--shadow-tight)] backdrop-blur-xl">
                         <Image
                           src={project.image || FALLBACK}
                           alt={project.title}
                           fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="object-contain p-3 transition-transform duration-700 group-hover:scale-105"
                           sizes="(max-width: 640px) 100vw, 160px"
                         />
                       </div>
@@ -199,7 +242,7 @@ export default function Portfolio() {
                           {project.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] bg-white/70 text-[var(--foreground)]/70 rounded-full"
+                              className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] bg-[var(--glass-surface-muted)] text-[var(--foreground)]/70 rounded-full"
                             >
                               {tag}
                             </span>
@@ -215,9 +258,9 @@ export default function Portfolio() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
-                  className="relative overflow-hidden rounded-3xl border border-white/40 bg-gradient-to-br from-white/70 via-white/40 to-white/10 p-6 sm:p-7 shadow-[var(--shadow-soft)]"
+                  className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
                 >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.18),_transparent_60%)]" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-sky-rgb),0.14),_transparent_60%)]" />
                   <div className="relative z-10">
                     <div className="flex items-center justify-between">
                       <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
@@ -253,7 +296,7 @@ export default function Portfolio() {
 
                     <button
                       onClick={openGallery}
-                      className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 hover:bg-white transition"
+                      className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--glass-surface)] px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 shadow-[var(--shadow-tight)] hover:bg-[var(--glass-surface-strong)] transition"
                     >
                       Open Gallery
                       <ExternalLink className="h-4 w-4" />
@@ -261,7 +304,7 @@ export default function Portfolio() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="rounded-3xl border border-white/40 bg-white/55 p-6 shadow-[var(--shadow-tight)]">
+                <div className="rounded-3xl bg-[var(--glass-surface)] p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl">
                   <h3 className="text-lg font-semibold">Graphic Design Collection</h3>
                   <p className="text-sm text-[var(--foreground)]/70 mt-2">
                     Switch to the Graphic Design category to view the full collection.
