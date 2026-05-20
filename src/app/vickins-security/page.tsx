@@ -132,7 +132,6 @@ export default function VickinsSecurityPage() {
       >
         {/* Background */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[var(--page-bg)]" />
           <div className="absolute inset-0 bg-[radial-gradient(1000px_700px_at_12%_10%,rgba(var(--accent-sky-rgb),0.14),transparent_58%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(900px_620px_at_84%_24%,rgba(var(--accent-rgb),0.12),transparent_60%)]" />
           <div
@@ -405,4 +404,3 @@ export default function VickinsSecurityPage() {
     </div>
   );
 }
-

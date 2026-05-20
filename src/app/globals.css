@@ -10,7 +10,7 @@
   --navy-2: #0b1b3d;
   --gold: #d4af37;
 
-  --background: var(--bg-cream);
+  --background: rgba(247, 249, 255, 0.92);
   --foreground: var(--ink);
   --accent: #1d4ed8;
   --accent-rgb: 29, 78, 216;
@@ -84,7 +84,7 @@
 }
 
 :root[data-theme="dark"] {
-  --background: #070a12;
+  --background: rgba(7, 10, 18, 0.92);
   --foreground: #eef2ff;
   --accent: #1f6dff;
   --accent-rgb: 31, 109, 255;
@@ -967,7 +967,7 @@ h4 {
 .site-backdrop {
   position: fixed;
   inset: 0;
-  z-index: -20;
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
 }
@@ -981,9 +981,10 @@ h4 {
 .site-backdrop__glow {
   position: absolute;
   border-radius: 999px;
-  filter: blur(60px);
+  filter: blur(54px);
   opacity: 0.9;
   transform: translateZ(0);
+  will-change: transform;
 }
 
 .site-backdrop__glow--a {
@@ -1032,7 +1033,6 @@ h4 {
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 3px),
     repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 4px);
   mix-blend-mode: overlay;
-  filter: blur(0.2px);
   mask-image: radial-gradient(80% 70% at 50% 18%, #000 50%, transparent 100%);
 }
 
@@ -1043,4 +1043,14 @@ h4 {
     linear-gradient(to bottom, var(--background) 0%, transparent 26%),
     linear-gradient(to top, var(--background) 0%, transparent 24%);
   opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .site-backdrop__noise {
+    opacity: calc(var(--backdrop-noise) * 0.65);
+  }
+
+  .site-backdrop__panels {
+    opacity: 0.62;
+  }
 }

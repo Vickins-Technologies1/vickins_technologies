@@ -50,7 +50,6 @@ export default function HeroSection() {
     >
       {/* Background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[var(--page-bg)]" />
         <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_12%_10%,rgba(var(--accent-sky-rgb),0.20),transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(1000px_650px_at_82%_18%,rgba(var(--accent-rgb),0.16),transparent_58%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(900px_600px_at_50%_110%,rgba(var(--accent-sky-rgb),0.10),transparent_58%)]" />

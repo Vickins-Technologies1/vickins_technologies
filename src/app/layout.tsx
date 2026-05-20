@@ -109,14 +109,16 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
-      <body className="antialiased relative min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
+      <body className="antialiased relative min-h-screen w-full overflow-x-hidden bg-transparent text-[var(--foreground)]">
         <SiteBackdrop />
-        <ThemePreloaderProvider>
-          <LenisRoot>
-            {children}
-            <FloatingActionsGate />
-          </LenisRoot>
-        </ThemePreloaderProvider>
+        <div className="relative z-10 min-h-screen">
+          <ThemePreloaderProvider>
+            <LenisRoot>
+              {children}
+              <FloatingActionsGate />
+            </LenisRoot>
+          </ThemePreloaderProvider>
+        </div>
       </body>
     </html>
   );
