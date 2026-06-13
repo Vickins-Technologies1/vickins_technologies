@@ -8,6 +8,7 @@ import {
   CpuChipIcon,
   LockClosedIcon,
   Squares2X2Icon,
+  GlobeAltIcon,
 } from "@heroicons/react/24/outline";
 
 const trustSignals = [
@@ -15,6 +16,7 @@ const trustSignals = [
   { icon: LockClosedIcon, label: "Security-first" },
   { icon: Squares2X2Icon, label: "Maintainable architecture" },
   { icon: ShieldCheckIcon, label: "NDA-friendly" },
+  { icon: GlobeAltIcon, label: "V-Guard ready" },
 ] as const;
 
 const deliveryPillars = [
@@ -149,6 +151,16 @@ export default function HeroSection() {
               launch.
             </p>
 
+            <div className="mt-5 rounded-3xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] p-4 backdrop-blur-xl">
+              <p className="text-[10px] uppercase tracking-[0.34em] text-[rgba(var(--accent-sky-rgb),0.75)]">
+                Featured product
+              </p>
+              <p className="mt-2 text-sm text-[var(--hero-sub)]">
+                <span className="font-semibold text-[var(--hero-ink)]">V-Guard</span> gives teams prepaid proxy
+                access, dynamic credentials, and Flutterwave-powered credit top-ups in one sleek control plane.
+              </p>
+            </div>
+
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <a
                 href="#contact"
@@ -157,13 +169,13 @@ export default function HeroSection() {
                 Book Strategy Call
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </a>
-              <Link
-                href="/portfolio"
+              <a
+                href="https://v-guard.vickinstechnologies.com"
                 className="group inline-flex items-center justify-center gap-3 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-6 py-3 text-sm font-semibold text-[var(--hero-ink)] backdrop-blur-xl transition hover:bg-[var(--hero-chip-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--accent-sky-rgb),0.65)]"
               >
-                See our work
+                Explore V-Guard
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
             </div>
 
             <motion.div

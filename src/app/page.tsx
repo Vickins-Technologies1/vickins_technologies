@@ -17,6 +17,7 @@ import PricingSection from "../components/PricingSection";
 import ContactSection from "../components/ContactSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
 import ProofSection from "../components/ProofSection";
+import VGuardSection from "../components/VGuardSection";
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function Home() {
         <ProcessSection />
         <AboutSection />
         <ServicesSection />
+        <VGuardSection />
         <EnterpriseSection />
         <SecurityServiceSection />
         <RecentProjectsSection />

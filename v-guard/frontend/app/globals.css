@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --background: #07101d;
+  --foreground: #edf3ff;
+  --muted: rgba(237, 243, 255, 0.68);
+  --accent: #1f6dff;
+  --accent-rgb: 31, 109, 255;
+  --accent-sky: #00a7e6;
+  --accent-sky-rgb: 0, 167, 230;
+  --accent-2: #7da7ff;
+  --accent-2-rgb: 125, 167, 255;
+  --card: rgba(9, 18, 35, 0.62);
+  --card-strong: rgba(10, 22, 51, 0.82);
+  --border: rgba(237, 243, 255, 0.12);
+  --border-strong: rgba(237, 243, 255, 0.18);
+  --shadow: 0 26px 90px rgba(0, 0, 0, 0.44);
+  --radius: 24px;
+  --page-bg:
+    radial-gradient(800px 500px at 10% 0%, rgba(var(--accent-sky-rgb), 0.18), transparent 58%),
+    radial-gradient(900px 600px at 90% 12%, rgba(var(--accent-rgb), 0.16), transparent 52%),
+    linear-gradient(180deg, #06101d 0%, #04070d 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--foreground);
+  background: var(--page-bg);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.12;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.03em;
+}
+
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px) saturate(1.35);
+}
+
+.glass-strong {
+  background: linear-gradient(160deg, rgba(10, 22, 51, 0.9), rgba(7, 16, 29, 0.84));
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(1.35);
+}
+
+.panel-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel {
+  border-radius: var(--radius);
+}

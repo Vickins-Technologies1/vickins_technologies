@@ -1,0 +1,22 @@
+[Unit]
+Description=V-Guard API Service
+After=network.target
+
+[Service]
+Type=simple
+User=vguard
+Group=vguard
+WorkingDirectory=/opt/v-guard/backend/current
+EnvironmentFile=/etc/v-guard/backend.env
+ExecStart=/opt/v-guard/backend/current/v-guard
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/v-guard/backend/current /opt/v-guard/runtime
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
