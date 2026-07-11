@@ -5,16 +5,15 @@ import (
 	"crypto/rand"
 	"encoding/base32"
 	"strings"
-	"time"
 
 	"github.com/vickins-technologies/v-guard/backend/internal/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ProxyService struct {
-	users   UserRepository
-	usage   UsageRepository
-	clock   Clock
+	users        UserRepository
+	usage        UsageRepository
+	clock        Clock
 	creditsPerGB float64
 }
 
