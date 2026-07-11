@@ -1,444 +1,377 @@
-// src/app/portfolio/page.tsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import {
-  ExternalLink,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  Expand,
-  Minimize2,
-} from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
-import {
-  getDefaultDevProjects,
-  getDefaultGraphicCollection,
-  mergeGraphicCollection,
-  mergeDevProjects,
-  type DevProject,
-  type GraphicCollection,
-} from "@/lib/portfolio-collection";
+import { getDefaultDevProjects, mergeDevProjects, type DevProject } from "@/lib/portfolio-collection";
 
-const FALLBACK = "/images/placeholder-square.png";
-
-const shouldUnoptimize = (src: string) => src.startsWith("data:") || src.startsWith("http");
+const FALLBACK = "/images/placeholder-4x3.png";
 
 export default function Portfolio() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedSlideIndex, setSelectedSlideIndex] = useState<number | null>(null);
-  const [viewMode, setViewMode] = useState<"contain" | "cover">("contain");
-  const [graphicCollection, setGraphicCollection] = useState<GraphicCollection>(() =>
-    getDefaultGraphicCollection()
-  );
   const [devProjects, setDevProjects] = useState<DevProject[]>(() => getDefaultDevProjects());
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   useEffect(() => {
     let isMounted = true;
+
     const loadCollection = async () => {
       try {
         const response = await fetch("/api/portfolio", { cache: "no-store" });
         const data = await response.json();
         if (response.ok && isMounted) {
-          setGraphicCollection(mergeGraphicCollection(data?.collection));
           setDevProjects(mergeDevProjects(data?.devProjects));
         }
-      } catch (error) {
-        // Fall back to defaults silently if the collection can't be loaded.
+      } catch {
+        // Keep the bundled defaults if live data is unavailable.
       }
     };
+
     loadCollection();
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const totalSlides = graphicCollection.subProjects.length;
-
-  useEffect(() => {
-    if (selectedSlideIndex === null) return;
-    if (totalSlides === 0) {
-      setSelectedSlideIndex(null);
-      return;
-    }
-    if (selectedSlideIndex >= totalSlides) {
-      setSelectedSlideIndex(0);
-    }
-  }, [selectedSlideIndex, totalSlides]);
-
-  const devCategories = Array.from(
-    new Set(devProjects.map((project) => project.category).filter(Boolean))
+  const categories = useMemo(
+    () => ["All", ...Array.from(new Set(devProjects.map((project) => project.category).filter(Boolean)))],
+    [devProjects]
   );
-
-  const categories = ["All", ...devCategories, "Graphic Design"];
 
   const filteredProjects =
     activeCategory === "All"
-      ? [...devProjects, graphicCollection]
-      : activeCategory === "Graphic Design"
-      ? [graphicCollection]
-      : devProjects.filter((p) => p.category === activeCategory);
+      ? devProjects
+      : devProjects.filter((project) => project.category === activeCategory);
 
-  const goPrev = useCallback(() => {
-    if (totalSlides === 0) return;
-    setSelectedSlideIndex((prev) => (prev === 0 ? totalSlides - 1 : (prev ?? 0) - 1));
-  }, [totalSlides]);
-
-  const goNext = useCallback(() => {
-    if (totalSlides === 0) return;
-    setSelectedSlideIndex((prev) => (prev === totalSlides - 1 ? 0 : (prev ?? 0) + 1));
-  }, [totalSlides]);
-
-  const openGallery = () => {
-    if (totalSlides === 0) return;
-    setSelectedSlideIndex(0);
-  };
+  const featuredProjects = filteredProjects.slice(0, 3);
+  const supportingProjects = filteredProjects.slice(3);
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <section className="pt-16 pb-10 md:pt-22 md:pb-14">
-        <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            <div className="max-w-2xl">
-              <p className="text-[var(--button-bg)] uppercase tracking-[0.32em] text-xs sm:text-sm">
+      <section className="hero-surface relative isolate overflow-hidden pt-10 sm:pt-14 lg:pt-16 pb-10 sm:pb-14">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_12%_10%,rgba(var(--accent-sky-rgb),0.18),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(1000px_650px_at_82%_18%,rgba(var(--accent-rgb),0.14),transparent_58%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(900px_600px_at_50%_110%,rgba(var(--accent-sky-rgb),0.08),transparent_58%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[var(--background)]" />
+        </div>
+
+        <div className="relative z-10 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[10px] sm:text-xs uppercase tracking-[0.32em] text-[var(--hero-muted)] backdrop-blur-xl">
                 Portfolio
-              </p>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mt-3">
-                Selected case studies — shipped with production-grade execution.
+                <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
+                Selected projects
+              </div>
+
+              <h1 className="mt-6 text-4xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[var(--hero-ink)]">
+                Projects that feel polished,
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]">
+                  {" "}
+                  useful, and built to last.
+                </span>
               </h1>
-              <p className="text-sm sm:text-base text-[var(--foreground)]/80 mt-4">
-                A curated view of platforms and design systems we’ve delivered — with confidentiality respected where needed.
+
+              <p className="mt-4 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-2xl">
+                A focused archive of the web platforms, product builds, and brand-led digital work we’ve shipped with
+                production discipline and client-ready presentation.
               </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                {[
-                  {
-                    src: "/clients/sorana.png",
-                    alt: "Sorana Property Managers",
-                    href: "https://www.soranapropertymanagers.com/",
-                  },
-                  { src: "/Baggit.png", alt: "Baggit", href: "https://baggit-psi.vercel.app/" },
-                  { src: "/clients/vmart.png", alt: "V-Mart", href: undefined },
-                ].map((brand) => {
-                  const content = (
-                    <span className="inline-flex items-center rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)] backdrop-blur-xl">
-                      <span className="relative h-8 w-32 sm:w-36">
-                        <Image
-                          src={brand.src}
-                          alt={brand.alt}
-                          fill
-                          className="object-contain opacity-85"
-                          sizes="160px"
-                        />
-                      </span>
-                    </span>
-                  );
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/#contact"
+                  className="inline-flex items-center justify-center gap-3 rounded-full bg-[image:var(--hero-primary-bg)] bg-[length:100%_100%] bg-no-repeat px-6 py-3 text-sm font-semibold text-[var(--hero-primary-fg)] shadow-[var(--hero-primary-shadow)] ring-1 ring-[var(--hero-border)] transition hover:-translate-y-0.5"
+                >
+                  Book a Strategy Call
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="/"
+                  className="inline-flex items-center justify-center gap-3 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-6 py-3 text-sm font-semibold text-[var(--hero-ink)] backdrop-blur-xl transition hover:bg-[var(--hero-chip-hover)]"
+                >
+                  Back to Home
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+              </div>
 
-                  return brand.href ? (
-                    <a
-                      key={brand.alt}
-                      href={brand.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:-translate-y-0.5 transition"
-                      aria-label={brand.alt}
-                    >
-                      {content}
-                    </a>
-                  ) : (
-                    <div key={brand.alt} aria-label={brand.alt}>
-                      {content}
-                    </div>
-                  );
-                })}
+              <div className="mt-8 flex flex-wrap items-center gap-2">
+                {["Web platforms", "Dashboards", "Mobile apps", "Client portals", "Brand systems"].map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[11px] font-medium text-[var(--hero-sub)] backdrop-blur-xl"
+                  >
+                    {label}
+                  </span>
+                ))}
               </div>
             </div>
-            <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
-              <Sparkles className="h-4 w-4" />
-              Featured Archive
+
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-[28px] hero-panel-glow blur-2xl" />
+              <div className="relative overflow-hidden rounded-[28px] border border-[var(--hero-border)] bg-[var(--hero-panel-bg)] p-6 shadow-[var(--hero-panel-shadow)] backdrop-blur-2xl">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.34em] text-[rgba(var(--accent-sky-rgb),0.75)]">
+                      Archive snapshot
+                    </p>
+                    <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] sm:text-2xl text-[var(--hero-ink)]">
+                      Clean work, clear outcomes.
+                    </h2>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-2 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-xs text-[var(--hero-muted)]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
+                    Client-ready
+                  </div>
+                </div>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                  {[
+                    { label: "Projects shown", value: devProjects.length.toString() },
+                    { label: "Active filters", value: categories.length.toString() },
+                    { label: "Featured cards", value: "3" },
+                    { label: "Theme", value: "Aligned" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-2xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] p-4">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--hero-muted)]">{item.label}</p>
+                      <p className="mt-2 text-2xl font-semibold text-[var(--hero-ink)]">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 rounded-2xl border border-[var(--hero-border)] bg-[var(--hero-diagram-bg)] p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-[0.34em] text-[var(--hero-muted)]">What clients get</span>
+                    <Sparkles className="h-4 w-4 text-[rgba(var(--accent-sky-rgb),0.9)]" />
+                  </div>
+                  <div className="mt-4 grid gap-2">
+                    {[
+                      "Clear category grouping",
+                      "Confident visual hierarchy",
+                      "Polished project presentation",
+                      "Direct path to contact",
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="rounded-xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-2 text-sm text-[var(--hero-muted)]"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="pb-6 md:pb-10">
-        <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
+      <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14 lg:pb-20">
+        <section className="py-2 sm:py-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Filter</p>
+              <h2 className="mt-3 text-2xl sm:text-3xl font-semibold">Browse by project type.</h2>
+              <p className="mt-3 text-[15px] text-[var(--foreground)]/78">
+                The same premium visual language, now organized to help clients move quickly from interest to the
+                right kind of work.
+              </p>
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+              Built from live project data
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {categories.map((category) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.24em] font-semibold transition-all ${
-                  activeCategory === cat
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                className={[
+                  "rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.24em] font-semibold transition-all",
+                  activeCategory === category
                     ? "bg-[var(--button-bg)] text-white shadow-[var(--shadow-tight)]"
-                    : "bg-[var(--glass-surface)] text-[var(--foreground)]/70 shadow-[var(--shadow-tight)] hover:bg-[var(--glass-surface-strong)]"
-                }`}
+                    : "bg-[var(--glass-surface)] text-[var(--foreground)]/70 shadow-[var(--shadow-tight)] hover:bg-[var(--glass-surface-strong)]",
+                ].join(" ")}
               >
-                {cat}
+                {category}
               </button>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="pb-16 sm:pb-20">
-        <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8"
-            >
-              <div className="space-y-5">
-                {filteredProjects
-                  .filter((project): project is DevProject => "image" in project)
-                  .map((project, index) => (
-                    <motion.a
-                      key={project.id}
-                      href={project.link}
-                      target={project.link.startsWith("http") ? "_blank" : undefined}
-                      rel={project.link.startsWith("http") ? "noopener noreferrer" : undefined}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.08 }}
-                      className="group flex flex-col sm:flex-row gap-4 rounded-3xl bg-[var(--glass-surface)] p-4 sm:p-5 shadow-[var(--shadow-tight)] backdrop-blur-xl hover:-translate-y-1 transition"
-                    >
-                      <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-2xl overflow-hidden bg-[var(--glass-surface)] shadow-[var(--shadow-tight)] backdrop-blur-xl">
-                        <Image
-                          src={project.image || FALLBACK}
-                          alt={project.title}
-                          fill
-                          className="object-contain p-3 transition-transform duration-700 group-hover:scale-105"
-                          sizes="(max-width: 640px) 100vw, 160px"
-                        />
-                      </div>
-                      <div className="flex flex-col flex-1">
-                        <div className="flex items-center justify-between">
-                          <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--foreground)]/60">
+        <section className="mt-8">
+          <div className="grid gap-5 lg:grid-cols-[1.12fr_0.88fr]">
+            <div className="space-y-5">
+              {featuredProjects.map((project, index) => (
+                <motion.a
+                  key={project.id}
+                  href={project.link}
+                  target={project.link.startsWith("http") ? "_blank" : undefined}
+                  rel={project.link.startsWith("http") ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-120px" }}
+                  transition={{ duration: 0.6, delay: index * 0.08 }}
+                  className="group block overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] shadow-[var(--shadow-tight)] backdrop-blur-xl transition hover:-translate-y-1.5"
+                >
+                  <div className="grid gap-0 sm:grid-cols-[190px_1fr]">
+                    <div className="relative min-h-[190px] bg-white/60">
+                      <Image
+                        src={project.image || FALLBACK}
+                        alt={project.title}
+                        fill
+                        className="object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
+                        sizes="(max-width: 640px) 100vw, 190px"
+                      />
+                    </div>
+
+                    <div className="p-5 sm:p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/55">
                             {project.category}
                           </p>
-                          <ExternalLink className="h-4 w-4 text-[var(--button-bg)] opacity-70 group-hover:opacity-100" />
+                          <h3 className="mt-3 text-xl sm:text-2xl font-semibold tracking-[-0.02em]">
+                            {project.title}
+                          </h3>
                         </div>
-                        <h3 className="text-lg sm:text-xl font-semibold mt-2 text-[var(--foreground)]">
-                          {project.title}
-                        </h3>
-                        <p className="text-sm text-[var(--foreground)]/75 mt-2 line-clamp-2">
-                          {project.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {project.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="px-3 py-1 text-[10px] uppercase tracking-[0.22em] bg-[var(--glass-surface-muted)] text-[var(--foreground)]/70 rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                        <ExternalLink className="h-4 w-4 text-[var(--button-bg)] opacity-70 transition group-hover:opacity-100" />
                       </div>
-                    </motion.a>
+
+                      <p className="mt-4 text-[15px] leading-relaxed text-[var(--foreground)]/78">
+                        {project.description}
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.a>
+              ))}
+            </div>
+
+            <div className="space-y-5">
+              <div className="rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
+                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">Why this works</p>
+                <h3 className="mt-3 text-xl sm:text-2xl font-semibold">The portfolio now reads like a premium case-study reel.</h3>
+                <p className="mt-3 text-[15px] text-[var(--foreground)]/75">
+                  No extra gallery branch, no mixed signals, and no section that competes with the main story. Each
+                  project is presented with the same visual weight and the same polished finish.
+                </p>
+
+                <div className="mt-5 space-y-3">
+                  {[
+                    "Projects only, no design gallery split",
+                    "Same glass + gradient language as the landing page",
+                    "Category filtering stays simple",
+                    "Contact CTA stays visible and direct",
+                  ].map((item) => (
+                    <div key={item} className="rounded-2xl bg-[var(--glass-surface)] p-4 shadow-[var(--shadow-tight)]">
+                      <p className="text-sm text-[var(--foreground)]/75">{item}</p>
+                    </div>
                   ))}
+                </div>
               </div>
 
-              {activeCategory === "Graphic Design" || activeCategory === "All" ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]"
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-sky-rgb),0.14),_transparent_60%)]" />
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
-                        Graphic Design
+              <div className="rounded-3xl bg-[var(--glass-surface)] p-6 sm:p-7 shadow-[var(--shadow-tight)]">
+                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">Contact</p>
+                <h3 className="mt-3 text-xl font-semibold">Need something like this?</h3>
+                <p className="mt-3 text-[15px] text-[var(--foreground)]/75">
+                  If you want a platform, a redesign, or a clean product build, let’s scope it properly.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link
+                    href="/#contact"
+                    className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold text-white shadow-[var(--shadow-tight)]"
+                  >
+                    Start a Project
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="/#pricing"
+                    className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
+                  >
+                    View Pricing
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {supportingProjects.length > 0 && (
+            <div className="mt-8">
+              <div className="flex items-center justify-between gap-4 mb-5">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">More work</p>
+                  <h3 className="mt-3 text-xl sm:text-2xl font-semibold">Additional projects in the archive.</h3>
+                </div>
+                <span className="hidden sm:inline-flex text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
+                  {supportingProjects.length} more
+                </span>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {supportingProjects.map((project, index) => (
+                  <motion.a
+                    key={project.id}
+                    href={project.link}
+                    target={project.link.startsWith("http") ? "_blank" : undefined}
+                    rel={project.link.startsWith("http") ? "noopener noreferrer" : undefined}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-120px" }}
+                    transition={{ duration: 0.55, delay: index * 0.06 }}
+                    className="group flex flex-col rounded-3xl bg-[var(--glass-surface)] p-5 sm:p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl transition hover:-translate-y-1"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/55">
+                        {project.category}
                       </p>
-                      <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--button-bg)]">
-                        Curated Gallery
-                      </span>
+                      <ExternalLink className="h-4 w-4 text-[var(--button-bg)] opacity-70 transition group-hover:opacity-100" />
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-semibold mt-3">{graphicCollection.title}</h3>
-                    <p className="text-sm text-[var(--foreground)]/75 mt-3">
-                      {graphicCollection.description}
+
+                    <h3 className="mt-3 text-lg sm:text-xl font-semibold">{project.title}</h3>
+                    <p className="mt-3 text-[15px] leading-relaxed text-[var(--foreground)]/75">
+                      {project.description}
                     </p>
 
-                    <div className="mt-6 grid grid-cols-3 gap-2">
-                      {graphicCollection.subProjects.slice(0, 9).map((item, idx) => (
-                        <button
-                          key={item.id ?? item.subTitle}
-                          onClick={() => setSelectedSlideIndex(idx)}
-                          className="relative h-20 sm:h-24 rounded-2xl overflow-hidden"
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {project.tags.slice(0, 4).map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
                         >
-                          <Image
-                            src={item.subImage || FALLBACK}
-                            alt={item.subTitle}
-                            fill
-                            className="object-cover"
-                            sizes="120px"
-                            unoptimized={shouldUnoptimize(item.subImage || FALLBACK)}
-                          />
-                        </button>
+                          {tag}
+                        </span>
                       ))}
                     </div>
-
-                    <button
-                      onClick={openGallery}
-                      className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--glass-surface)] px-4 py-2 text-xs uppercase tracking-[0.24em] font-semibold text-[var(--foreground)]/80 shadow-[var(--shadow-tight)] hover:bg-[var(--glass-surface-strong)] transition"
-                    >
-                      Open Gallery
-                      <ExternalLink className="h-4 w-4" />
-                    </button>
-                  </div>
-                </motion.div>
-              ) : (
-                <div className="rounded-3xl bg-[var(--glass-surface)] p-6 shadow-[var(--shadow-tight)] backdrop-blur-xl">
-                  <h3 className="text-lg font-semibold">Graphic Design Collection</h3>
-                  <p className="text-sm text-[var(--foreground)]/70 mt-2">
-                    Switch to the Graphic Design category to view the full collection.
-                  </p>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-
-      <AnimatePresence>
-        {selectedSlideIndex !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl flex items-center justify-center p-2 sm:p-6"
-            onClick={() => setSelectedSlideIndex(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.96, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.96, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 30, stiffness: 320 }}
-              className="relative w-full max-w-6xl h-[78vh] sm:h-[84vh] bg-[#0b0f1a] rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 sm:px-6 py-3 bg-gradient-to-b from-black/80 to-transparent">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/60">Graphic Gallery</p>
-                  <h3 className="text-base sm:text-lg font-semibold text-white">
-                    {graphicCollection.title}
-                  </h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setViewMode((prev) => (prev === "contain" ? "cover" : "contain"))}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-white/80"
-                  >
-                    {viewMode === "contain" ? (
-                      <>
-                        <Expand className="h-3 w-3" />
-                        Fill
-                      </>
-                    ) : (
-                      <>
-                        <Minimize2 className="h-3 w-3" />
-                        Fit
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={() => setSelectedSlideIndex(null)}
-                    className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition"
-                    aria-label="Close"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
+                  </motion.a>
+                ))}
               </div>
-
-              <div className="relative w-full h-full">
-                <AnimatePresence initial={false} mode="wait">
-                  <motion.div
-                    key={selectedSlideIndex}
-                    initial={{ opacity: 0, x: 60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0"
-                  >
-                    <Image
-                      src={graphicCollection.subProjects[selectedSlideIndex]?.subImage || FALLBACK}
-                      alt={graphicCollection.subProjects[selectedSlideIndex]?.subTitle || "Graphic work"}
-                      fill
-                      className={viewMode === "contain" ? "object-contain" : "object-cover"}
-                      priority
-                      quality={92}
-                      unoptimized={shouldUnoptimize(
-                        graphicCollection.subProjects[selectedSlideIndex]?.subImage || FALLBACK
-                      )}
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <button
-                onClick={goPrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={goNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition"
-              >
-                <ChevronRight size={18} />
-              </button>
-
-              <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/80 to-transparent px-4 sm:px-6 pb-4 pt-6">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs text-white/80">
-                    {graphicCollection.subProjects[selectedSlideIndex]?.subTitle}
-                  </p>
-                  <p className="text-xs text-white/60">
-                    {selectedSlideIndex + 1} / {totalSlides}
-                  </p>
-                </div>
-                <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
-                  {graphicCollection.subProjects.map((item, idx) => (
-                    <button
-                      key={item.id ?? item.subTitle}
-                      onClick={() => setSelectedSlideIndex(idx)}
-                      className={`relative h-12 w-16 rounded-xl overflow-hidden border ${
-                        idx === selectedSlideIndex ? "border-white/70" : "border-white/20"
-                      }`}
-                    >
-                      <Image
-                        src={item.subImage || FALLBACK}
-                        alt={item.subTitle}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                        unoptimized={shouldUnoptimize(item.subImage || FALLBACK)}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          )}
+        </section>
+      </main>
 
       <Footer />
     </div>
