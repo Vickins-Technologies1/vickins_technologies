@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 const trustSignals = [
-  { icon: CpuChipIcon, label: "Senior-led" },
+  { icon: CpuChipIcon, label: "72hr turnaround" },
   { icon: LockClosedIcon, label: "Security-first" },
   { icon: Squares2X2Icon, label: "Maintainable architecture" },
   { icon: ShieldCheckIcon, label: "NDA-friendly" },
@@ -128,8 +128,8 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.08 }}
           >
             <div className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[7px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.24em] text-[var(--hero-muted)] whitespace-nowrap backdrop-blur-xl">
-              <span className="sm:hidden">72hr delivery • senior-led</span>
-              <span className="hidden sm:inline">We deliver within 72 hours • senior-led, security-first execution</span>
+              <span className="sm:hidden">72hr delivery • security-first</span>
+              <span className="hidden sm:inline">We deliver within 72 hours • security-first execution</span>
               <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
             </div>
 
