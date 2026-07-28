@@ -127,10 +127,10 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08 }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[10px] sm:text-xs uppercase tracking-[0.32em] text-[var(--hero-muted)] backdrop-blur-xl">
-              We deliver within 72 hours
+            <div className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[7px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.24em] text-[var(--hero-muted)] whitespace-nowrap backdrop-blur-xl">
+              <span className="sm:hidden">72hr delivery • senior-led</span>
+              <span className="hidden sm:inline">We deliver within 72 hours • senior-led, security-first execution</span>
               <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
-              Senior-led, security-first execution
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[var(--hero-ink)]">
