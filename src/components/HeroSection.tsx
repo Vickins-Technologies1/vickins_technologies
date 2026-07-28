@@ -128,9 +128,9 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.08 }}
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[10px] sm:text-xs uppercase tracking-[0.32em] text-[var(--hero-muted)] backdrop-blur-xl">
-              Senior-led delivery
+              We deliver within 72 hours
               <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
-              Security-first builds
+              Senior-led, security-first execution
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[var(--hero-ink)]">
