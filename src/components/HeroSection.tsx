@@ -142,24 +142,14 @@ export default function HeroSection() {
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
-              We design, engineer, and ship web, mobile, and internal systems that stay maintainable for years — not
-              quarters.
+              We design, engineer, and deliver high-performance web, mobile, and enterprise systems built for
+              long-term reliability, scalability, and maintainability.
             </p>
 
             <p className="mt-3 text-sm text-[var(--hero-muted)] max-w-xl">
               Strong architecture, security-first execution, and clean handover — with senior ownership from kickoff to
               launch.
             </p>
-
-            <div className="mt-5 rounded-3xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] p-4 backdrop-blur-xl">
-              <p className="text-[10px] uppercase tracking-[0.34em] text-[rgba(var(--accent-sky-rgb),0.75)]">
-                Featured product
-              </p>
-              <p className="mt-2 text-sm text-[var(--hero-sub)]">
-                <span className="font-semibold text-[var(--hero-ink)]">V-Guard</span> gives teams prepaid proxy
-                access, dynamic credentials, and Flutterwave-powered credit top-ups in one sleek control plane.
-              </p>
-            </div>
 
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <a
