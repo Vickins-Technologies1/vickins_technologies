@@ -33,18 +33,22 @@ const vtixHighlights = [
   },
 ];
 
-const vguardHighlights = [
+const bizproHighlights = [
   {
-    title: "Prepaid credits",
-    description: "Top up once and control spend with automatic debit logic as traffic moves.",
+    title: "POS",
+    description: "Run sales smoothly with point-of-sale flows built for day-to-day operations.",
   },
   {
-    title: "Proxy protocols",
-    description: "Serve HTTP and SOCKS5 users with dynamic credentials and per-user rate profiles.",
+    title: "Inventory Management",
+    description: "Track stock levels, movement, and replenishment across the business.",
   },
   {
-    title: "Flutterwave checkout",
-    description: "Instant crediting via verified webhooks across African currencies and USD.",
+    title: "Finance + Reporting",
+    description: "Keep finances visible with reporting that helps teams make quick decisions.",
+  },
+  {
+    title: "Team + Branch Management",
+    description: "Coordinate roles, access, and multi-branch operations from one platform.",
   },
 ];
 
@@ -114,10 +118,10 @@ export default function ProductsSection() {
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
               <a
-                href="https://v-guard.vickinstechnologies.com"
+                href="https://bizpro.vickinstechnologies.com/"
                 className="inline-flex items-center gap-2 rounded-full border border-[rgba(var(--accent-sky-rgb),0.22)] bg-[rgba(var(--accent-sky-rgb),0.08)] px-4 py-2.5 text-xs font-semibold text-[var(--foreground)] transition hover:bg-[rgba(var(--accent-sky-rgb),0.14)]"
               >
-                Explore V-Guard
+                Explore BizPro
                 <ArrowRightIcon className="h-4 w-4" />
               </a>
             </div>
@@ -128,23 +132,30 @@ export default function ProductsSection() {
               <div className="glass-panel p-5 sm:p-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
-                    V-Guard
+                    <Image
+                      src="/projects/bz.png"
+                      alt="BizPro logo mark"
+                      width={28}
+                      height={28}
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                    BizPro
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
-                    Proxy management platform
+                    Business Operating System
                   </span>
                 </div>
 
                 <h3 className="text-xl sm:text-2xl font-semibold mt-5">
-                  Glassy, premium proxy operations with prepaid billing built in.
+                  Run sales, stock, finance, teams, and branches from one platform.
                 </h3>
                 <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                  Manage HTTP and SOCKS5 access, assign dynamic credentials, track usage efficiently, and collect
-                  revenue through Flutterwave credit packs.
+                  BizPro brings POS, inventory, finance, reporting, team management, and branch operations together
+                  in one offline-first platform that keeps working when the internet drops.
                 </p>
 
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {vguardHighlights.map((highlight) => (
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {bizproHighlights.map((highlight) => (
                     <div
                       key={highlight.title}
                       className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4"
@@ -159,19 +170,30 @@ export default function ProductsSection() {
                   ))}
                 </div>
 
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {["Offline-first", "Sync when connectivity returns"].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a
-                    href="https://v-guard.vickinstechnologies.com"
+                    href="https://bizpro.vickinstechnologies.com/"
                     className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2 text-xs font-semibold"
                   >
-                    Get Started
+                    Explore BizPro
                     <ArrowRightIcon className="h-4 w-4" />
                   </a>
                   <a
-                    href="#v-guard"
+                    href="#contact"
                     className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
                   >
-                    View feature details
+                    Book Strategy Call
                   </a>
                 </div>
               </div>

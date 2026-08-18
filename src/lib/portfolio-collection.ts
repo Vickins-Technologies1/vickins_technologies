@@ -55,6 +55,16 @@ export const getDefaultGraphicCollection = (): GraphicCollection => ({
 
 export const getDefaultDevProjects = (): DevProject[] => [
   {
+    id: "dev-bizpro",
+    title: "BizPro — Business Operating System",
+    category: "Business Operating System / Fullstack Web App",
+    description:
+      "A modern business management platform combining POS, inventory, finance, reporting, team management and branch operations, with offline-first workflows designed to keep businesses running through unreliable connectivity.",
+    image: "/projects/bz.png",
+    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "MongoDB", "Offline-first", "Business Management"],
+    link: "https://bizpro.vickinstechnologies.com/",
+  },
+  {
     id: "dev-1",
     title: "Sorana Property Managers Portal",
     category: "Fullstack + UI/UX",
@@ -138,7 +148,7 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     return getDefaultDevProjects();
   }
 
-  return state.map((item, index) => ({
+  const normalized = state.map((item, index) => ({
     id: item.id ?? `dev-${index}`,
     title: item.title?.trim() || `Untitled Project ${index + 1}`,
     category: item.category?.trim() || "Project",
@@ -147,4 +157,14 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     tags: Array.isArray(item.tags) ? item.tags : [],
     link: item.link?.trim() || "#",
   }));
+
+  const bizProProject = getDefaultDevProjects()[0];
+  const hasBizPro = normalized.some(
+    (project) =>
+      project.link === bizProProject.link ||
+      project.title.toLowerCase().includes("bizpro") ||
+      project.category.toLowerCase().includes("business operating system")
+  );
+
+  return hasBizPro ? normalized : [bizProProject, ...normalized];
 };

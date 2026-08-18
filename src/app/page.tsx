@@ -13,7 +13,7 @@ import ClientsSection from "../components/ClientsSection";
 import ProcessSection from "../components/ProcessSection";
 import EnterpriseSection from "../components/EnterpriseSection";
 import SecurityServiceSection from "../components/SecurityServiceSection";
-import VGuardSection from "../components/VGuardSection";
+import BizProSection from "../components/BizProSection";
 import AboutSection from "../components/AboutSection";
 import TechnologySection from "../components/TechnologySection";
 import PricingSection from "../components/PricingSection";
@@ -42,7 +42,7 @@ export default function Home() {
         <ProcessSection />
         <EnterpriseSection />
         <SecurityServiceSection />
-        <VGuardSection />
+        <BizProSection />
         <AboutSection />
         <TechnologySection />
         <PricingSection />

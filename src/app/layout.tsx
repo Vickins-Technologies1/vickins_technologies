@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     template: "%s | Vickins Technologies",
   },
   description:
-    "Vickins Technologies is a Nairobi-based technology partner building secure, scalable web platforms, mobile apps, and automation for enterprises and high-growth teams.",
+    "Vickins Technologies is a Nairobi-based technology partner building secure, scalable web platforms, mobile apps, automation, and products like BizPro, a business operating system for sales, inventory, finance, and branch operations.",
   keywords: [
     "enterprise software development Kenya",
     "Nairobi software company",
@@ -44,6 +44,10 @@ export const metadata: Metadata = {
     "mobile app development Kenya",
     "automation and AI Kenya",
     "DevOps Kenya",
+    "BizPro",
+    "business operating system",
+    "POS software Kenya",
+    "inventory management software",
   ],
   authors: [
     {
@@ -54,7 +58,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Vickins Technologies",
     description:
-      "Enterprise-ready web platforms, mobile apps, and automation — engineered in Nairobi for reliability, security, and scale.",
+      "Enterprise-ready web platforms, mobile apps, automation, and BizPro — engineered in Nairobi for reliability, security, and scale.",
     url: siteUrl,
     siteName: "Vickins Technologies",
     locale: "en_US",
@@ -64,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vickins Technologies",
     description:
-      "Enterprise-ready web platforms, mobile apps, and automation — engineered in Nairobi for reliability, security, and scale.",
+      "Enterprise-ready web platforms, mobile apps, automation, and BizPro — engineered in Nairobi for reliability, security, and scale.",
     creator: "@VickinsTech",
   },
   alternates: {
