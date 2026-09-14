@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRightIcon, BanknotesIcon, BoltIcon, ChartBarIcon, CheckIcon, ChevronDownIcon, CircleStackIcon, MoonIcon, ShieldCheckIcon, SunIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
+export const dynamic = "force-dynamic";
+
 const features = [
   { icon: ShieldCheckIcon, eyebrow: "Access", title: "Account access", copy: "Create an account, sign in, and continue with a session-backed V-Guard workspace." },
   { icon: CircleStackIcon, eyebrow: "Resources", title: "Proxy credentials", copy: "View provisioned HTTP and SOCKS5 credentials from the authenticated dashboard." },

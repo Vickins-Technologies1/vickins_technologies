@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "V-Guard",
-  description: "Premium proxy management panel for HTTP and SOCKS5 with prepaid credits and Flutterwave billing.",
+  title: "V-Guard System | Proxy Access, Credits & Usage",
+  description: "V-Guard brings account access, proxy credentials, credits, usage and Flutterwave checkout into one focused workspace.",
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
