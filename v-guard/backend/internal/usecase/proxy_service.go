@@ -15,10 +15,13 @@ type ProxyService struct {
 	usage        UsageRepository
 	clock        Clock
 	creditsPerGB float64
+	publicHost   string
+	httpPort     int
+	socksPort    int
 }
 
-func NewProxyService(users UserRepository, usage UsageRepository, clock Clock, creditsPerGB float64) *ProxyService {
-	return &ProxyService{users: users, usage: usage, clock: clock, creditsPerGB: creditsPerGB}
+func NewProxyService(users UserRepository, usage UsageRepository, clock Clock, creditsPerGB float64, publicHost string, httpPort, socksPort int) *ProxyService {
+	return &ProxyService{users: users, usage: usage, clock: clock, creditsPerGB: creditsPerGB, publicHost: publicHost, httpPort: httpPort, socksPort: socksPort}
 }
 
 func (s *ProxyService) ProvisionCredential(ctx context.Context, userID primitive.ObjectID, proxyType domain.ProxyType) (domain.ProxyCredential, error) {
@@ -44,8 +47,8 @@ func (s *ProxyService) BuildHTTPCredential(user domain.User) domain.ProxyCredent
 	return domain.ProxyCredential{
 		Username: user.ProxyUsername,
 		Password: user.ProxyPassword,
-		Host:     "v-guard.vickinstechnologies.com",
-		Port:     3128,
+		Host:     s.publicHost,
+		Port:     s.httpPort,
 		Type:     domain.ProxyTypeHTTP,
 	}
 }
@@ -54,8 +57,8 @@ func (s *ProxyService) BuildSOCKS5Credential(user domain.User) domain.ProxyCrede
 	return domain.ProxyCredential{
 		Username: user.ProxyUsername,
 		Password: user.ProxyPassword,
-		Host:     "v-guard.vickinstechnologies.com",
-		Port:     1080,
+		Host:     s.publicHost,
+		Port:     s.socksPort,
 		Type:     domain.ProxyTypeSOCKS5,
 	}
 }

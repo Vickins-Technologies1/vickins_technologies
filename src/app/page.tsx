@@ -13,7 +13,7 @@ import ClientsSection from "../components/ClientsSection";
 import ProcessSection from "../components/ProcessSection";
 import EnterpriseSection from "../components/EnterpriseSection";
 import SecurityServiceSection from "../components/SecurityServiceSection";
-import BizProSection from "../components/BizProSection";
+import DiraOSSection from "../components/DiraOSSection";
 import AboutSection from "../components/AboutSection";
 import TechnologySection from "../components/TechnologySection";
 import PricingSection from "../components/PricingSection";
@@ -42,7 +42,7 @@ export default function Home() {
         <ProcessSection />
         <EnterpriseSection />
         <SecurityServiceSection />
-        <BizProSection />
+        <DiraOSSection />
         <AboutSection />
         <TechnologySection />
         <PricingSection />

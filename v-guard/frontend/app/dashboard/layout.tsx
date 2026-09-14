@@ -1,11 +1,22 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <main className="min-h-screen px-4 py-4 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[260px_1fr]">
         <aside className="glass-strong panel p-5">
-          <p className="panel-title">V-Guard</p>
+          <div className="flex items-center gap-3">
+            <Image
+              src="/v-guard-logo.png"
+              alt="V-Guard logo"
+              width={58}
+              height={58}
+              priority
+              className="h-14 w-14 object-contain drop-shadow-[0_0_20px_rgba(var(--accent-sky-rgb),0.32)]"
+            />
+            <p className="panel-title">V-Guard</p>
+          </div>
           <h2 className="mt-3 text-2xl font-semibold">Admin console</h2>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
             Secure proxy operations, credit management, billing, and analytics in one place.

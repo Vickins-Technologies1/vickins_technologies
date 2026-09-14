@@ -1,0 +1,10 @@
+.env
+.env.*
+.git
+.github
+Dockerfile
+coverage.out
+v-guard
+*.exe
+tmp/
+runtime/

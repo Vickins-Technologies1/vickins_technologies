@@ -25,6 +25,28 @@ export type DevProject = {
   link: string;
 };
 
+export const diraOsProduct = {
+  id: "dira-os",
+  title: "Dira OS",
+  category: "VICKINS PRODUCT · FLAGSHIP",
+  description:
+    "An offline-first business operating system combining POS, inventory, finance, reporting, teams and branch operations into one connected platform.",
+  image: "/products/dira-os-logo.png",
+  tags: ["Mobile", "Business OS", "Offline-first", "Vickins Product"],
+  link: "https://dira-os.vickinstechnologies.com/",
+};
+
+export const vGuardProduct = {
+  id: "v-guard",
+  title: "V-Guard",
+  category: "VICKINS PRODUCT · INFRASTRUCTURE",
+  description:
+    "A premium proxy management platform for controlled proxy access, dynamic credentials, usage management and prepaid infrastructure billing.",
+  image: "/products/v-guard-logo.png",
+  tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
+  link: "https://v-guard.vickinstechnologies.com/",
+};
+
 export const getDefaultGraphicCollection = (): GraphicCollection => ({
   id: 100,
   title: "Branding & Graphic Design Collection",
@@ -55,19 +77,16 @@ export const getDefaultGraphicCollection = (): GraphicCollection => ({
 
 export const getDefaultDevProjects = (): DevProject[] => [
   {
-    id: "dev-bizpro",
-    title: "BizPro — Business Operating System",
-    category: "Business Operating System / Fullstack Web App",
-    description:
-      "A modern business management platform combining POS, inventory, finance, reporting, team management and branch operations, with offline-first workflows designed to keep businesses running through unreliable connectivity.",
-    image: "/projects/bz.png",
-    tags: ["Next.js", "React", "TypeScript", "Tailwind CSS", "MongoDB", "Offline-first", "Business Management"],
-    link: "https://bizpro.vickinstechnologies.com/",
+    ...diraOsProduct,
+    category: "VICKINS PRODUCT · FLAGSHIP",
+  },
+  {
+    ...vGuardProduct,
   },
   {
     id: "dev-1",
     title: "Sorana Property Managers Portal",
-    category: "Fullstack + UI/UX",
+    category: "CLIENT PROJECT · Fullstack + UI/UX",
     description:
       "Kenya's leading property management platform: tenant tracking, M-Pesa payments, invoicing, SMS notifications, property listings, and admin dashboard.",
     image: "/clients/sorana.png",
@@ -77,7 +96,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
   {
     id: "dev-2",
     title: "Baggit – Premium E-commerce Platform",
-    category: "Fullstack + E-commerce",
+    category: "CLIENT PROJECT · Fullstack + E-commerce",
     description:
       "Modern e-commerce site offering premium fashion, tech essentials, discounts, free shipping, and exclusive deals with a clean, conversion-focused design.",
     image: "/Baggit.png",
@@ -87,7 +106,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
   {
     id: "dev-3",
     title: "Wanjahi Group – Motors, Property & Business Solutions",
-    category: "Fullstack + Corporate Website",
+    category: "CLIENT PROJECT · Fullstack + Corporate Website",
     description:
       "Professional company website for Wanjahi Group showcasing premium vehicles, property services, business solutions, client testimonials, and performance stats.",
     image: "/projects/wanjahi.png",
@@ -97,7 +116,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
   {
     id: "dev-4",
     title: "Macdee Entertainment Platform",
-    category: "Enterprise Web App",
+    category: "CLIENT PROJECT · Enterprise Web App",
     description:
       "Enterprise-level web application with robust backend, user management, and custom UI components.",
     image: "/projects/k28.png",
@@ -107,7 +126,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
   {
     id: "dev-5",
     title: "Vickins Technologies Portfolio (Current)",
-    category: "Web & Brand Identity",
+    category: "CLIENT PROJECT · Web & Brand Identity",
     description:
       "Modern agency portfolio with dark/light mode, smooth animations, responsive layout, and integrated branding.",
     image: "/projects/vbi.png",
@@ -158,13 +177,12 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     link: item.link?.trim() || "#",
   }));
 
-  const bizProProject = getDefaultDevProjects()[0];
-  const hasBizPro = normalized.some(
-    (project) =>
-      project.link === bizProProject.link ||
-      project.title.toLowerCase().includes("bizpro") ||
-      project.category.toLowerCase().includes("business operating system")
+  const defaults = getDefaultDevProjects();
+  const hasDiraOs = normalized.some((project) => project.link === diraOsProduct.link || project.id === diraOsProduct.id);
+  const hasVGuard = normalized.some((project) => project.link === vGuardProduct.link || project.id === vGuardProduct.id);
+  const missingProducts = defaults.filter((product) =>
+    product.id === diraOsProduct.id ? !hasDiraOs : !hasVGuard
   );
 
-  return hasBizPro ? normalized : [bizProProject, ...normalized];
+  return [...missingProducts, ...normalized];
 };

@@ -214,6 +214,10 @@ export default function Portfolio() {
         <section className="mt-8">
           <div className="grid gap-5 lg:grid-cols-[1.12fr_0.88fr]">
             <div className="space-y-5">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Vickins Products</p>
+                <h2 className="mt-2 text-2xl font-semibold">Products we build and operate.</h2>
+              </div>
               {featuredProjects.map((project, index) => (
                 <motion.a
                   key={project.id}
@@ -322,8 +326,8 @@ export default function Portfolio() {
             <div className="mt-8">
               <div className="flex items-center justify-between gap-4 mb-5">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">More work</p>
-                  <h3 className="mt-3 text-xl sm:text-2xl font-semibold">Additional projects in the archive.</h3>
+                  <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Client Work</p>
+                  <h3 className="mt-3 text-xl sm:text-2xl font-semibold">Platforms and systems built for clients.</h3>
                 </div>
                 <span className="hidden sm:inline-flex text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
                   {supportingProjects.length} more

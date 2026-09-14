@@ -100,9 +100,9 @@ export default function RecentProjectsSection() {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-7">
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Work</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Projects that show how we deliver.</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Products first. Client systems with purpose.</h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              A focused view of the web, platform, and product work we have built for clients and in-house products.
+              A focused view of Vickins-built products followed by the client platforms and custom systems we deliver.
             </p>
           </div>
 

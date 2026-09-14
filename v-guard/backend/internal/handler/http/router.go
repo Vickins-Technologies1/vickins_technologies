@@ -2,12 +2,13 @@ package http
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/vickins-technologies/v-guard/backend/internal/config"
 	"github.com/vickins-technologies/v-guard/backend/internal/domain"
-	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/ratelimit"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/proxy"
+	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/ratelimit"
 	"github.com/vickins-technologies/v-guard/backend/internal/usecase"
 )
 
@@ -19,7 +20,10 @@ func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.Bi
 	gin.SetMode(mode(cfg.Env))
 	r := gin.New()
 	r.Use(gin.Recovery(), gin.Logger())
+	r.Use(corsMiddleware(cfg))
 	limiter := ratelimit.New(10, 20)
+
+	r.GET("/health", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"status": "ok"}) })
 
 	api := r.Group("/api/v1")
 	{
@@ -55,6 +59,40 @@ func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.Bi
 }
 
 func (r *Router) Engine() *gin.Engine { return r.engine }
+
+func corsMiddleware(cfg config.Config) gin.HandlerFunc {
+	allowedOrigins := make(map[string]struct{}, len(cfg.CORSAllowedOrigins))
+	allowAny := false
+	for _, origin := range cfg.CORSAllowedOrigins {
+		if origin == "*" {
+			allowAny = true
+			continue
+		}
+		allowedOrigins[strings.TrimRight(origin, "/")] = struct{}{}
+	}
+
+	return func(c *gin.Context) {
+		origin := strings.TrimRight(c.GetHeader("Origin"), "/")
+		if origin != "" {
+			if allowAny {
+				c.Header("Access-Control-Allow-Origin", "*")
+			} else if _, ok := allowedOrigins[origin]; ok {
+				c.Header("Access-Control-Allow-Origin", origin)
+				c.Header("Access-Control-Allow-Credentials", "true")
+				c.Header("Vary", "Origin")
+			}
+		}
+		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Authorization,Content-Type,X-Requested-With")
+		c.Header("Access-Control-Max-Age", "600")
+
+		if c.Request.Method == http.MethodOptions {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+		c.Next()
+	}
+}
 
 func mode(env string) string {
 	if env == "production" {

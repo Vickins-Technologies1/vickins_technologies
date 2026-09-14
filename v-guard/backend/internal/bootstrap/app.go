@@ -10,20 +10,22 @@ import (
 	"github.com/vickins-technologies/v-guard/backend/internal/config"
 	"github.com/vickins-technologies/v-guard/backend/internal/domain"
 	httpHandler "github.com/vickins-technologies/v-guard/backend/internal/handler/http"
-	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/mongo"
+	mongoinfra "github.com/vickins-technologies/v-guard/backend/internal/infrastructure/mongo"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/payments"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/proxy"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/security"
 	mongorepo "github.com/vickins-technologies/v-guard/backend/internal/repository/mongo"
 	"github.com/vickins-technologies/v-guard/backend/internal/usecase"
+	mongodriver "go.mongodb.org/mongo-driver/mongo"
 )
 
 type App struct {
-	server *http.Server
+	server      *http.Server
+	mongoClient *mongodriver.Client
 }
 
 func NewApp(ctx context.Context, cfg config.Config) (*App, error) {
-	client, err := mongo.Connect(ctx, cfg.MongoURI)
+	client, err := mongoinfra.Connect(ctx, cfg.MongoURI)
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +38,7 @@ func NewApp(ctx context.Context, cfg config.Config) (*App, error) {
 	usageRepo := mongorepo.NewUsageRepository(db)
 
 	if err := ensureIndexes(ctx, db); err != nil {
+		_ = client.Disconnect(context.Background())
 		return nil, err
 	}
 
@@ -46,7 +49,7 @@ func NewApp(ctx context.Context, cfg config.Config) (*App, error) {
 
 	authSvc := usecase.NewAuthService(userRepo, sessionRepo, cfg.JWTAccessSecret, cfg.JWTRefreshSecret, cfg.JWTAccessTTL, cfg.JWTRefreshTTL, clock)
 	billingSvc := usecase.NewBillingService(planRepo, paymentRepo, gateway, userRepo, clock, cfg.FrontendURL)
-	proxySvc := usecase.NewProxyService(userRepo, usageRepo, clock, cfg.CreditPerGB)
+	proxySvc := usecase.NewProxyService(userRepo, usageRepo, clock, cfg.CreditPerGB, cfg.ProxyPublicHost, cfg.ProxyHTTPPort, cfg.ProxySOCKSPort)
 	dashboardSvc := usecase.NewDashboardService(userRepo, planRepo, paymentRepo, usageRepo, proxyProvisioner, clock)
 
 	router := httpHandler.NewRouter(cfg, authSvc, billingSvc, dashboardSvc, proxySvc, daemonManager)
@@ -64,7 +67,7 @@ func NewApp(ctx context.Context, cfg config.Config) (*App, error) {
 		log.Printf("admin seed skipped: %v", err)
 	}
 
-	return &App{server: app}, nil
+	return &App{server: app, mongoClient: client}, nil
 }
 
 func (a *App) Run() error {
@@ -76,7 +79,12 @@ func (a *App) Run() error {
 }
 
 func (a *App) Shutdown(ctx context.Context) error {
-	return a.server.Shutdown(ctx)
+	serverErr := a.server.Shutdown(ctx)
+	dbErr := a.mongoClient.Disconnect(ctx)
+	if serverErr != nil {
+		return serverErr
+	}
+	return dbErr
 }
 
 func seedPlans(ctx context.Context, repo *mongorepo.PlanRepository) error {
@@ -87,14 +95,14 @@ func seedPlans(ctx context.Context, repo *mongorepo.PlanRepository) error {
 
 	now := time.Now().UTC()
 	plans := []struct {
-		name        string
-		desc        string
-		currency    string
-		price       int64
-		credits     float64
-		bandwidth   int64
-		days        int
-		popular     bool
+		name      string
+		desc      string
+		currency  string
+		price     int64
+		credits   float64
+		bandwidth int64
+		days      int
+		popular   bool
 	}{
 		{"Starter", "For individuals who need secure private proxy access.", "NGN", 25000, 15, 50 * 1024 * 1024 * 1024, 30, false},
 		{"Growth", "For teams with recurring proxy workloads.", "KES", 6000, 60, 200 * 1024 * 1024 * 1024, 30, true},
@@ -141,14 +149,14 @@ func seedAdmin(ctx context.Context, cfg config.Config, repo *mongorepo.UserRepos
 	}
 	now := time.Now().UTC()
 	return repo.Create(ctx, &domain.User{
-		Email:         cfg.BootstrapAdminEmail,
-		PasswordHash:  hash,
-		Role:          domain.RoleAdmin,
-		DisplayName:   cfg.BootstrapAdminName,
-		Credits:       0,
+		Email:          cfg.BootstrapAdminEmail,
+		PasswordHash:   hash,
+		Role:           domain.RoleAdmin,
+		DisplayName:    cfg.BootstrapAdminName,
+		Credits:        0,
 		RateLimitBytes: 0,
-		Active:        true,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		Active:         true,
+		CreatedAt:      now,
+		UpdatedAt:      now,
 	})
 }

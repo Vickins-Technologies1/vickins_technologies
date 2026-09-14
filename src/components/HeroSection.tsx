@@ -160,10 +160,10 @@ export default function HeroSection() {
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </a>
               <a
-                href="https://bizpro.vickinstechnologies.com/"
+                href="https://dira-os.vickinstechnologies.com/"
                 className="group inline-flex items-center justify-center gap-3 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-6 py-3 text-sm font-semibold text-[var(--hero-ink)] backdrop-blur-xl transition hover:bg-[var(--hero-chip-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--accent-sky-rgb),0.65)]"
               >
-                Explore BizPro
+                Explore Dira OS
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </a>
             </div>

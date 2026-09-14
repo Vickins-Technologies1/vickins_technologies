@@ -1,0 +1,33 @@
+name: V-Guard Backend CI
+
+on:
+  pull_request:
+    paths:
+      - "v-guard/backend/**"
+      - ".github/workflows/vguard-backend-ci.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "v-guard/backend/**"
+      - ".github/workflows/vguard-backend-ci.yml"
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Test
+        working-directory: v-guard/backend
+        run: go test ./...
+
+      - name: Build container image
+        working-directory: v-guard/backend
+        run: docker build -t v-guard-backend:ci .

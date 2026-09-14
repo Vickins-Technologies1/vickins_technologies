@@ -1,344 +1,38 @@
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRightIcon, CpuChipIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { diraOsProduct, vGuardProduct } from "@/lib/portfolio-collection";
 
-const chamaHighlights = [
-  {
-    title: "Lease per group",
-    description: "Moderators activate one group at a time with a clean, predictable subscription model.",
-  },
-  {
-    title: "Moderator tools",
-    description: "Invite members, schedule rotations, and keep every payout on track.",
-  },
-  {
-    title: "Member ledger",
-    description: "Members track contributions and upcoming payouts from one place.",
-  },
-];
-
-const vtixHighlights = [
-  {
-    title: "Event marketplace",
-    description: "Publish football matches, concerts, and festivals with instant ticket discovery.",
-  },
-  {
-    title: "QR ticketing",
-    description: "Issue secure QR tickets with real-time validation for every attendee.",
-  },
-  {
-    title: "M-Pesa + Stripe",
-    description: "Collect payments fast with Kenya-first checkout flows and global fallback.",
-  },
-];
-
-const bizproHighlights = [
-  {
-    title: "POS",
-    description: "Run sales smoothly with point-of-sale flows built for day-to-day operations.",
-  },
-  {
-    title: "Inventory Management",
-    description: "Track stock levels, movement, and replenishment across the business.",
-  },
-  {
-    title: "Finance + Reporting",
-    description: "Keep finances visible with reporting that helps teams make quick decisions.",
-  },
-  {
-    title: "Team + Branch Management",
-    description: "Coordinate roles, access, and multi-branch operations from one platform.",
-  },
-];
-
-const productTracks = [
-  {
-    title: "Custom Platforms",
-    description: "Web and mobile platforms built to modernize operations, integrate systems, and scale with confidence.",
-    icon: RocketLaunchIcon,
-    tags: ["Web", "Mobile", "Subscription"],
-  },
-  {
-    title: "Automation Suites",
-    description: "Workflow automation, AI enablement, and analytics — maintained for reliability and long-term adoption.",
-    icon: CpuChipIcon,
-    tags: ["Integrations", "AI", "Insights"],
-  },
+const products = [
+  { ...diraOsProduct, badge: "FLAGSHIP", title: "Dira OS", category: "Business Operating System", className: "lg:col-span-7" },
+  { ...vGuardProduct, badge: "INFRASTRUCTURE PLATFORM", title: "V-Guard", category: "Proxy Management", className: "lg:col-span-5" },
 ];
 
 export default function ProductsSection() {
   return (
-    <motion.section
-      id="products"
-      className="py-8 sm:py-10 lg:py-12 -mt-2 scroll-mt-[96px]"
-      initial={{ opacity: 0, y: 26 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-120px" }}
-      transition={{ duration: 0.7 }}
-    >
-      <div className="relative overflow-hidden rounded-[36px] bg-[var(--card-bg)] shadow-[var(--shadow-soft)]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,80,240,0.18),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_20%,_rgba(var(--accent-sky-rgb),0.16),_transparent_50%)]" />
-        <div
-          className="absolute inset-0 opacity-35"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
-            backgroundSize: "30px 30px",
-          }}
-        />
-
-        <div className="relative z-10 p-5 sm:p-7">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Products</p>
-              <h2 className="text-2xl sm:text-3xl font-semibold mt-3">
-                Vickins-built platforms — shipped, operated, and improved in-house.
-              </h2>
-              <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                ChamaHub and V‑Tix are live platforms we run day to day. The same team can build and support yours —
-                from architecture to launch to operations.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/chama"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2.5 text-xs font-semibold"
-              >
-                Open ChamaHub
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/vtix"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2.5 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
-              >
-                Open V-Tix Africa
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
-              <a
-                href="https://bizpro.vickinstechnologies.com/"
-                className="inline-flex items-center gap-2 rounded-full border border-[rgba(var(--accent-sky-rgb),0.22)] bg-[rgba(var(--accent-sky-rgb),0.08)] px-4 py-2.5 text-xs font-semibold text-[var(--foreground)] transition hover:bg-[rgba(var(--accent-sky-rgb),0.14)]"
-              >
-                Explore BizPro
-                <ArrowRightIcon className="h-4 w-4" />
+    <motion.section id="products" className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]" initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-120px" }} transition={{ duration: 0.7 }}>
+      <div className="relative overflow-hidden rounded-[36px] bg-[var(--card-bg)] p-5 shadow-[var(--shadow-soft)] sm:p-7">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(var(--accent-sky-rgb),0.14),transparent_48%)]" />
+        <div className="relative z-10">
+          <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Products</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">Vickins-Built Products</h2>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]/76">Products and platforms built by Vickins Technologies to solve real operational and infrastructure problems.</p>
+          <div className="mt-8 grid gap-5 lg:grid-cols-12">
+            {products.map((product, index) => (
+              <a key={product.id} href={product.link} target="_blank" rel="noopener noreferrer" className={`group relative overflow-hidden rounded-[28px] border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 transition hover:-translate-y-1 hover:border-[rgba(var(--accent-sky-rgb),0.45)] sm:p-7 ${product.className}`}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] ${index === 0 ? "bg-[var(--button-bg)] text-white" : "border border-[var(--glass-border)] text-[var(--foreground)]/65"}`}>{product.badge}</span>
+                    <h3 className="mt-5 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">{product.title}</h3>
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--accent)]">{product.category}</p>
+                  </div>
+                  <Image src={product.image} alt={`${product.title} product logo`} width={64} height={64} className="h-14 w-14 object-contain" />
+                </div>
+                <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[var(--foreground)]/76">{product.description}</p>
+                <div className="mt-5 flex flex-wrap gap-2">{product.tags.map((tag) => <span key={tag} className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[var(--foreground)]/65">{tag}</span>)}</div>
+                <div className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">Explore {product.title} <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" /></div>
               </a>
-            </div>
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-2 space-y-5">
-              <div className="glass-panel p-5 sm:p-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
-                    <Image
-                      src="/projects/bz.png"
-                      alt="BizPro logo mark"
-                      width={28}
-                      height={28}
-                      className="h-6 w-6 rounded-full object-cover"
-                    />
-                    BizPro
-                  </div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
-                    Business Operating System
-                  </span>
-                </div>
-
-                <h3 className="text-xl sm:text-2xl font-semibold mt-5">
-                  Run sales, stock, finance, teams, and branches from one platform.
-                </h3>
-                <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                  BizPro brings POS, inventory, finance, reporting, team management, and branch operations together
-                  in one offline-first platform that keeps working when the internet drops.
-                </p>
-
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {bizproHighlights.map((highlight) => (
-                    <div
-                      key={highlight.title}
-                      className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4"
-                    >
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
-                        {highlight.title}
-                      </p>
-                      <p className="text-sm text-[var(--foreground)]/75 mt-2">
-                        {highlight.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {["Offline-first", "Sync when connectivity returns"].map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href="https://bizpro.vickinstechnologies.com/"
-                    className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2 text-xs font-semibold"
-                  >
-                    Explore BizPro
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="#contact"
-                    className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
-                  >
-                    Book Strategy Call
-                  </a>
-                </div>
-              </div>
-
-              <div className="glass-panel p-5 sm:p-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
-                    <Image
-                      src="/chamahub-mark.svg"
-                      alt="ChamaHub logo mark"
-                      width={28}
-                      height={28}
-                      className="h-6 w-6"
-                    />
-                    ChamaHub
-                  </div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
-                    Flagship platform
-                  </span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mt-5">
-                  Rotating savings groups, coordinated from one place.
-                </h3>
-                <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                  Moderators manage rotations, members track contributions, and every payout stays visible.
-                </p>
-
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {chamaHighlights.map((highlight) => (
-                    <div
-                      key={highlight.title}
-                      className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4"
-                    >
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
-                        {highlight.title}
-                      </p>
-                      <p className="text-sm text-[var(--foreground)]/75 mt-2">
-                        {highlight.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link
-                    href="/chama"
-                    className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2 text-xs font-semibold"
-                  >
-                    Moderator Dashboard
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="/chama/ledger"
-                    className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
-                  >
-                    Member Ledger
-                  </Link>
-                </div>
-              </div>
-
-              <div className="glass-panel p-5 sm:p-6">
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-[var(--accent)]">
-                    <Image
-                      src="/logo1.png"
-                      alt="V-Tix Africa logo"
-                      width={28}
-                      height={28}
-                      className="h-6 w-6"
-                    />
-                    V-Tix Africa
-                  </div>
-                  <span className="text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
-                    Event Ticketing Platform
-                  </span>
-                </div>
-
-                <h3 className="text-xl sm:text-2xl font-semibold mt-5">
-                  Event Ticketing & Booking Platform for Africa.
-                </h3>
-                <p className="text-[15px] text-[var(--foreground)]/78 mt-3 max-w-2xl">
-                  Power football matches, concerts, festivals, and corporate events with mobile-first ticketing.
-                </p>
-
-                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {vtixHighlights.map((highlight) => (
-                    <div
-                      key={highlight.title}
-                      className="rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-4"
-                    >
-                      <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
-                        {highlight.title}
-                      </p>
-                      <p className="text-sm text-[var(--foreground)]/75 mt-2">
-                        {highlight.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Link
-                    href="/vtix"
-                    className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-4 py-2 text-xs font-semibold"
-                  >
-                    Open V-Tix Africa
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="/vtix/dashboard"
-                    className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--glass-surface-strong)] transition"
-                  >
-                    Organizer Dashboard
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {productTracks.map((track) => {
-                const Icon = track.icon;
-                return (
-                  <div
-                    key={track.title}
-                    className="rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 sm:p-6"
-                  >
-                    <div className="flex items-center gap-2 text-sm font-semibold">
-                      <Icon className="h-5 w-5 text-[var(--button-bg)]" />
-                      {track.title}
-                    </div>
-                    <p className="text-sm text-[var(--muted)] mt-3">{track.description}</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {track.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-[var(--foreground)]/70"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            ))}
           </div>
         </div>
       </div>

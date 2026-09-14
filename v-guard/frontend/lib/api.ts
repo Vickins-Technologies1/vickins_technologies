@@ -1,7 +1,11 @@
 import type { CheckoutResponse, DashboardData, LoginResponse, ProxyPlan, ProxySyncResult } from "./types";
 import { getAccessToken, readSession, writeSession } from "./session";
 
-const API_BASE = "/api/v1";
+const API_BASE = normalizeAPIBase(process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1");
+
+function normalizeAPIBase(value: string) {
+  return value.replace(/\/+$/, "");
+}
 
 async function request<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
   const headers = new Headers(init.headers);
