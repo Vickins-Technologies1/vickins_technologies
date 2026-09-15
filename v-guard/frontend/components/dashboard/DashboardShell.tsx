@@ -1,266 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ArrowPathIcon, ArrowRightOnRectangleIcon, Bars3Icon, CheckIcon, ClipboardDocumentIcon, CreditCardIcon, CubeIcon, DocumentTextIcon, HomeIcon, MoonIcon, ShieldCheckIcon, SparklesIcon, SunIcon, UsersIcon, XMarkIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 import { clearSession, readSession } from "../../lib/session";
 import type { DashboardData, ProxySyncResult } from "../../lib/types";
 
-type Props = {
-  data: DashboardData | null;
-  loading: boolean;
-  error: string | null;
-  onRefresh: () => void;
-  onSyncProxy: () => Promise<void>;
-  syncingProxy: boolean;
-  syncResult: ProxySyncResult | null;
-};
+type Props = { data: DashboardData | null; loading: boolean; error: string | null; onRefresh: () => void; onSyncProxy: () => Promise<void>; syncingProxy: boolean; syncResult: ProxySyncResult | null };
+function formatGB(value: number) { return `${value.toFixed(2)} GB`; }
+function money(amount: number, currency: string) { return `${currency} ${(amount / 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}`; }
+const nav = [{ label: "Overview", href: "/dashboard", icon: HomeIcon }, { label: "Plans & billing", href: "/billing", icon: CreditCardIcon }];
 
-function formatBytes(bytes: number) {
-  if (!bytes) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let size = bytes;
-  let index = 0;
-  while (size >= 1024 && index < units.length - 1) {
-    size /= 1024;
-    index += 1;
-  }
-  return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[index]}`;
+export function AppShell({ children, userName, role, onRefresh, refreshing, onSignOut }: { children: React.ReactNode; userName?: string; role?: string; onRefresh?: () => void; refreshing?: boolean; onSignOut?: () => void }) {
+  const router = useRouter(); const pathname = usePathname(); const [collapsed, setCollapsed] = useState(false); const [mobileOpen, setMobileOpen] = useState(false); const [dark, setDark] = useState(true);
+  useEffect(() => { const stored = window.localStorage.getItem("vguard_theme"); const next = stored === "light" ? "light" : "dark"; setDark(next === "dark"); document.documentElement.dataset.theme = next; }, []);
+  function toggleTheme() { const next = dark ? "light" : "dark"; setDark(!dark); document.documentElement.dataset.theme = next; window.localStorage.setItem("vguard_theme", next); }
+  function signOut() { clearSession(); onSignOut?.(); router.replace("/login"); }
+  return <div className={`admin-app ${collapsed ? "sidebar-collapsed" : ""}`}>
+    {mobileOpen && <button className="drawer-overlay" aria-label="Close navigation" onClick={() => setMobileOpen(false)} />}
+    <aside className={`admin-sidebar ${mobileOpen ? "drawer-open" : ""}`}><div className="sidebar-brand"><Image className="brand-logo" src="/v-guard-logo.png" alt="VornShield logo" width={36} height={36} priority /><span className="brand-copy"><strong>VORNSHIELD</strong><small>SYSTEM CONTROL</small></span><button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><XMarkIcon /></button></div><div className="sidebar-rule" />
+      <p className="sidebar-label">Workspace</p><nav className="sidebar-nav" aria-label="Main navigation">{nav.map(({ label, href, icon: Icon }) => <Link key={href} href={href} className={`sidebar-link ${pathname === href ? "active" : ""}`} onClick={() => setMobileOpen(false)}><Icon /><span>{label}</span></Link>)}</nav>
+      <p className="sidebar-label sidebar-label-spaced">Operations</p><nav className="sidebar-nav"><Link href="/dashboard#usage" className="sidebar-link" onClick={() => setMobileOpen(false)}><ChartBarIcon /><span>Usage</span></Link><span className="sidebar-link disabled" title="Not available in this API"><DocumentTextIcon /><span>Audit logs</span><em>soon</em></span><span className="sidebar-link disabled" title="Not available in this API"><UsersIcon /><span>Users</span><em>soon</em></span></nav>
+      <div className="sidebar-bottom"><div className="sidebar-user"><span className="avatar">{(userName || "V").slice(0, 1).toUpperCase()}</span><span className="sidebar-user-copy"><strong>{userName || "VornShield user"}</strong><small>{role || "account"}</small></span></div><button className="sidebar-signout" onClick={signOut}><ArrowRightOnRectangleIcon /><span>Sign out</span></button></div>
+    </aside><div className="admin-main"><header className="admin-header"><div className="header-left"><button className="icon-button mobile-menu" onClick={() => setMobileOpen(true)} aria-label="Open navigation"><Bars3Icon /></button><button className="icon-button desktop-collapse" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle sidebar"><Bars3Icon /></button><div><p className="header-kicker">VORNSHIELD / SECURE CONSOLE</p><p className="header-page">{pathname === "/billing" ? "Plans & billing" : "Overview"}</p></div></div><div className="header-actions"><button className="icon-button" onClick={toggleTheme} aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}>{dark ? <SunIcon /> : <MoonIcon />}</button>{onRefresh && <button className="header-refresh" onClick={onRefresh} disabled={refreshing}><ArrowPathIcon className={refreshing ? "spin" : ""} /> <span>{refreshing ? "Refreshing" : "Refresh"}</span></button>}<div className="header-profile"><span className="avatar">{(userName || "V").slice(0, 1).toUpperCase()}</span><span><strong>{userName || "Account"}</strong><small>{role || "authenticated"}</small></span></div><button className="signout-desktop" onClick={signOut} aria-label="Sign out"><ArrowRightOnRectangleIcon /></button></div></header><main className="admin-content">{children}</main></div>
+  </div>;
 }
 
-function formatCredits(value: number) {
-  const safe = Number.isFinite(value) ? value : 0;
-  return `${safe.toFixed(2)} credits`;
-}
+function CopyCredential({ label, value }: { label: string; value: string }) { const [copied, setCopied] = useState(false); async function copy() { await navigator.clipboard?.writeText(value); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } return <div className="credential-row"><div><span className="credential-label">{label}</span><code>{value}</code></div><button className="copy-button" onClick={() => void copy()} aria-label={`Copy ${label} credential`}>{copied ? <><CheckIcon /> Copied</> : <><ClipboardDocumentIcon /> Copy</>}</button></div>; }
 
 export default function DashboardShell({ data, loading, error, onRefresh, onSyncProxy, syncingProxy, syncResult }: Props) {
-  const router = useRouter();
-  const [sessionReady, setSessionReady] = useState(false);
-  const [hasSession, setHasSession] = useState(true);
-
-  useEffect(() => {
-    setSessionReady(true);
-    const session = readSession();
-    setHasSession(Boolean(session));
-    if (!session) {
-      router.replace("/login");
-    }
-  }, [router]);
-
-  if (!sessionReady || !hasSession) {
-    return (
-      <div className="glass-strong panel p-6 text-sm text-[var(--muted)]">
-        Redirecting to sign in...
-      </div>
-    );
-  }
-
-  if (loading) {
-    return <div className="glass-strong panel p-6 text-sm text-[var(--muted)]">Loading dashboard...</div>;
-  }
-
-  if (error || !data) {
-    return (
-      <div className="glass-strong panel p-6">
-        <p className="text-sm text-red-200">{error ?? "Dashboard data is unavailable."}</p>
-        <button
-          className="mt-4 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
-          onClick={onRefresh}
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
-
-  const statCards = [
-    { label: "Balance", value: formatCredits(data.stats.balanceCredits) },
-    { label: "Plans", value: String(data.stats.availablePlans) },
-    { label: "Payments", value: String(data.stats.recentPayments) },
-    { label: "Usage", value: formatBytes(data.stats.totalUsedBytes) },
-  ];
-
-  const usageSeries = data.usage.length > 0 ? data.usage.slice(0, 10) : [];
-
-  return (
-    <div className="grid gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="panel-title">Welcome back</p>
-          <h1 className="mt-2 text-3xl font-semibold">{data.user.displayName || data.user.email}</h1>
-          <p className="mt-2 text-sm text-[var(--muted)]">Role: {data.user.role}</p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <button
-            className="rounded-full border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-2 text-sm font-semibold"
-            onClick={onRefresh}
-          >
-            Refresh
-          </button>
-          <button
-            className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
-            onClick={() => {
-              clearSession();
-              router.replace("/login");
-            }}
-          >
-            Sign out
-          </button>
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {statCards.map((card) => (
-          <div key={card.label} className="glass-strong panel p-5">
-            <p className="panel-title">{card.label}</p>
-            <p className="mt-3 text-3xl font-semibold">{card.value}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="glass-strong panel p-5 sm:p-6">
-          <p className="panel-title">Usage</p>
-          <h2 className="mt-3 text-2xl font-semibold">Recent bandwidth usage</h2>
-          <div className="mt-8 flex h-56 items-end gap-2">
-            {usageSeries.length > 0 ? usageSeries.map((item, index) => {
-              const height = Math.min(100, Math.max(12, Math.round((item.deltaBytes / Math.max(1, data.stats.totalUsedBytes)) * 300 + 20)));
-              return (
-                <div key={`${item.recordedAt}-${index}`} className="flex-1">
-                  <div
-                    className="rounded-t-2xl bg-[linear-gradient(180deg,rgba(var(--accent-sky-rgb),0.95),rgba(var(--accent-rgb),0.82))]"
-                    style={{ height: `${height}%` }}
-                    title={`${item.source} - ${formatBytes(item.deltaBytes)}`}
-                  />
-                </div>
-              );
-            }) : (
-              <div className="text-sm text-[var(--muted)]">No usage data yet.</div>
-            )}
-          </div>
-          <div className="mt-6 grid gap-3">
-            {usageSeries.slice(0, 4).map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-                <div>
-                  <p className="font-medium">{item.source}</p>
-                  <p className="text-xs text-[var(--muted)]">{new Date(item.recordedAt).toLocaleString()}</p>
-                </div>
-                <p className="text-sm font-semibold">{formatBytes(item.deltaBytes)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass-strong panel p-5 sm:p-6">
-          <p className="panel-title">Billing</p>
-          <h2 className="mt-3 text-2xl font-semibold">Recent top-ups</h2>
-          <div className="mt-5 space-y-3">
-            {data.payments.length > 0 ? data.payments.map((payment) => (
-              <div key={payment.id} className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-                <div>
-                  <p className="font-medium">{payment.reference}</p>
-                  <p className="text-sm text-[var(--muted)]">
-                    {payment.currency} {payment.amountMinorUnits / 100} • {payment.status}
-                  </p>
-                </div>
-                <span className="rounded-full border border-[rgba(var(--accent-sky-rgb),0.28)] bg-[rgba(var(--accent-sky-rgb),0.1)] px-3 py-1 text-xs font-semibold text-[var(--foreground)]">
-                  +{payment.credits} cr
-                </span>
-              </div>
-            )) : (
-              <div className="rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3 text-sm text-[var(--muted)]">
-                No recent payments.
-              </div>
-            )}
-          </div>
-
-          <div className="mt-6 rounded-3xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] p-4">
-            <p className="panel-title">Proxy credentials</p>
-            <div className="mt-4 space-y-3 text-sm">
-              <div>
-                <p className="text-[var(--muted)]">HTTP</p>
-                <p className="font-medium">
-                  {data.httpProxy.username}@{data.httpProxy.host}:{data.httpProxy.port}
-                </p>
-              </div>
-              <div>
-                <p className="text-[var(--muted)]">SOCKS5</p>
-                <p className="font-medium">
-                  {data.socks5Proxy.username}@{data.socks5Proxy.host}:{data.socks5Proxy.port}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass-strong panel p-5 sm:p-6 lg:col-span-2">
-          <p className="panel-title">Plans</p>
-          <h2 className="mt-3 text-2xl font-semibold">Available proxy packages</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {data.plans.map((plan) => (
-              <div key={plan.id} className={`rounded-3xl border p-5 ${plan.isPopular ? "border-[rgba(var(--accent-rgb),0.35)] bg-[rgba(255,255,255,0.08)]" : "border-[var(--border)] bg-[rgba(255,255,255,0.05)]"}`}>
-                <p className="panel-title">{plan.name}</p>
-                <p className="mt-2 text-2xl font-semibold">
-                  {plan.currency} {plan.priceMinorUnits / 100}
-                </p>
-                <p className="mt-2 text-sm text-[var(--muted)]">{plan.credits} credits</p>
-                <p className="mt-4 text-sm text-[var(--muted)]">{plan.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass-strong panel p-5 sm:p-6">
-          <p className="panel-title">Live profile</p>
-          <h2 className="mt-3 text-2xl font-semibold">Account state</h2>
-          <div className="mt-4 space-y-3 text-sm">
-            <div className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-              <span>Credits</span>
-              <span className="font-semibold">{data.user.credits}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-              <span>Proxy user</span>
-              <span className="font-semibold">{data.user.proxyUsername || "Pending"}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-              <span>Status</span>
-              <span className="font-semibold">{data.user.active ? "Active" : "Inactive"}</span>
-            </div>
-            <div className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3">
-              <span>Server time</span>
-              <span className="font-semibold">{new Date(data.stats.serverTime).toLocaleTimeString()}</span>
-            </div>
-          </div>
-          <Link
-            href="/billing"
-            className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white"
-          >
-            Top up credits
-          </Link>
-          {data.user.role === "admin" && (
-            <div className="mt-3 space-y-3">
-              <button
-                className="inline-flex w-full items-center justify-center rounded-full border border-[var(--border)] bg-[rgba(255,255,255,0.05)] px-4 py-3 text-sm font-semibold"
-                onClick={() => void onSyncProxy()}
-                disabled={syncingProxy}
-              >
-                {syncingProxy ? "Syncing proxy daemons..." : "Sync proxy daemons"}
-              </button>
-              {syncResult ? (
-                <div className="rounded-3xl border border-[var(--border)] bg-[rgba(255,255,255,0.05)] p-4 text-xs text-[var(--muted)]">
-                  <p className="font-semibold text-[var(--foreground)]">Last sync</p>
-                  <p className="mt-2">Users synced: {syncResult.userCount}</p>
-                  <p className="mt-1 break-all">HTTP config: {syncResult.httpConfigPath}</p>
-                  <p className="mt-1 break-all">SOCKS config: {syncResult.socksConfigPath}</p>
-                  <p className="mt-1 break-all">Users file: {syncResult.usersPath}</p>
-                </div>
-              ) : null}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const router = useRouter(); const [sessionReady, setSessionReady] = useState(false); const [hasSession, setHasSession] = useState(true); useEffect(() => { setSessionReady(true); const session = readSession(); setHasSession(Boolean(session)); if (!session) router.replace("/login"); }, [router]);
+  if (!sessionReady || !hasSession) return <div className="auth-redirect">Redirecting to sign in...</div>;
+  const userName = data?.user.displayName || data?.user.email || "Account";
+  if (loading) return <AppShell userName={userName}><div className="skeleton-page"><div className="skeleton-line wide" /><div className="metric-grid">{[1, 2, 3, 4].map((item) => <div className="skeleton-card" key={item} />)}</div><div className="skeleton-card tall" /></div></AppShell>;
+  if (error || !data) return <AppShell userName={userName}><div className="state-card error-state"><div className="state-icon"><ShieldCheckIcon /></div><h1>Unable to load account data</h1><p>{error ?? "Dashboard data is unavailable."}</p><button className="primary-button" onClick={onRefresh}>Try again</button></div></AppShell>;
+  const plans = data.plans || [], payments = data.payments || [], usage = data.usage || [], usageSeries = usage.slice(0, 10); const stats = [{ label: "Traffic balance", value: formatGB(data.stats.trafficBalanceGB), note: "GB remaining", icon: ShieldCheckIcon }, { label: "Active plans", value: String(data.stats.availablePlans), note: "Traffic packs", icon: CubeIcon }, { label: "Payments", value: String(data.stats.recentPayments), note: "Recent top-ups", icon: CreditCardIcon }, { label: "Traffic used", value: formatGB(data.stats.trafficUsedGB), note: `${data.stats.usagePercent.toFixed(1)}% of total`, icon: ChartBarIcon }];
+  return <AppShell userName={userName} role={data.user.role} onRefresh={onRefresh} refreshing={loading} onSignOut={() => clearSession()}><div className="dashboard-stack"><section className="welcome-row"><div><p className="eyebrow-blue">ACCOUNT OVERVIEW</p><h1>Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {userName.split(" ")[0]}</h1><p className="subtle">A compact view of your VornShield resources and activity.</p></div><div className="live-pill"><span /> {data.user.active ? "Account active" : "Account inactive"}</div></section>
+    <section className="metric-grid">{stats.map(({ label, value, note, icon: Icon }) => <article className="metric-card" key={label}><div className="metric-top"><span className="metric-label">{label}</span><span className="metric-icon"><Icon /></span></div><strong>{value}</strong><small>{note}</small></article>)}</section>
+    <section className="content-grid primary-grid"><article className="panel-card usage-panel" id="usage"><div className="panel-heading"><div><p className="eyebrow-blue">TRAFFIC OVERVIEW</p><h2>{formatGB(data.stats.trafficBalanceGB)} remaining</h2></div><span className="panel-meta">{data.stats.usagePercent.toFixed(1)}% used</span></div><div className="traffic-progress"><span style={{ width: `${Math.min(100, data.stats.usagePercent)}%` }} /></div><div className="traffic-breakdown"><div><span>Used</span><strong>{formatGB(data.stats.trafficUsedGB)}</strong></div><div><span>Total</span><strong>{formatGB(data.stats.trafficTotalGB)}</strong></div><div><span>Remaining</span><strong>{formatGB(data.stats.trafficBalanceGB)}</strong></div></div><div className="usage-chart">{usageSeries.length ? usageSeries.map((item, index) => <div className="bar-wrap" key={item.id}><div className="usage-bar" style={{ height: `${Math.max(10, Math.min(100, (item.trafficUsedGB / Math.max(0.01, data.stats.trafficUsedGB)) * 100))}%` }} title={`${item.source}: ${formatGB(item.trafficUsedGB)}`} /><span>{index + 1}</span></div>) : <div className="empty-inline"><ChartBarIcon /><span>No traffic data yet.</span></div>}</div>{usageSeries.length > 0 && <div className="usage-list">{usageSeries.slice(0, 3).map((item) => <div key={item.id}><span>{item.source}<small>{new Date(item.recordedAt).toLocaleString()}</small></span><strong>{formatGB(item.trafficUsedGB)}</strong></div>)}</div>}</article>
+      <article className="panel-card status-panel"><div className="panel-heading"><div><p className="eyebrow-blue">ACCOUNT STATUS</p><h2>Live state</h2></div><SparklesIcon className="heading-icon" /></div><div className="status-active"><span />{data.user.active ? "Active" : "Inactive"}</div><div className="status-list"><div><span>GB remaining</span><strong>{formatGB(data.user.trafficBalanceGB)}</strong></div><div><span>Proxy user</span><strong>{data.user.proxyUsername || "Pending"}</strong></div><div><span>Server time</span><strong>{new Date(data.stats.serverTime).toLocaleTimeString()}</strong></div></div><Link href="/billing" className="primary-button full">Buy proxy traffic <ArrowRightOnRectangleIcon /></Link></article></section>
+    <section className="content-grid secondary-grid"><article className="panel-card"><div className="panel-heading"><div><p className="eyebrow-blue">PROXY ACCESS</p><h2>Credentials</h2></div><span className="secure-badge"><ShieldCheckIcon /> Secure</span></div><div className="credentials-list"><CopyCredential label="HTTP" value={`${data.httpProxy.username}@${data.httpProxy.host}:${data.httpProxy.port}`} /><CopyCredential label="SOCKS5" value={`${data.socks5Proxy.username}@${data.socks5Proxy.host}:${data.socks5Proxy.port}`} /></div></article><article className="panel-card"><div className="panel-heading"><div><p className="eyebrow-blue">BILLING</p><h2>Recent top-ups</h2></div><Link href="/billing" className="text-link">View all</Link></div><div className="payment-list">{payments.length ? payments.slice(0, 4).map((payment) => <div className="payment-row" key={payment.id}><span className="payment-dot"><CreditCardIcon /></span><span><strong>{payment.reference}</strong><small>{payment.status} · {new Date(payment.createdAt).toLocaleDateString()}</small></span><b>{money(payment.amountMinorUnits, payment.currency)}</b></div>) : <div className="empty-inline compact"><CreditCardIcon /><span>No recent payments.</span></div>}</div></article></section>
+    <section className="panel-card plans-panel"><div className="panel-heading"><div><p className="eyebrow-blue">AVAILABLE PLANS</p><h2>Choose proxy traffic</h2></div><Link href="/billing" className="text-link">Open billing <ArrowRightOnRectangleIcon /></Link></div><div className="plan-grid">{plans.length ? plans.slice(0, 3).map((plan) => <div className={`plan-card ${plan.isPopular ? "popular" : ""}`} key={plan.id}>{plan.isPopular && <span className="popular-label">POPULAR</span>}<span className="plan-name">{plan.name}</span><strong>{money(plan.priceMinorUnits, plan.currency)}</strong><span className="plan-credits">{formatGB(plan.trafficGB)}</span><p>{plan.description}</p><Link href="/billing" className="plan-link">Select plan <ArrowRightOnRectangleIcon /></Link></div>) : <div className="empty-inline compact"><CubeIcon /><span>No plans available.</span></div>}</div></section>
+    {data.user.role === "admin" && <section className="admin-sync"><div><p className="eyebrow-blue">ADMIN TOOL</p><strong>Proxy daemon configuration</strong><small>Sync active users to the running proxy configuration.</small></div><button className="secondary-button" onClick={() => void onSyncProxy()} disabled={syncingProxy}><ArrowPathIcon className={syncingProxy ? "spin" : ""} />{syncingProxy ? "Syncing" : "Sync daemons"}</button>{syncResult && <span className="sync-success">{syncResult.userCount} users synced</span>}</section>}
+  </div></AppShell>;
 }

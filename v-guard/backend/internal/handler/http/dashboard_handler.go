@@ -48,6 +48,9 @@ func handlePayments(c *gin.Context, billing *usecase.BillingService) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to load payments"})
 		return
 	}
+	if payments == nil {
+		payments = []domain.PaymentIntent{}
+	}
 	c.JSON(http.StatusOK, gin.H{"data": payments})
 }
 

@@ -39,13 +39,13 @@ export default function LoginPage() {
         <div className="flex items-center gap-4">
           <Image
             src="/v-guard-logo.png"
-            alt="V-Guard logo"
+            alt="VornShield logo"
             width={68}
             height={68}
             priority
             className="h-16 w-16 object-contain drop-shadow-[0_0_22px_rgba(var(--accent-sky-rgb),0.34)]"
           />
-          <p className="panel-title">V-Guard access</p>
+          <p className="panel-title">VornShield access</p>
         </div>
         <h1 className="mt-3 text-3xl font-semibold">{mode === "login" ? "Sign in" : "Create account"}</h1>
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>

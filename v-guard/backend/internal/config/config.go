@@ -48,7 +48,7 @@ func Load() (Config, error) {
 	cfg := Config{
 		Env:                     getString("APP_ENV", "development"),
 		HTTPAddr:                getHTTPAddr(),
-		AppName:                 getString("APP_NAME", "V-Guard"),
+		AppName:                 getString("APP_NAME", "VornShield"),
 		FrontendURL:             frontendURL,
 		CORSAllowedOrigins:      getStringSlice("CORS_ALLOWED_ORIGINS", frontendURL),
 		JWTAccessSecret:         os.Getenv("JWT_ACCESS_SECRET"),
@@ -71,7 +71,7 @@ func Load() (Config, error) {
 		ProxyPublicHost:         getString("PROXY_PUBLIC_HOST", "v-guard.vickinstechnologies.com"),
 		BootstrapAdminEmail:     strings.ToLower(strings.TrimSpace(os.Getenv("BOOTSTRAP_ADMIN_EMAIL"))),
 		BootstrapAdminPassword:  os.Getenv("BOOTSTRAP_ADMIN_PASSWORD"),
-		BootstrapAdminName:      getString("BOOTSTRAP_ADMIN_NAME", "V-Guard Admin"),
+		BootstrapAdminName:      getString("BOOTSTRAP_ADMIN_NAME", "VornShield Admin"),
 	}
 
 	cfg.JWTAccessTTL = getDuration("JWT_ACCESS_TTL", 15*time.Minute)

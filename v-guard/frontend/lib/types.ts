@@ -7,7 +7,8 @@ export type User = {
   email: string;
   role: Role;
   displayName: string;
-  credits: number;
+  trafficBalanceGB: number;
+  trafficUsedGB: number;
   totalUsedBytes: number;
   proxyUsername: string;
   rateLimitBytes: number;
@@ -23,7 +24,7 @@ export type ProxyPlan = {
   proxyType: ProxyType;
   currency: string;
   priceMinorUnits: number;
-  credits: number;
+  trafficGB: number;
   bandwidthBytes: number;
   durationDays: number;
   isPopular: boolean;
@@ -39,7 +40,8 @@ export type PaymentIntent = {
   flutterwaveLink: string;
   currency: string;
   amountMinorUnits: number;
-  credits: number;
+  trafficGB: number;
+  pricePerGBUSDCents: number;
   status: string;
   createdAt: string;
   paidAt?: string | null;
@@ -64,7 +66,7 @@ export type UsageSnapshot = {
   bytesOut: number;
   totalBytes: number;
   deltaBytes: number;
-  creditsUsed: number;
+  trafficUsedGB: number;
   recordedAt: string;
 };
 
@@ -77,7 +79,10 @@ export type ProxyCredential = {
 };
 
 export type DashboardStats = {
-  balanceCredits: number;
+  trafficBalanceGB: number;
+  trafficUsedGB: number;
+  trafficTotalGB: number;
+  usagePercent: number;
   availablePlans: number;
   recentPayments: number;
   recentUsageItems: number;

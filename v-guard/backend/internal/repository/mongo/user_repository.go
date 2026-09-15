@@ -64,6 +64,11 @@ func (r *UserRepository) AddCredits(ctx context.Context, id primitive.ObjectID, 
 	return err
 }
 
+func (r *UserRepository) AddUsage(ctx context.Context, id primitive.ObjectID, bytes int64) error {
+	_, err := r.col.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$inc": bson.M{"totalUsedBytes": bytes}})
+	return err
+}
+
 func (r *UserRepository) ListActive(ctx context.Context) ([]domain.User, error) {
 	cur, err := r.col.Find(ctx, bson.M{"active": true}, options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}}))
 	if err != nil {

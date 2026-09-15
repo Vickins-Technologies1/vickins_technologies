@@ -1,5 +1,5 @@
 import type { CheckoutResponse, DashboardData, LoginResponse, ProxyPlan, ProxySyncResult } from "./types";
-import { getAccessToken, readSession, writeSession } from "./session";
+import { clearSession, getAccessToken, readSession, writeSession } from "./session";
 
 const API_BASE = normalizeAPIBase(process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/v1");
 
@@ -25,6 +25,9 @@ async function request<T>(path: string, init: RequestInit = {}, retry = true): P
       if (refreshed) {
         return request<T>(path, init, false);
       }
+    }
+    if (response.status === 401 && !path.startsWith("/auth/")) {
+      clearSession();
     }
     const payload = await response.json().catch(() => ({}));
     throw new Error(payload?.error ?? `Request failed with status ${response.status}`);
@@ -82,6 +85,13 @@ export async function createCheckout(planId: string) {
     method: "POST",
     body: JSON.stringify({ planId }),
   });
+}
+
+export async function createTrafficCheckout(trafficGB: string) {
+	return request<CheckoutResponse>("/traffic/purchase", {
+		method: "POST",
+		body: JSON.stringify({ trafficGB }),
+	});
 }
 
 export async function syncProxyDaemons() {

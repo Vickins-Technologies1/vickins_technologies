@@ -14,6 +14,7 @@ import (
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/payments"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/proxy"
 	"github.com/vickins-technologies/v-guard/backend/internal/infrastructure/security"
+	"github.com/vickins-technologies/v-guard/backend/internal/pricing"
 	mongorepo "github.com/vickins-technologies/v-guard/backend/internal/repository/mongo"
 	"github.com/vickins-technologies/v-guard/backend/internal/usecase"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
@@ -45,14 +46,15 @@ func NewApp(ctx context.Context, cfg config.Config) (*App, error) {
 	clock := usecase.SystemClock{}
 	gateway := payments.New(cfg.FlutterwaveBaseURL, cfg.FlutterwaveSecretKey)
 	proxyProvisioner := proxy.NewProvisioner(cfg.ProxyPublicHost, cfg.ProxyHTTPPort, cfg.ProxyPublicHost, cfg.ProxySOCKSPort)
+	proxyProvider := proxy.NewExistingSharedProvider(proxyProvisioner)
 	daemonManager := proxy.NewDaemonManager(userRepo, cfg)
 
 	authSvc := usecase.NewAuthService(userRepo, sessionRepo, cfg.JWTAccessSecret, cfg.JWTRefreshSecret, cfg.JWTAccessTTL, cfg.JWTRefreshTTL, clock)
-	billingSvc := usecase.NewBillingService(planRepo, paymentRepo, gateway, userRepo, clock, cfg.FrontendURL)
+	billingSvc := usecase.NewBillingService(planRepo, paymentRepo, gateway, userRepo, clock, cfg.FrontendURL, cfg.CreditPerGB)
 	proxySvc := usecase.NewProxyService(userRepo, usageRepo, clock, cfg.CreditPerGB, cfg.ProxyPublicHost, cfg.ProxyHTTPPort, cfg.ProxySOCKSPort)
-	dashboardSvc := usecase.NewDashboardService(userRepo, planRepo, paymentRepo, usageRepo, proxyProvisioner, clock)
+	dashboardSvc := usecase.NewDashboardService(userRepo, planRepo, paymentRepo, usageRepo, proxyProvisioner, clock, cfg.CreditPerGB)
 
-	router := httpHandler.NewRouter(cfg, authSvc, billingSvc, dashboardSvc, proxySvc, daemonManager)
+	router := httpHandler.NewRouter(cfg, authSvc, billingSvc, dashboardSvc, proxySvc, daemonManager, proxyProvider)
 
 	app := &http.Server{
 		Addr:              cfg.HTTPAddr,
@@ -97,16 +99,14 @@ func seedPlans(ctx context.Context, repo *mongorepo.PlanRepository) error {
 	plans := []struct {
 		name      string
 		desc      string
-		currency  string
-		price     int64
-		credits   float64
-		bandwidth int64
+		trafficGB float64
 		days      int
 		popular   bool
 	}{
-		{"Starter", "For individuals who need secure private proxy access.", "NGN", 25000, 15, 50 * 1024 * 1024 * 1024, 30, false},
-		{"Growth", "For teams with recurring proxy workloads.", "KES", 6000, 60, 200 * 1024 * 1024 * 1024, 30, true},
-		{"Enterprise", "For high-volume proxy pools and custom SLAs.", "USD", 12000, 180, 750 * 1024 * 1024 * 1024, 30, false},
+		{"Starter", "For individuals who need secure private proxy access.", 1, 30, false},
+		{"Growth", "For teams with recurring proxy workloads.", 5, 30, true},
+		{"Business", "For recurring proxy workloads and larger campaigns.", 10, 30, false},
+		{"Pro", "For high-volume proxy workloads.", 25, 30, false},
 	}
 
 	for _, plan := range plans {
@@ -114,10 +114,11 @@ func seedPlans(ctx context.Context, repo *mongorepo.PlanRepository) error {
 			Name:            plan.name,
 			Description:     plan.desc,
 			ProxyType:       domain.ProxyTypeHTTP,
-			Currency:        domain.Currency(plan.currency),
-			PriceMinorUnits: plan.price,
-			Credits:         plan.credits,
-			BandwidthBytes:  plan.bandwidth,
+			Currency:        domain.Currency("USD"),
+			PriceMinorUnits: pricing.PricePerGBUSDCents * int64(plan.trafficGB),
+			Credits:         plan.trafficGB,
+			TrafficGB:       plan.trafficGB,
+			BandwidthBytes:  int64(plan.trafficGB) * pricing.BytesPerGB,
 			DurationDays:    plan.days,
 			IsPopular:       plan.popular,
 			Active:          true,

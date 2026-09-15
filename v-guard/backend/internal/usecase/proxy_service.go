@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/vickins-technologies/v-guard/backend/internal/domain"
+	"github.com/vickins-technologies/v-guard/backend/internal/pricing"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -82,22 +83,31 @@ func (s *ProxyService) RecordUsage(ctx context.Context, userID primitive.ObjectI
 	if latest != nil && total > latest.TotalBytes {
 		delta = total - latest.TotalBytes
 	}
-	credits := float64(delta) / float64(1024*1024*1024) * s.creditsPerGB
+	trafficGB := pricing.GBFromBytes(delta)
+	credits := trafficGB * s.creditsPerGB
 	snapshot := &domain.UsageSnapshot{
-		UserID:      userID,
-		Source:      source,
-		BytesIn:     bytesIn,
-		BytesOut:    bytesOut,
-		TotalBytes:  total,
-		DeltaBytes:  delta,
-		CreditsUsed: credits,
-		RecordedAt:  s.clock.Now(),
+		UserID:        userID,
+		Source:        source,
+		BytesIn:       bytesIn,
+		BytesOut:      bytesOut,
+		TotalBytes:    total,
+		DeltaBytes:    delta,
+		CreditsUsed:   credits,
+		TrafficUsedGB: trafficGB,
+		RecordedAt:    s.clock.Now(),
 	}
 	if err := s.usage.CreateSnapshot(ctx, snapshot); err != nil {
 		return nil, err
 	}
 	if credits > 0 {
-		_ = s.users.DeductCredits(ctx, userID, credits)
+		if err := s.users.DeductCredits(ctx, userID, credits); err != nil {
+			return nil, err
+		}
+	}
+	if delta > 0 {
+		if err := s.users.AddUsage(ctx, userID, delta); err != nil {
+			return nil, err
+		}
 	}
 	return snapshot, nil
 }

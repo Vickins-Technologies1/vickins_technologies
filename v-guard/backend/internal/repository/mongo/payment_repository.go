@@ -33,9 +33,9 @@ func (r *PaymentRepository) FindByReference(ctx context.Context, reference strin
 	return &intent, nil
 }
 
-func (r *PaymentRepository) MarkPaid(ctx context.Context, reference string, paidAt time.Time) error {
-	_, err := r.col.UpdateOne(ctx, bson.M{"reference": reference}, bson.M{"$set": bson.M{"status": "paid", "paidAt": paidAt}})
-	return err
+func (r *PaymentRepository) MarkPaidIfPending(ctx context.Context, reference string, paidAt time.Time) (bool, error) {
+	result, err := r.col.UpdateOne(ctx, bson.M{"reference": reference, "status": "pending"}, bson.M{"$set": bson.M{"status": "paid", "paidAt": paidAt}})
+	return result.ModifiedCount == 1, err
 }
 
 func (r *PaymentRepository) ListRecentByUser(ctx context.Context, userID primitive.ObjectID, limit int) ([]domain.PaymentIntent, error) {

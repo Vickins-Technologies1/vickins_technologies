@@ -19,6 +19,7 @@ type UserRepository interface {
 	Update(context.Context, *domain.User) error
 	DeductCredits(context.Context, primitive.ObjectID, float64) error
 	AddCredits(context.Context, primitive.ObjectID, float64) error
+	AddUsage(context.Context, primitive.ObjectID, int64) error
 	ListActive(context.Context) ([]domain.User, error)
 }
 
@@ -38,7 +39,7 @@ type PlanRepository interface {
 type PaymentRepository interface {
 	CreateIntent(context.Context, *domain.PaymentIntent) error
 	FindByReference(context.Context, string) (*domain.PaymentIntent, error)
-	MarkPaid(context.Context, string, time.Time) error
+	MarkPaidIfPending(context.Context, string, time.Time) (bool, error)
 	ListRecentByUser(context.Context, primitive.ObjectID, int) ([]domain.PaymentIntent, error)
 }
 

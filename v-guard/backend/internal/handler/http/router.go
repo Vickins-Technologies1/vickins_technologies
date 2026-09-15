@@ -16,7 +16,7 @@ type Router struct {
 	engine *gin.Engine
 }
 
-func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.BillingService, dashboard *usecase.DashboardService, proxySvc *usecase.ProxyService, daemon *proxy.DaemonManager) *Router {
+func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.BillingService, dashboard *usecase.DashboardService, proxySvc *usecase.ProxyService, daemon *proxy.DaemonManager, provider proxy.ProxySourceProvider) *Router {
 	gin.SetMode(mode(cfg.Env))
 	r := gin.New()
 	r.Use(gin.Recovery(), gin.Logger())
@@ -41,7 +41,10 @@ func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.Bi
 			secured.GET("/dashboard", func(c *gin.Context) { handleDashboard(c, dashboard, proxySvc) })
 			secured.GET("/payments", func(c *gin.Context) { handlePayments(c, billing) })
 			secured.POST("/checkout", func(c *gin.Context) { handleCheckout(c, billing) })
+			secured.POST("/traffic/purchase", func(c *gin.Context) { handleTrafficPurchase(c, billing) })
 			secured.GET("/proxy/credentials", func(c *gin.Context) { handleCredentials(c, proxySvc) })
+			secured.GET("/proxy/capabilities", func(c *gin.Context) { handleProxyCapabilities(c, provider) })
+			secured.GET("/proxy/locations", func(c *gin.Context) { handleProxyLocations(c, provider) })
 			secured.POST("/proxy/usage", func(c *gin.Context) { handleUsage(c, proxySvc) })
 		}
 

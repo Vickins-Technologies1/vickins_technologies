@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import DashboardShell from "../../components/dashboard/DashboardShell";
 import { loadDashboard, syncProxyDaemons } from "../../lib/api";
-import { readSession } from "../../lib/session";
+import { clearSession, readSession } from "../../lib/session";
 import type { DashboardData, ProxySyncResult } from "../../lib/types";
 
 export default function DashboardPage() {
@@ -18,9 +18,14 @@ export default function DashboardPage() {
     setError(null);
     try {
       const payload = await loadDashboard();
-      setData(payload);
+      setData(normalizeDashboardData(payload));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load dashboard");
+      const message = err instanceof Error ? err.message : "Failed to load dashboard";
+      if (message.includes("status 401") || message.toLowerCase().includes("unauthorized")) {
+        clearSession();
+      }
+      setData(null);
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -59,4 +64,13 @@ export default function DashboardPage() {
       syncResult={syncResult}
     />
   );
+}
+
+function normalizeDashboardData(data: DashboardData): DashboardData {
+  return {
+    ...data,
+    plans: Array.isArray(data.plans) ? data.plans : [],
+    payments: Array.isArray(data.payments) ? data.payments : [],
+    usage: Array.isArray(data.usage) ? data.usage : [],
+  };
 }

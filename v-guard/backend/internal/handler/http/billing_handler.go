@@ -30,6 +30,22 @@ func handleCheckout(c *gin.Context, billing *usecase.BillingService) {
 	c.JSON(http.StatusOK, gin.H{"data": intent})
 }
 
+func handleTrafficPurchase(c *gin.Context, billing *usecase.BillingService) {
+	var input struct {
+		TrafficGB string `json:"trafficGB"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil || input.TrafficGB == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "trafficGB is required"})
+		return
+	}
+	intent, err := billing.CreateCheckoutForTraffic(c.Request.Context(), c.GetString("userID"), input.TrafficGB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid traffic amount"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": intent})
+}
+
 func handleFlutterwaveWebhook(c *gin.Context, billing *usecase.BillingService, cfg config.Config) {
 	raw, err := io.ReadAll(c.Request.Body)
 	if err != nil {
