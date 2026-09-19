@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { diraOsProduct, vGuardProduct } from "@/lib/portfolio-collection";
+import { diraOsProduct, vornShieldProduct } from "@/lib/portfolio-collection";
 
 const products = [
   { ...diraOsProduct, badge: "FLAGSHIP", title: "Dira OS", category: "Business Operating System", className: "lg:col-span-7" },
-  { ...vGuardProduct, badge: "INFRASTRUCTURE PLATFORM", title: "V-Guard", category: "Proxy Management", className: "lg:col-span-5" },
+  { ...vornShieldProduct, badge: "INFRASTRUCTURE PLATFORM", title: "VornShield", category: "Proxy Management", className: "lg:col-span-5" },
 ];
 
 export default function ProductsSection() {

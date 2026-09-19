@@ -36,16 +36,18 @@ export const diraOsProduct = {
   link: "https://dira-os.vickinstechnologies.com/",
 };
 
-export const vGuardProduct = {
-  id: "v-guard",
-  title: "V-Guard",
+export const vornShieldProduct = {
+  id: "vornshield",
+  title: "VornShield",
   category: "VICKINS PRODUCT · INFRASTRUCTURE",
   description:
     "A premium proxy management platform for controlled proxy access, dynamic credentials, usage management and prepaid infrastructure billing.",
   image: "/products/v-guard-logo.png",
   tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
-  link: "https://v-guard.vickinstechnologies.com/",
+  link: "https://vornshield.vickinstechnologies.com/",
 };
+
+const legacyVGuardLink = "https://v-guard.vickinstechnologies.com/";
 
 export const getDefaultGraphicCollection = (): GraphicCollection => ({
   id: 100,
@@ -81,7 +83,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
     category: "VICKINS PRODUCT · FLAGSHIP",
   },
   {
-    ...vGuardProduct,
+    ...vornShieldProduct,
   },
   {
     id: "dev-1",
@@ -121,7 +123,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
       "Enterprise-level web application with robust backend, user management, and custom UI components.",
     image: "/projects/k28.png",
     tags: ["JavaScript", "Fullstack", "Enterprise", "Custom UI"],
-    link: "https://macdeeentertainment.com",
+    link: "https://macdee-entertainment.vercel.app/",
   },
   {
     id: "dev-5",
@@ -175,13 +177,17 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     image: item.image?.trim() || "",
     tags: Array.isArray(item.tags) ? item.tags : [],
     link: item.link?.trim() || "#",
-  }));
+  })).map((project) =>
+    project.id === "v-guard" || project.link === legacyVGuardLink
+      ? { ...vornShieldProduct, category: "VICKINS PRODUCT · INFRASTRUCTURE" }
+      : project
+  );
 
   const defaults = getDefaultDevProjects();
   const hasDiraOs = normalized.some((project) => project.link === diraOsProduct.link || project.id === diraOsProduct.id);
-  const hasVGuard = normalized.some((project) => project.link === vGuardProduct.link || project.id === vGuardProduct.id);
+  const hasVornShield = normalized.some((project) => project.link === vornShieldProduct.link || project.id === vornShieldProduct.id);
   const missingProducts = defaults.filter((product) =>
-    product.id === diraOsProduct.id ? !hasDiraOs : !hasVGuard
+    product.id === diraOsProduct.id ? !hasDiraOs : !hasVornShield
   );
 
   return [...missingProducts, ...normalized];

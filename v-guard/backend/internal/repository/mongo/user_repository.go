@@ -87,5 +87,8 @@ func mapMongoErr(err error) error {
 	if err == mongo.ErrNoDocuments {
 		return domain.ErrNotFound
 	}
+	if mongo.IsDuplicateKeyError(err) {
+		return domain.ErrConflict
+	}
 	return err
 }

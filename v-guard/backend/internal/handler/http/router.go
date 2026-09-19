@@ -45,6 +45,7 @@ func NewRouter(cfg config.Config, auth *usecase.AuthService, billing *usecase.Bi
 			secured.GET("/proxy/credentials", func(c *gin.Context) { handleCredentials(c, proxySvc) })
 			secured.GET("/proxy/capabilities", func(c *gin.Context) { handleProxyCapabilities(c, provider) })
 			secured.GET("/proxy/locations", func(c *gin.Context) { handleProxyLocations(c, provider) })
+			secured.GET("/proxy/inventory", func(c *gin.Context) { handleProxyInventory(c, provider) })
 			secured.POST("/proxy/usage", func(c *gin.Context) { handleUsage(c, proxySvc) })
 		}
 

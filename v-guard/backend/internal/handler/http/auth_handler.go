@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -30,7 +31,7 @@ func handleRegister(c *gin.Context, auth *usecase.AuthService) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if err.Error() == "email already exists" {
+		if errors.Is(err, domain.ErrConflict) || err.Error() == "email already exists" {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}

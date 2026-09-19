@@ -27,8 +27,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try { document.documentElement.dataset.theme = localStorage.getItem('vornshield-theme') === 'light' ? 'light' : 'dark'; } catch (_) {}",
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

@@ -102,6 +102,50 @@ export type DashboardData = {
   proxySync?: ProxySyncResult | null;
 };
 
+export type ProxyCapabilities = {
+  http: boolean;
+  httpsConnect: boolean;
+  socks5: boolean;
+  countryTargeting: boolean;
+  regionTargeting: boolean;
+  cityTargeting: boolean;
+  ispTargeting: boolean;
+  rotation: boolean;
+  stickySessions: boolean;
+  healthChecks: boolean;
+  failover: boolean;
+};
+
+export type ProxyProviderCapabilities = {
+  provider: string;
+  capabilities: ProxyCapabilities;
+};
+
+export type ProxyLocation = {
+  continent?: string;
+  country?: string;
+  region?: string;
+  city?: string;
+  isp?: string;
+  asn?: string;
+};
+
+export type ProxyNode = {
+  id: string;
+  type: string;
+  ip?: string;
+  port?: number;
+  protocol?: string;
+  provider: string;
+  location: ProxyLocation;
+  status: string;
+  healthStatus: string;
+  supportsRotation: boolean;
+  supportsStickySessions: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type LoginResponse = {
   accessToken: string;
   refreshToken: string;

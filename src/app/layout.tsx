@@ -31,11 +31,11 @@ const instrumentSans = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Vickins Technologies | Digital Platforms, Dira OS & V-Guard",
+    default: "Vickins Technologies | Digital Platforms, Dira OS & VornShield",
     template: "%s | Vickins Technologies",
   },
   description:
-    "Vickins Technologies designs and engineers secure digital platforms, including Dira OS, its flagship business operating system, and V-Guard, a proxy management infrastructure platform.",
+    "Vickins Technologies designs and engineers secure digital platforms, including Dira OS, its flagship business operating system, and VornShield, a proxy management infrastructure platform.",
   keywords: [
     "enterprise software development Kenya",
     "Nairobi software company",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     "automation and AI Kenya",
     "DevOps Kenya",
     "Dira OS",
-    "V-Guard",
+    "VornShield",
     "business operating system",
     "POS software Kenya",
     "inventory management software",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Vickins Technologies",
     description:
-      "Digital platforms, Dira OS and V-Guard — engineered by Vickins Technologies for reliability, security, and scale.",
+      "Digital platforms, Dira OS and VornShield — engineered by Vickins Technologies for reliability, security, and scale.",
     url: siteUrl,
     siteName: "Vickins Technologies",
     locale: "en_US",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vickins Technologies",
     description:
-      "Digital platforms, Dira OS and V-Guard — engineered by Vickins Technologies for reliability, security, and scale.",
+      "Digital platforms, Dira OS and VornShield — engineered by Vickins Technologies for reliability, security, and scale.",
     creator: "@VickinsTech",
   },
   alternates: {
@@ -128,10 +128,10 @@ export default function RootLayout({
               "@type": "Organization",
               name: "Vickins Technologies",
               url: siteUrl,
-              description: "Vickins Technologies designs and engineers secure digital platforms, including Dira OS and V-Guard.",
+              description: "Vickins Technologies designs and engineers secure digital platforms, including Dira OS and VornShield.",
               owns: [
                 { "@type": "Product", name: "Dira OS", url: "https://dira-os.vickinstechnologies.com/", category: "Business Operating System" },
-                { "@type": "Product", name: "V-Guard", url: "https://v-guard.vickinstechnologies.com/", category: "Proxy Management Platform" },
+                { "@type": "Product", name: "VornShield", url: "https://vornshield.vickinstechnologies.com/", category: "Proxy Management Platform" },
               ],
             }),
           }}

@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownRightIcon,
   ArrowRightIcon,
   ArrowUpRightIcon,
+  ArrowUpIcon,
   BanknotesIcon,
   Bars3Icon,
   ChartBarIcon,
@@ -17,8 +18,10 @@ import {
   CommandLineIcon,
   GlobeAltIcon,
   LockClosedIcon,
+  MoonIcon,
   ShieldCheckIcon,
   SignalIcon,
+  SunIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
@@ -50,12 +53,21 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   return <div className={`reveal ${className}`} style={{ "--reveal-delay": `${delay}s` } as React.CSSProperties}>{children}</div>;
 }
 
+function ThemeToggle({ theme, onToggle }: { theme: "dark" | "light"; onToggle: () => void }) {
+  const nextTheme = theme === "dark" ? "light" : "dark";
+  return <button className="theme-toggle" type="button" aria-label="Toggle theme" title={`Switch to ${nextTheme} theme`} onClick={onToggle}>{theme === "dark" ? <MoonIcon /> : <SunIcon />}</button>;
+}
+
+function Preloader() {
+  return <div className="preloader" role="status" aria-label="Initializing VornShield"><div className="preloader-orbit"><span /><span /><span /></div><Image src="/v-guard-logo.png" alt="" width={58} height={58} priority className="preloader-logo" /><strong>VORNSHIELD</strong><span className="preloader-line" /><small>INITIALIZING NETWORK CONTROL</small></div>;
+}
+
 function NetworkLines() {
   return <svg className="network-lines" viewBox="0 0 620 520" aria-hidden="true"><defs><linearGradient id="route" x1="0" x2="1"><stop offset="0" stopColor="#5be7f2" stopOpacity="0" /><stop offset="0.5" stopColor="#5be7f2" /><stop offset="1" stopColor="#8a78ff" stopOpacity="0" /></linearGradient></defs><path d="M32 100 C180 100 220 190 310 232 S470 315 610 285" pathLength="1" /><path d="M-12 365 C130 350 188 260 296 265 S430 190 635 94" pathLength="1" /><path d="M170 -12 C180 100 310 126 310 232 S430 360 470 540" pathLength="1" /><path d="M24 470 C150 430 200 334 296 265 S450 230 610 430" pathLength="1" /><circle cx="310" cy="232" r="7" /><circle cx="310" cy="232" r="19" /><circle cx="170" cy="100" r="4" /><circle cx="470" cy="360" r="4" /></svg>;
 }
 
 function NetworkConsole() {
-  return <div className="network-visual" aria-label="Illustrative VornShield network console"><NetworkLines /><div className="console-orbit orbit-one" /><div className="console-orbit orbit-two" /><div className="console-card"><div className="console-topbar"><span className="window-dots"><i /><i /><i /></span><span className="console-label">NETWORK CONSOLE <b>DEMO STATE</b></span><span className="console-menu">•••</span></div><div className="console-content"><div className="console-heading"><div><span className="micro-label">CURRENT GATEWAY</span><strong>VornShield access</strong></div><span className="healthy"><i /> Ready</span></div><div className="console-route"><div className="route-node"><span>ENTRY</span><strong>VornShield</strong><small>Authenticated gateway</small></div><ArrowDownRightIcon /><div className="route-node active"><span>SOURCE</span><strong>Shared gateway</strong><small>HTTP · HTTPS · SOCKS5</small></div></div><div className="console-stats"><div><span>PROTOCOL</span><strong>HTTP/S</strong></div><div><span>TRAFFIC</span><strong>Usage-based</strong></div><div><span>STATUS</span><strong className="status-text">CONNECTED</strong></div></div></div></div><div className="floating-stat stat-top"><span className="stat-pulse" /><small>ACCESS LAYER</small><strong>Authenticated</strong></div><div className="floating-stat stat-bottom"><span className="tiny-icon"><ShieldCheckIcon /></span><div><small>CONTROL PLANE</small><strong>Traffic monitored</strong></div></div></div>;
+  return <div className="network-visual" aria-label="Illustrative VornShield Network Intelligence console"><div className="visual-grid" /><NetworkLines /><div className="console-orbit orbit-one" /><div className="console-orbit orbit-two" /><div className="intelligence-console"><div className="intel-header"><div><span className="console-label">VORNSHIELD</span><strong>NETWORK INTELLIGENCE</strong></div><span className="console-badge"><i /> ILLUSTRATIVE UI</span></div><div className="intel-map"><div className="map-ring map-ring-one" /><div className="map-ring map-ring-two" /><div className="map-connection connection-a" /><div className="map-connection connection-b" /><div className="map-connection connection-c" /><div className="gateway-core"><span className="core-pulse" /><b>V</b><strong>GATEWAY</strong><small>ONLINE</small></div><div className="intel-node node-a"><i /><span>SOURCE A</span><strong>Shared</strong><small>Available</small></div><div className="intel-node node-b"><i /><span>SOURCE B</span><strong>HTTP/S</strong><small>Supported</small></div><div className="intel-node node-c"><i /><span>SOURCE C</span><strong>SOCKS5</strong><small>Supported</small></div></div><div className="intel-stats"><div><span>ROUTE</span><strong>Shared gateway</strong></div><div><span>PROTOCOL</span><strong>HTTP / SOCKS5</strong></div><div><span>LATENCY</span><strong>Not exposed</strong></div></div></div><div className="floating-stat stat-top"><span className="stat-pulse" /><div><small>ACCESS LAYER</small><strong>Authenticated</strong></div></div><div className="floating-stat stat-bottom"><span className="tiny-icon"><ShieldCheckIcon /></span><div><small>TRAFFIC STATE</small><strong>Usage-based</strong></div></div><div className="floating-stat stat-side"><span className="tiny-icon"><SignalIcon /></span><div><small>SESSION ENGINE</small><strong>Planned</strong></div></div></div>;
 }
 
 function DashboardPreview() {
@@ -67,11 +79,32 @@ export default function HomePage() {
   const [traffic, setTraffic] = useState(10);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [scrolled, setScrolled] = useState(false);
-  useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 16); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [booting, setBooting] = useState(true);
+  const sidebarCloseRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("vornshield-theme");
+    const nextTheme = storedTheme === "light" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    const onScroll = () => { setScrolled(window.scrollY > 16); setShowBackToTop(window.scrollY > 480); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKeyDown);
+    const timer = window.setTimeout(() => setBooting(false), 850);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("keydown", onKeyDown); window.clearTimeout(timer); };
+  }, []);
+  useEffect(() => { document.body.classList.toggle("no-scroll", menuOpen); return () => document.body.classList.remove("no-scroll"); }, [menuOpen]);
+  useEffect(() => { if (menuOpen) window.setTimeout(() => sidebarCloseRef.current?.focus(), 0); }, [menuOpen]);
   const closeMenu = () => setMenuOpen(false);
+  const toggleTheme = () => { const nextTheme = theme === "dark" ? "light" : "dark"; setTheme(nextTheme); document.documentElement.dataset.theme = nextTheme; window.localStorage.setItem("vornshield-theme", nextTheme); };
 
   return <main className="vornshield-site">
-    <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}><div className="site-nav"><Brand /><nav className={`desktop-nav ${menuOpen ? "mobile-open" : ""}`} aria-label="Primary navigation"><a href="#proxy-types" onClick={closeMenu}>Proxies</a><a href="#locations" onClick={closeMenu}>Locations</a><a href="#pricing" onClick={closeMenu}>Pricing</a><a href="#developer-api" onClick={closeMenu}>API</a><a href="#why-vornshield" onClick={closeMenu}>Features</a><a href="#faq" onClick={closeMenu}>Resources</a></nav><div className="nav-actions"><Link href="/login" className="nav-login">Sign in</Link><Link href="/login" className="button button-small">Get started <ArrowRightIcon /></Link><button className="menu-toggle" type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <XMarkIcon /> : <Bars3Icon />}</button></div></div></header>
+    {booting && <Preloader />}
+    <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}><div className="site-nav"><Brand /><nav className="desktop-nav" aria-label="Primary navigation"><a href="#proxy-types">Proxies</a><a href="#locations">Locations</a><a href="#pricing">Pricing</a><a href="#developer-api">API</a><a href="#why-vornshield">Features</a><a href="#faq">Resources</a></nav><div className="nav-actions"><ThemeToggle theme={theme} onToggle={toggleTheme} /><Link href="/login" className="nav-login">Sign in</Link><Link href="/login" className="button button-small">Get started <ArrowRightIcon /></Link><button className="menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <XMarkIcon /> : <Bars3Icon />}</button></div></div></header>
+    {menuOpen && <><div className="mobile-sidebar-backdrop is-open" onClick={closeMenu} /><aside className="mobile-sidebar is-open" aria-label="Mobile navigation"><div className="mobile-sidebar-head"><Brand compact /><button ref={sidebarCloseRef} type="button" className="sidebar-close" aria-label="Close navigation" onClick={closeMenu}><XMarkIcon /></button></div><nav><a href="#proxy-types" onClick={closeMenu}>Proxies</a><a href="#locations" onClick={closeMenu}>Locations</a><a href="#pricing" onClick={closeMenu}>Pricing</a><a href="#developer-api" onClick={closeMenu}>API</a><a href="#why-vornshield" onClick={closeMenu}>Features</a><a href="#faq" onClick={closeMenu}>Resources</a></nav><div className="mobile-sidebar-actions"><Link href="/login" onClick={closeMenu}>Sign in</Link><Link href="/login" className="button" onClick={closeMenu}>Get started <ArrowRightIcon /></Link></div><span className="sidebar-foot">VORNSHIELD / NETWORK CONTROL</span></aside></>}
 
     <section className="hero" id="top"><div className="hero-backdrop" /><div className="hero-glow hero-glow-one" /><div className="hero-glow hero-glow-two" /><div className="container hero-layout"><div className="hero-copy"><Reveal><div className="eyebrow"><span className="eyebrow-line" /> NETWORK INFRASTRUCTURE / 01</div></Reveal><Reveal delay={0.05}><h1>Proxy infrastructure.<br /><em>Built for scale.</em></h1></Reveal><Reveal delay={0.1}><p className="hero-lede">Fast, flexible proxy access for automation, testing and modern data workflows — with the account controls and usage visibility to keep your traffic clear.</p></Reveal><Reveal delay={0.15}><div className="hero-actions"><Link href="/login" className="button">Get started <ArrowRightIcon /></Link><a href="#proxy-types" className="text-link">Explore proxies <ArrowDownRightIcon /></a></div></Reveal><Reveal delay={0.2}><div className="hero-note"><CheckIcon /> Current access: HTTP · HTTPS CONNECT · SOCKS5 <span>·</span> $6 / GB</div></Reveal></div><Reveal delay={0.12} className="hero-visual"><NetworkConsole /></Reveal></div><div className="container hero-foot"><span>OPERATED BY VICKINS TECHNOLOGIES</span><span className="hero-foot-rule" /><span>ACCESS · TRAFFIC · CONTROL</span></div></section>
 
@@ -104,6 +137,7 @@ export default function HomePage() {
     <section className="section faq-section" id="faq"><div className="container faq-grid"><Reveal><p className="section-kicker">Resources</p><h2>Good questions<br /><span>deserve clear answers.</span></h2><p className="section-copy">Short answers to the things that matter before you route production traffic.</p><Link href="/policy" className="text-link">Read acceptable use <ArrowRightIcon /></Link></Reveal><Reveal delay={0.1}><div className="faq-list">{faqs.map(([question, answer], index) => <div className={`faq-item ${openFaq === index ? "open" : ""}`} key={question}><button type="button" aria-expanded={openFaq === index} onClick={() => setOpenFaq(openFaq === index ? null : index)}><span>{question}</span><ChevronDownIcon /></button>{openFaq === index && <p>{answer}</p>}</div>)}</div></Reveal></div></section>
 
     <section className="final-cta"><div className="container final-cta-inner"><Reveal><p className="section-kicker">Ready when you are</p><h2>Build your next workflow<br /><span>on better infrastructure.</span></h2><p>Start with the traffic you need. Scale when the network is ready for more.</p><div className="hero-actions"><Link href="/login" className="button">Get started <ArrowRightIcon /></Link><a href="#proxy-types" className="button button-secondary">Explore proxies</a></div></Reveal><div className="cta-mark"><NetworkLines /><span>V</span></div></div></section>
+    <button className={`back-to-top ${showBackToTop ? "is-visible" : ""}`} type="button" aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><ArrowUpIcon /></button>
 
     <footer className="site-footer"><div className="container footer-main"><div className="footer-brand"><Brand /><p>Proxy infrastructure for modern applications, automation and data workflows.</p><span>Powered by <a href="https://vickinstechnologies.com/" target="_blank" rel="noreferrer">Vickins Technologies</a></span></div><div className="footer-column"><strong>Product</strong><a href="#proxy-types">Shared gateway</a><a href="#proxy-types">ISP — coming soon</a><a href="#pricing">Pricing</a><a href="#locations">Locations</a></div><div className="footer-column"><strong>Developers</strong><a href="#developer-api">API — coming soon</a><a href="#dashboard">Dashboard</a><a href="#faq">FAQ</a><a href="mailto:support@vickinstechnologies.com">Support</a></div><div className="footer-column"><strong>Company</strong><a href="https://vickinstechnologies.com/" target="_blank" rel="noreferrer">About Vickins</a><a href="mailto:hello@vickinstechnologies.com">Contact</a><Link href="/terms">Terms</Link><Link href="/policy">Acceptable use</Link></div></div><div className="container footer-bottom"><span>© 2026 VornShield. All rights reserved.</span><span>VORNSHIELD / NETWORK CONTROL</span></div></footer>
   </main>;

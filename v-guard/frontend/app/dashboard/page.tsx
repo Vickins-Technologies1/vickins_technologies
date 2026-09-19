@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import DashboardShell from "../../components/dashboard/DashboardShell";
-import { loadDashboard, syncProxyDaemons } from "../../lib/api";
+import { loadDashboard, loadProxyInventory, syncProxyDaemons } from "../../lib/api";
 import { clearSession, readSession } from "../../lib/session";
 import type { DashboardData, ProxySyncResult } from "../../lib/types";
 
@@ -12,13 +12,15 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [syncingProxy, setSyncingProxy] = useState(false);
   const [syncResult, setSyncResult] = useState<ProxySyncResult | null>(null);
+  const [providerConnected, setProviderConnected] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const payload = await loadDashboard();
+      const [payload, inventory] = await Promise.all([loadDashboard(), loadProxyInventory().catch(() => [])]);
       setData(normalizeDashboardData(payload));
+      setProviderConnected(inventory.length > 0);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load dashboard";
       if (message.includes("status 401") || message.toLowerCase().includes("unauthorized")) {
@@ -62,6 +64,7 @@ export default function DashboardPage() {
       onSyncProxy={syncProxy}
       syncingProxy={syncingProxy}
       syncResult={syncResult}
+      providerConnected={providerConnected}
     />
   );
 }

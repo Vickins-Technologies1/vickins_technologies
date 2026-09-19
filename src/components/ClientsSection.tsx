@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ClientsSection() {
   const clients = [
-    { src: "/Macdee.png", alt: "Macdee", url: "https://macdeeentertainment.com" },
+    { src: "/Macdee.png", alt: "Macdee", url: "https://macdee-entertainment.vercel.app/" },
     { src: "/clients/sorana.png", alt: "Sorana Property Managers", url: "https://www.soranapropertymanagers.com/" },
     { src: "/Baggit.png", alt: "Baggit", url: "https://baggit-psi.vercel.app/" },
     { src: "/clients/vmart.png", alt: "V-Mart", url: "#" },
