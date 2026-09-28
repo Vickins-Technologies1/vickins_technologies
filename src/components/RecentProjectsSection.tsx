@@ -1,139 +1,61 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
 import { getDefaultDevProjects, type DevProject } from "@/lib/portfolio-collection";
 
 const FALLBACK_MAIN = "/images/placeholder-4x3.png";
-
 const projects = getDefaultDevProjects();
-
+const featuredProjects = projects.slice(0, 2);
+const clientProjects = projects.slice(2);
 const isExternalLink = (href: string) => href.startsWith("http");
 
-function ProjectCard({
-  project,
-  featured = false,
-  index = 0,
-}: {
-  project: DevProject;
-  featured?: boolean;
-  index?: number;
-}) {
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  const reducedMotion = useReducedMotion();
+  return <motion.div initial={reducedMotion ? false : { opacity: 0, y: 24 }} whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }} className={className}>{children}</motion.div>;
+}
+
+function ProjectVisual({ project, featured = false }: { project: DevProject; featured?: boolean }) {
+  return <div className={["work-visual relative overflow-hidden", featured ? "min-h-[310px] sm:min-h-[440px]" : "min-h-[230px] sm:min-h-[300px]"].join(" ")}>
+    <div className="absolute inset-0 work-visual-grid" aria-hidden="true" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(var(--accent-sky-rgb),.2),transparent_34%),radial-gradient(circle_at_20%_90%,rgba(var(--accent-rgb),.16),transparent_38%)]" aria-hidden="true" />
+    <Image src={project.image || FALLBACK_MAIN} alt={`${project.title} project visual`} fill priority={featured} className={["relative z-[1] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.045]", featured ? "p-12 sm:p-20" : "p-9 sm:p-12"].join(" ")} sizes={featured ? "(max-width: 1024px) 100vw, 58vw" : "(max-width: 640px) 100vw, 50vw"} />
+    <div className="absolute inset-x-0 bottom-0 z-[2] h-24 bg-gradient-to-t from-black/25 to-transparent opacity-60" aria-hidden="true" />
+    <span className="absolute left-5 top-5 z-[3] text-[10px] font-semibold uppercase tracking-[0.3em] text-white/75">Project visual</span>
+  </div>;
+}
+
+function ProjectMeta({ project, featured = false }: { project: DevProject; featured?: boolean }) {
   const external = isExternalLink(project.link);
+  return <div className={featured ? "p-6 sm:p-8 lg:p-10" : "p-5 sm:p-7"}>
+    <div className="flex items-start justify-between gap-5"><div><p className="work-kicker">{project.category}</p><h3 className={featured ? "mt-4 max-w-xl text-3xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-4xl lg:text-[3.15rem]" : "mt-3 text-2xl font-semibold leading-[1.05] tracking-[-0.045em]"}>{project.title}</h3></div><span className="work-index" aria-hidden="true">{featured ? "0" : ""}</span></div>
+    <p className={featured ? "mt-5 max-w-xl text-[15px] leading-7 text-[var(--foreground)]/70 sm:text-base" : "mt-4 text-sm leading-6 text-[var(--foreground)]/70"}>{project.description}</p>
+    <div className="mt-6 flex flex-wrap gap-x-2 gap-y-2">{project.tags.slice(0, featured ? 5 : 4).map((tag) => <span key={tag} className="work-tag">{tag}</span>)}</div>
+    <span className="mt-7 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)] transition group-hover:gap-3">{external ? "View project" : "View portfolio"}{external ? <ExternalLink className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}</span>
+  </div>;
+}
 
-  return (
-    <motion.a
-      href={project.link}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-120px" }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
-      className={[
-        "group block overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] shadow-[var(--shadow-tight)] backdrop-blur-xl transition",
-        featured ? "hover:-translate-y-1.5" : "hover:-translate-y-1",
-      ].join(" ")}
-    >
-      <div className={featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0 sm:grid-cols-[170px_1fr]"}>
-        <div
-          className={[
-            "relative overflow-hidden bg-white/60",
-            featured ? "min-h-[240px] sm:min-h-[300px]" : "min-h-[180px]",
-          ].join(" ")}
-        >
-          <Image
-            src={project.image || FALLBACK_MAIN}
-            alt={project.title}
-            fill
-            className="object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03]"
-            sizes={featured ? "(max-width: 1024px) 100vw, 55vw" : "(max-width: 640px) 100vw, 180px"}
-          />
-        </div>
+function FeaturedProject({ project, index }: { project: DevProject; index: number }) {
+  const external = isExternalLink(project.link);
+  const reverse = index % 2 === 1;
+  return <Reveal delay={index * 0.08}><a href={project.link} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} className={["work-feature group", reverse ? "lg:grid-cols-[0.88fr_1.12fr]" : "lg:grid-cols-[1.12fr_0.88fr]"].join(" ")} aria-label={`View ${project.title}`}>
+    <div className={reverse ? "lg:order-2" : ""}><ProjectVisual project={project} featured /></div><div className={["flex flex-col justify-center", reverse ? "lg:order-1" : ""].join(" ")}><ProjectMeta project={project} featured /></div>
+  </a></Reveal>;
+}
 
-        <div className={featured ? "p-5 sm:p-6 lg:p-7" : "p-5 sm:p-6"}>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--foreground)]/55">
-                {project.category}
-              </p>
-              <h3 className={featured ? "mt-3 text-2xl sm:text-3xl font-semibold tracking-[-0.02em]" : "mt-2 text-lg sm:text-xl font-semibold tracking-[-0.02em]"}>
-                {project.title}
-              </h3>
-            </div>
-            <ExternalLink className="mt-1 h-4 w-4 text-[var(--button-bg)] opacity-70 transition group-hover:opacity-100" />
-          </div>
-
-          <p className={featured ? "mt-4 text-[15px] leading-relaxed text-[var(--foreground)]/78" : "mt-3 text-[14px] leading-relaxed text-[var(--foreground)]/74"}>
-            {project.description}
-          </p>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {project.tags.slice(0, featured ? 5 : 3).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
-            View project
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </div>
-        </div>
-      </div>
-    </motion.a>
-  );
+function ClientCard({ project, index }: { project: DevProject; index: number }) {
+  const external = isExternalLink(project.link);
+  const span = index === 0 ? "lg:col-span-7" : index === 1 ? "lg:col-span-5" : index === 2 ? "lg:col-span-5" : index === 3 ? "lg:col-span-7" : "lg:col-span-12";
+  return <Reveal delay={(index % 3) * 0.07} className={["group", span].join(" ")}><a href={project.link} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} className="work-card block h-full" aria-label={`View ${project.title}`}><ProjectVisual project={project} /><ProjectMeta project={project} /></a></Reveal>;
 }
 
 export default function RecentProjectsSection() {
-  const featuredProject = projects[0];
-  const supportProjects = projects.slice(1);
-
-  return (
-    <section id="work" className="py-8 sm:py-10 lg:py-12 scroll-mt-[96px]">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-7">
-          <div className="max-w-2xl">
-            <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">Work</p>
-            <h2 className="text-2xl sm:text-3xl font-semibold mt-3">Products first. Client systems with purpose.</h2>
-            <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
-              A focused view of Vickins-built products followed by the client platforms and custom systems we deliver.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] text-white px-5 py-3 text-xs uppercase tracking-[0.24em] font-semibold shadow-lg hover:shadow-xl transition"
-            >
-              Request a call
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="/portfolio"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[var(--accent)] hover:text-[var(--accent)]/90 transition"
-            >
-              Explore Portfolio
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-5 lg:gap-6">
-          <ProjectCard project={featuredProject} featured index={0} />
-
-          <div className="grid gap-4">
-            {supportProjects.map((project, index) => (
-              <ProjectCard key={project.id ?? project.title} project={project} index={index + 1} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <section id="work" className="work-section scroll-mt-[96px]"><div className="mx-auto max-w-6xl">
+    <Reveal><div className="work-intro"><div><p className="work-kicker text-[var(--accent)]">Work / Selected projects</p><h2 className="mt-5 max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.065em] sm:text-5xl lg:text-7xl">Products built with purpose.</h2></div><p className="max-w-sm text-[15px] leading-7 text-[var(--foreground)]/68 lg:pb-1">We design and engineer digital products, platforms and systems built to perform in the real world.</p></div></Reveal>
+    <div className="mt-16 space-y-7 sm:mt-20 lg:mt-24 lg:space-y-10">{featuredProjects.map((project, index) => <FeaturedProject key={project.id ?? project.title} project={project} index={index} />)}</div>
+    <Reveal className="mt-24 sm:mt-32"><div className="flex items-end justify-between gap-5 border-b border-[var(--border)] pb-5"><div><p className="work-kicker text-[var(--accent)]">02 — Client work</p><h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">Selected client work</h2></div><span className="hidden text-xs uppercase tracking-[0.24em] text-[var(--foreground)]/45 sm:block">Built for the real world</span></div></Reveal>
+    <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-7">{clientProjects.map((project, index) => <ClientCard key={project.id ?? project.title} project={project} index={index} />)}</div>
+    <Reveal className="mt-20 sm:mt-28"><div className="work-cta"><div><p className="work-kicker text-[var(--accent)]">Next chapter</p><h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-5xl">Have something ambitious in mind?</h2><p className="mt-4 text-[15px] text-[var(--foreground)]/65">Let&apos;s design and build it.</p></div><a href="#contact" className="work-cta-link">Start a project <ArrowUpRight className="h-4 w-4" /></a></div></Reveal>
+  </div></section>;
 }
