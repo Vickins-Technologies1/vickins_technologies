@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { ArrowRightIcon, BuildingStorefrontIcon, ChartBarIcon, CloudArrowUpIcon, DevicePhoneMobileIcon, QueueListIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
+import { googlePlayDiraUrl } from "@/lib/seo";
+import Link from "next/link";
 
 const capabilities = [
   [DevicePhoneMobileIcon, "POS"],
@@ -39,6 +41,12 @@ export default function DiraOSSection() {
               <a href="https://dira-os.vickinstechnologies.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[var(--button-bg)] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_50px_rgba(var(--accent-rgb),0.22)] transition hover:-translate-y-0.5">
                 Explore Dira OS <ArrowRightIcon className="h-4 w-4" />
               </a>
+              <a href={googlePlayDiraUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border-strong)] bg-[var(--glass-surface)] px-5 py-3 text-sm font-semibold transition hover:bg-[var(--glass-surface-strong)]">
+                Install on Google Play <ArrowRightIcon className="h-4 w-4" />
+              </a>
+              <Link href="/products/dira-os" className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border-strong)] bg-[var(--glass-surface)] px-5 py-3 text-sm font-semibold transition hover:bg-[var(--glass-surface-strong)]">
+                Product profile <ArrowRightIcon className="h-4 w-4" />
+              </Link>
               <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-[var(--glass-border-strong)] bg-[var(--glass-surface)] px-5 py-3 text-sm font-semibold transition hover:bg-[var(--glass-surface-strong)]">Book Strategy Call</a>
             </div>
           </div>

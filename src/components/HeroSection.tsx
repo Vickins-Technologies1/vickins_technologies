@@ -128,8 +128,8 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.08 }}
           >
             <div className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-[7px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.24em] text-[var(--hero-muted)] whitespace-nowrap backdrop-blur-xl">
-              <span className="sm:hidden">72hr delivery • security-first</span>
-              <span className="hidden sm:inline">We deliver within 72 hours • security-first execution</span>
+              <span className="sm:hidden">Vickins Technologies • security-first</span>
+              <span className="hidden sm:inline">Vickins Technologies • security-first digital delivery</span>
               <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
             </div>
 
@@ -142,7 +142,7 @@ export default function HeroSection() {
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
-              We design, engineer, and deliver high-performance web, mobile, and enterprise systems built for
+              Vickins Technologies designs, engineers, and delivers high-performance web, mobile, and enterprise systems built for
               long-term reliability, scalability, and maintainability.
             </p>
 

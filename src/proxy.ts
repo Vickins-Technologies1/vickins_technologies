@@ -17,13 +17,29 @@ export function proxy(request: NextRequest) {
   // Protected routes requiring authentication
   const protectedPaths = ["/dashboard", "/admin"];
   const isProtected = protectedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+  const noindexPaths = [
+    "/admin",
+    "/api",
+    "/chama",
+    "/login",
+    "/member-login",
+    "/member-signup",
+    "/moderator-login",
+    "/moderator-signup",
+    "/moderator",
+    "/vtix/dashboard",
+    "/vtix/verify",
+  ];
+  const shouldNoindex = noindexPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
   // Redirect unauthenticated users from protected routes to login
   if (isProtected && !hasSession) {
     const loginUrl = new URL("/login", request.url);
     // Preserve original path for post-login redirect
     loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
+    const response = NextResponse.redirect(loginUrl);
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
   }
 
   // Optional: Redirect logged-in users away from /login (good UX)
@@ -34,8 +50,11 @@ export function proxy(request: NextRequest) {
   }
   */
 
-  // Allow request to proceed
-  return NextResponse.next();
+  const response = NextResponse.next();
+  if (shouldNoindex) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return response;
 }
 
 // Run proxy on all routes except static/API assets

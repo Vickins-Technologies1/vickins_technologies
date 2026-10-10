@@ -4,8 +4,7 @@ import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
 import FloatingActionsGate from "../components/FloatingActionsGate";
 import LenisRoot from "../components/LenisRoot";
-
-const siteUrl = "https://www.vickinstechnologies.com";
+import { organizationJsonLd, siteName, siteUrl } from "@/lib/seo";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
@@ -31,49 +30,40 @@ const instrumentSans = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Vickins Technologies | Digital Platforms, Dira OS & VornShield",
+    default: "Vickins Technologies | Digital Platforms, Mobile Apps & Security",
     template: "%s | Vickins Technologies",
   },
   description:
-    "Vickins Technologies designs and engineers secure digital platforms, including Dira OS, its flagship business operating system, and VornShield, a proxy management infrastructure platform.",
-  keywords: [
-    "enterprise software development Kenya",
-    "Nairobi software company",
-    "platform engineering Kenya",
-    "web development Kenya",
-    "mobile app development Kenya",
-    "automation and AI Kenya",
-    "DevOps Kenya",
-    "Dira OS",
-    "VornShield",
-    "business operating system",
-    "POS software Kenya",
-    "inventory management software",
-  ],
+    "Vickins Technologies builds web platforms, mobile applications, automation systems, and security solutions for teams that need reliable digital products.",
   authors: [
     {
-      name: "Vickins Technologies",
+      name: siteName,
       url: siteUrl,
     },
   ],
   openGraph: {
-    title: "Vickins Technologies",
+    title: "Vickins Technologies | Digital Platforms, Mobile Apps & Security",
     description:
-      "Digital platforms, Dira OS and VornShield — engineered by Vickins Technologies for reliability, security, and scale.",
-    url: siteUrl,
-    siteName: "Vickins Technologies",
-    locale: "en_US",
+      "Web platforms, mobile applications, automation, and security solutions engineered by Vickins Technologies.",
+    siteName,
+    locale: "en_KE",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Vickins Technologies — digital platforms, mobile apps, and security solutions",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vickins Technologies",
+    title: "Vickins Technologies | Digital Platforms, Mobile Apps & Security",
     description:
-      "Digital platforms, Dira OS and VornShield — engineered by Vickins Technologies for reliability, security, and scale.",
+      "Web platforms, mobile applications, automation, and security solutions engineered by Vickins Technologies.",
     creator: "@VickinsTech",
-  },
-  alternates: {
-    canonical: siteUrl,
+    images: ["/twitter-image"],
   },
   robots: {
     index: true,
@@ -123,17 +113,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Vickins Technologies",
-              url: siteUrl,
-              description: "Vickins Technologies designs and engineers secure digital platforms, including Dira OS and VornShield.",
-              owns: [
-                { "@type": "Product", name: "Dira OS", url: "https://dira-os.vickinstechnologies.com/", category: "Business Operating System" },
-                { "@type": "Product", name: "VornShield", url: "https://vornshield.vickinstechnologies.com/", category: "Proxy Management Platform" },
-              ],
-            }),
+            __html: JSON.stringify(organizationJsonLd),
           }}
         />
       </body>

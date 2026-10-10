@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { diraOsProduct, vornShieldProduct } from "@/lib/portfolio-collection";
 
 const products = [
@@ -19,7 +20,7 @@ export default function ProductsSection() {
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]/76">Products and platforms built by Vickins Technologies to solve real operational and infrastructure problems.</p>
           <div className="mt-8 grid gap-5 lg:grid-cols-12">
             {products.map((product, index) => (
-              <a key={product.id} href={product.link} target="_blank" rel="noopener noreferrer" className={`group relative overflow-hidden rounded-[28px] border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 transition hover:-translate-y-1 hover:border-[rgba(var(--accent-sky-rgb),0.45)] sm:p-7 ${product.className}`}>
+              <div key={product.id} className={`group relative overflow-hidden rounded-[28px] border border-[var(--glass-border)] bg-[var(--glass-surface)] p-5 transition hover:-translate-y-1 hover:border-[rgba(var(--accent-sky-rgb),0.45)] sm:p-7 ${product.className}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] ${index === 0 ? "bg-[var(--button-bg)] text-white" : "border border-[var(--glass-border)] text-[var(--foreground)]/65"}`}>{product.badge}</span>
@@ -30,8 +31,11 @@ export default function ProductsSection() {
                 </div>
                 <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[var(--foreground)]/76">{product.description}</p>
                 <div className="mt-5 flex flex-wrap gap-2">{product.tags.map((tag) => <span key={tag} className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-muted)] px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-[var(--foreground)]/65">{tag}</span>)}</div>
-                <div className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">Explore {product.title} <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" /></div>
-              </a>
+                <div className="mt-7 flex flex-wrap items-center gap-4 text-sm font-semibold text-[var(--accent)]">
+                  <a href={product.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:underline">Visit {product.title} <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" /></a>
+                  <Link href={`/products/${product.id}`} className="text-[var(--foreground)]/70 hover:text-[var(--accent)] hover:underline">Company profile</Link>
+                </div>
+              </div>
             ))}
           </div>
         </div>
