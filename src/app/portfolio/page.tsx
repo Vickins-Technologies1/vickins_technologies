@@ -55,7 +55,7 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
-      <Navbar toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <section className="hero-surface relative isolate overflow-hidden pt-10 sm:pt-14 lg:pt-16 pb-10 sm:pb-14">

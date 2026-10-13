@@ -26,7 +26,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col">
-      <Navbar toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <HeroSection />

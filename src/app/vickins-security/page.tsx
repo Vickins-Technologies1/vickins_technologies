@@ -121,7 +121,7 @@ export default function VickinsSecurityPage() {
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
-      <Navbar toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <motion.section

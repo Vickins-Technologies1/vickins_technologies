@@ -9,10 +9,11 @@ import { useTheme } from "./ThemePreloaderProvider";
 
 interface NavbarProps {
   toggleSidebar: () => void;
+  isSidebarOpen?: boolean;
   appearance?: "auto" | "onDark";
 }
 
-export default function Navbar({ toggleSidebar, appearance = "auto" }: NavbarProps) {
+export default function Navbar({ toggleSidebar, isSidebarOpen = false, appearance = "auto" }: NavbarProps) {
   const { isDarkMode, toggleTheme } = useTheme();
   const navItems = useMemo(() => [
     { label: "Home", href: "/#home" },
@@ -55,7 +56,7 @@ export default function Navbar({ toggleSidebar, appearance = "auto" }: NavbarPro
   }, [navItems]);
 
   return (
-    <nav className="sticky top-0 z-50">
+    <nav className="sticky top-0 z-50" aria-label="Primary navigation">
       <div className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
         <motion.div
           initial={false}
@@ -144,10 +145,11 @@ export default function Navbar({ toggleSidebar, appearance = "auto" }: NavbarPro
 
             <div className="flex items-center justify-end gap-2 shrink-0">
               <motion.button
+                type="button"
                 onClick={toggleTheme}
                 aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
                 className={[
-                  "hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-full border transition",
+                  "inline-flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-full border transition",
                   isScrolled
                     ? "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]"
                     : darkChromeActive
@@ -184,10 +186,13 @@ export default function Navbar({ toggleSidebar, appearance = "auto" }: NavbarPro
               </motion.button>
 
               <motion.button
+                type="button"
                 onClick={toggleSidebar}
                 aria-label="Open menu"
+                aria-expanded={isSidebarOpen}
+                aria-controls="mobile-navigation-drawer"
                 className={[
-                  "lg:hidden inline-flex items-center justify-center h-9 w-9 rounded-full border transition",
+                  "lg:hidden inline-flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-full border transition",
                   isScrolled
                     ? "border-[var(--navbar-border)] bg-[var(--navbar-surface)] hover:bg-[var(--navbar-surface-hover)]"
                     : darkChromeActive

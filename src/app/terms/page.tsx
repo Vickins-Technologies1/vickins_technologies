@@ -65,7 +65,7 @@ export default function TermsPage() {
 
   return (
     <div className="min-h-screen font-[var(--font-sans)] flex flex-col bg-[var(--background)]">
-      <Navbar toggleSidebar={toggleSidebar} />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <section className="pt-16 pb-10 sm:pt-20 sm:pb-14">
