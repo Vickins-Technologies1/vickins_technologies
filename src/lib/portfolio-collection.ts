@@ -23,6 +23,8 @@ export type DevProject = {
   image: string;
   tags: string[];
   link: string;
+  attribution?: string;
+  actionLabel?: string;
 };
 
 export const diraOsProduct = {
@@ -45,6 +47,19 @@ export const vornShieldProduct = {
   image: "/products/v-guard-logo.png",
   tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
   link: "https://vornshield.vickinstechnologies.com/",
+};
+
+export const myAccurateRentProduct = {
+  id: "my-accurate-rent",
+  title: "My Accurate Rent",
+  category: "Property Management SaaS",
+  description:
+    "My Accurate Rent is property management software designed to simplify rental operations, tenant management, rent tracking, billing, and property administration through one connected digital experience.",
+  image: "/products/my-accurate-rent-logo.png",
+  tags: ["Property Management", "Rental Operations", "Tenant Management", "Rent & Billing", "SaaS Platform"],
+  link: "https://myaccuraterent.com/",
+  attribution: "A Product of Sorana Property Managers",
+  actionLabel: "Visit My Accurate Rent",
 };
 
 const legacyVGuardLink = "https://v-guard.vickinstechnologies.com/";
@@ -95,6 +110,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
     tags: ["TypeScript", "React/Next.js", "Dashboard", "Authentication", "Fullstack"],
     link: "https://www.soranapropertymanagers.com/",
   },
+  myAccurateRentProduct,
   {
     id: "dev-2",
     title: "Baggit – Premium E-commerce Platform",
@@ -177,6 +193,8 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     image: item.image?.trim() || "",
     tags: Array.isArray(item.tags) ? item.tags : [],
     link: item.link?.trim() || "#",
+    attribution: item.attribution?.trim() || undefined,
+    actionLabel: item.actionLabel?.trim() || undefined,
   })).map((project) =>
     project.id === "v-guard" || project.link === legacyVGuardLink
       ? { ...vornShieldProduct, category: "VICKINS PRODUCT · INFRASTRUCTURE" }
@@ -190,5 +208,15 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     product.id === diraOsProduct.id ? !hasDiraOs : !hasVornShield
   );
 
-  return [...missingProducts, ...normalized];
+  const projects = [...missingProducts, ...normalized];
+  const hasMyAccurateRent = projects.some(
+    (project) => project.id === myAccurateRentProduct.id || project.link === myAccurateRentProduct.link
+  );
+
+  if (!hasMyAccurateRent) {
+    const soranaIndex = projects.findIndex((project) => project.id === "dev-1");
+    projects.splice(soranaIndex < 0 ? projects.length : soranaIndex + 1, 0, myAccurateRentProduct);
+  }
+
+  return projects;
 };
