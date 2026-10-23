@@ -3,9 +3,9 @@ import HomePage from "@/components/HomePage";
 import { homepageJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Digital Platforms, Mobile Apps & Security",
+  title: "Software Development Company in Kenya",
   description:
-    "Vickins Technologies designs and engineers web platforms, mobile applications, automation systems, and security solutions for teams that need reliable digital products.",
+    "Vickins Technologies builds custom software, websites, mobile apps, business platforms and automation solutions for organizations in Kenya and beyond.",
   path: "/",
 });
 

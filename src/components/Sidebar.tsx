@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import BrandLogo from "./BrandLogo";
 import {
   ArrowUpRightIcon,
   BriefcaseIcon,
@@ -17,7 +17,6 @@ import {
   WrenchScrewdriverIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useTheme } from "./ThemePreloaderProvider";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -36,11 +35,9 @@ const navItems = [
 ];
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
-  const { isDarkMode } = useTheme();
   const reduceMotion = useReducedMotion();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [activeId, setActiveId] = useState("home");
-  const logoSrc = isDarkMode ? "/logo1.png" : "/logo2.png";
 
   useEffect(() => {
     if (!isOpen) return;
@@ -128,14 +125,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
               <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[var(--navbar-border)] pb-4">
                 <Link href="/" onClick={toggleSidebar} aria-label="Vickins Technologies Home" className="min-w-0">
                   <div className="flex items-center gap-3">
-                    <Image
-                      src={logoSrc}
-                      alt="Vickins Technologies Logo"
-                      width={90}
-                      height={36}
-                      className="h-auto w-14 shrink-0"
-                      sizes="56px"
-                    />
+                    <BrandLogo size={56} className="h-14 w-14" />
                     <div className="min-w-0 leading-tight">
                       <p className="truncate text-[10px] uppercase tracking-[0.34em] text-[var(--sidebar-text)]/75">
                         Vickins

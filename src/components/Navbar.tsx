@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import BrandLogo from "./BrandLogo";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useTheme } from "./ThemePreloaderProvider";
@@ -33,7 +33,6 @@ export default function Navbar({ toggleSidebar, isSidebarOpen = false, appearanc
   });
 
   const darkChromeActive = appearance === "onDark" && !isScrolled;
-  const logoSrc = isDarkMode || darkChromeActive ? "/logo1.png" : "/logo2.png";
 
   const [activeId, setActiveId] = useState("home");
   useEffect(() => {
@@ -85,15 +84,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen = false, appearanc
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
                 className="flex items-center gap-3"
               >
-                <Image
-                  src={logoSrc}
-                  alt="Vickins Technologies Logo"
-                  width={76}
-                  height={30}
-                  priority
-                  className="w-10 sm:w-11"
-                  sizes="(max-width: 640px) 44px, 48px"
-                />
+                <BrandLogo mode={darkChromeActive ? "dark" : "theme"} size={44} className="h-10 w-10 sm:h-11 sm:w-11" />
                 <div className="hidden sm:flex flex-col leading-tight">
                   <span className="text-[10px] uppercase tracking-[0.32em] opacity-75">Vickins</span>
                   <span className="text-[10px] uppercase tracking-[0.24em] opacity-55">Technologies</span>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import BrandLogo from "../BrandLogo";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { Menu, Moon, Sun, LogOut, Search } from "lucide-react";
@@ -110,7 +110,7 @@ export default function AdminLteShell({
         <div className="dash-sidebar__header">
           <Link href={appHref} className="flex items-center gap-3 min-w-0">
             <span className="dash-brand-mark">
-              <Image src="/logo1.png" alt="Vickins" width={28} height={28} priority />
+              <BrandLogo size={28} />
             </span>
             <div className={sidebarOpen ? "min-w-0" : "hidden"}>
               <p className="text-xs uppercase tracking-[0.26em] dash-muted">Vickins</p>

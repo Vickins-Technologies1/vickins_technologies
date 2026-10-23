@@ -134,16 +134,15 @@ export default function HeroSection() {
             </div>
 
             <h1 className="mt-6 text-4xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-6xl text-[var(--hero-ink)]">
-              Secure platforms,
+              Software development in Kenya,
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]">
                 {" "}
-                built to scale.
+                built for your business.
               </span>
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
-              Vickins Technologies designs, engineers, and delivers high-performance web, mobile, and enterprise systems built for
-              long-term reliability, scalability, and maintainability.
+              Vickins Technologies designs, develops and supports custom software, web and mobile applications, business platforms and system integrations for organizations in Kenya and beyond.
             </p>
 
             <p className="mt-3 text-sm text-[var(--hero-muted)] max-w-xl">

@@ -8,7 +8,6 @@ import HeroSection from "../components/HeroSection";
 import ProductsSection from "../components/ProductsSection";
 import ServicesSection from "../components/ServicesSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
-import ProofSection from "../components/ProofSection";
 import ClientsSection from "../components/ClientsSection";
 import ProcessSection from "../components/ProcessSection";
 import EnterpriseSection from "../components/EnterpriseSection";
@@ -34,7 +33,6 @@ export default function HomePage() {
       <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
         <ServicesSection />
         <RecentProjectsSection />
-        <ProofSection />
         <ClientsSection />
         <ProcessSection />
         <EnterpriseSection />

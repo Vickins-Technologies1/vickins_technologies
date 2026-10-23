@@ -27,12 +27,19 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isPreloaderVisible, setIsPreloaderVisible] = useState(true);
 
-  // Load saved theme preference (default: light)
+  // Use the saved choice, or follow the operating system until the user picks a theme.
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const theme = savedTheme === "dark" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", theme);
-    setIsDarkMode(theme === "dark");
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = () => {
+      const savedTheme = localStorage.getItem("theme");
+      const theme = savedTheme === "dark" || (savedTheme !== "light" && media.matches) ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+      setIsDarkMode(theme === "dark");
+    };
+
+    applyTheme();
+    media.addEventListener("change", applyTheme);
+    return () => media.removeEventListener("change", applyTheme);
   }, []);
 
   // Hide preloader after 2 seconds

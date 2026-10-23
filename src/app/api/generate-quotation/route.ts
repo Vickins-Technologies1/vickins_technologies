@@ -114,7 +114,7 @@ export async function POST(request: Request) {
     const overallTotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
 
     const [logoDataUrl, signatureDataUrl] = await Promise.all([
-      readPublicAssetDataUrl("logo1.png").catch(() => undefined),
+      readPublicAssetDataUrl("brand/vickins-logo-light.png").catch(() => undefined),
       readPublicAssetDataUrl("director-signature.png").catch(() => undefined),
     ]);
 

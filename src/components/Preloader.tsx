@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import BrandLogo from "./BrandLogo";
 
 interface PreloaderProps {
   isDarkMode: boolean;
@@ -21,7 +21,6 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
 
   if (!isVisible) return null;
 
-  const logo = isDarkMode ? "/logo1.png" : "/logo2.png";
   const bgColor = isDarkMode ? "#0b0f1a" : "#f6f8fc";
   const glowA = isDarkMode ? "rgba(59,130,246,0.28)" : "rgba(37,99,235,0.2)";
   const glowB = isDarkMode ? "rgba(45,212,191,0.22)" : "rgba(45,212,191,0.16)";
@@ -78,14 +77,7 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <div className="relative w-24 h-24 sm:w-28 sm:h-28">
               <div className="absolute inset-0 rounded-full border border-white/25 bg-white/10 backdrop-blur-xl" />
-              <Image
-                src={logo}
-                alt="Vickins Technologies"
-                width={110}
-                height={110}
-                className="absolute inset-0 m-auto w-16 sm:w-20"
-                priority
-              />
+              <BrandLogo size={110} className="absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20" />
             </div>
             <p className={`text-[10px] uppercase tracking-[0.5em] ${textMuted} mt-6`}>
               Vickins Technologies
