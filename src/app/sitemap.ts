@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { canonicalUrl } from "@/lib/seo";
+import { servicePages } from "@/lib/service-pages";
 
 const publicRoutes = [
   { path: "/", changeFrequency: "monthly" as const, priority: 1 },
@@ -10,7 +11,8 @@ const publicRoutes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return publicRoutes.map(({ path, changeFrequency, priority }) => ({
+  const serviceRoutes = servicePages.map(({ slug }) => ({ path: `/services/${slug}`, changeFrequency: "monthly" as const, priority: 0.7 }));
+  return [...publicRoutes, ...serviceRoutes].map(({ path, changeFrequency, priority }) => ({
     url: canonicalUrl(path),
     changeFrequency,
     priority,

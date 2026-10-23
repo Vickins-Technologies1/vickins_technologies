@@ -48,7 +48,7 @@ export default function TwitterImage() {
               color: "rgba(18,24,38,0.72)",
             }}
           >
-            Nairobi-based technology partner
+            Software and digital products for Kenya and beyond
             <span style={{ width: 42, height: 6, borderRadius: 999, background: "#1d4ed8" }} />
           </div>
 

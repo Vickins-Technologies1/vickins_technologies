@@ -12,7 +12,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 const trustSignals = [
-  { icon: CpuChipIcon, label: "72hr turnaround" },
   { icon: LockClosedIcon, label: "Security-first" },
   { icon: Squares2X2Icon, label: "Maintainable architecture" },
   { icon: ShieldCheckIcon, label: "NDA-friendly" },

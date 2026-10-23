@@ -78,13 +78,16 @@ export const organizationJsonLd = {
     height: 512,
   },
   description:
-    "Vickins Technologies is a Nairobi-based technology company that designs and engineers web platforms, mobile applications, automation, and security solutions.",
+    "Vickins Technologies designs and engineers web platforms, mobile applications, automation, and security solutions for organizations in Kenya and beyond.",
   email: "info@vickinstechnologies.com",
   telephone: "+254794501005",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Ruiru",
-    addressCountry: "KE",
+  founder: {
+    "@type": "Person",
+    "@id": "https://kelvinthuo.vickinstechnologies.com/#person",
+    name: "Kelvin Thuo",
+    url: "https://kelvinthuo.vickinstechnologies.com/",
+    jobTitle: "Software Engineer and IT Specialist",
+    worksFor: { "@id": organizationId },
   },
   sameAs: officialProfiles,
 };
@@ -140,8 +143,8 @@ export const homepageJsonLd = {
       name: "VornShield",
       url: "https://vornshield.vickinstechnologies.com/",
       description:
-        "A proxy management platform for controlled proxy access, dynamic credentials, usage management, and prepaid infrastructure billing.",
-      category: "Proxy management platform",
+        "A proxy infrastructure product with a shared gateway for currently supported HTTP, HTTPS CONNECT, and SOCKS5 access, account controls, traffic purchases, and usage visibility.",
+      category: "Proxy infrastructure",
       brand: { "@id": organizationId },
       manufacturer: { "@id": organizationId },
     },

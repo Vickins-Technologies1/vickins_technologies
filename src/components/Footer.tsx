@@ -33,12 +33,12 @@ const Footer: FC = () => {
                   Build, scale, support.
                 </h3>
                 <p className="text-[15px] text-[var(--foreground)]/75 mt-3 max-w-xl text-center lg:text-left">
-                  Web platforms, mobile apps, automation, and security — delivered by a Nairobi-based team built for
+                  Web platforms, mobile apps, automation, and security for organizations in Kenya and beyond, built for
                   long-term maintainability.
                 </p>
 
                 <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[var(--foreground)]/70 mx-auto lg:mx-0">
-                  Kenya-rooted · Global-ready
+                  Serving Kenya · Global-ready
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 items-stretch sm:items-center justify-center lg:justify-start">

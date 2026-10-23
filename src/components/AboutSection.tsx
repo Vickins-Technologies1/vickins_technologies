@@ -1,38 +1,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { SparklesIcon, ShieldCheckIcon, ChartBarIcon } from "@heroicons/react/24/outline";
-import AnimatedNumber from "./marketing/AnimatedNumber";
-
-function CounterCard({
-  value,
-  label,
-  delay = 0,
-  prefix,
-  suffix,
-}: {
-  value: number;
-  label: string;
-  delay?: number;
-  prefix?: string;
-  suffix?: string;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -15% 0px" }}
-      transition={{ duration: 0.5, delay }}
-      className="rounded-2xl bg-[var(--glass-surface)] px-4 py-3 shadow-[var(--shadow-tight)]"
-    >
-      <span className="text-xl font-semibold text-[var(--accent)] tabular-nums">
-        {prefix ?? ""}
-        <AnimatedNumber to={value} />
-        {suffix ?? ""}
-      </span>
-      <p className="text-xs sm:text-sm text-[var(--foreground)]/70 mt-1">{label}</p>
-    </motion.div>
-  );
-}
 
 export default function AboutSection() {
   return (
@@ -49,7 +17,7 @@ export default function AboutSection() {
           <div className="max-w-2xl">
             <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">About</p>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
-              A Nairobi-based technology partner for long-term systems.
+              A technology partner for long-term systems.
             </h2>
             <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
               We help teams modernize, integrate, and scale — with senior-led delivery, clean architecture, and
@@ -71,6 +39,13 @@ export default function AboutSection() {
               </div>
               <p className="text-[15px] text-[var(--foreground)]/78 mt-4">
                 We build web and mobile products for teams that want speed without shortcuts — and quality that lasts.
+              </p>
+              <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+                Vickins Technologies was founded by{" "}
+                <a href="https://kelvinthuo.vickinstechnologies.com/" className="font-semibold text-[var(--accent)] underline underline-offset-4">
+                  Kelvin Thuo
+                </a>
+                , a software engineer and IT specialist.
               </p>
               <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
                 You get clear milestones, clean UI systems, and engineering that is maintainable, testable, and
@@ -123,15 +98,6 @@ export default function AboutSection() {
                 className="w-full h-auto"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <CounterCard value={40} label="Platforms delivered" suffix="+" />
-              <CounterCard value={25} label="Client teams supported" delay={0.1} suffix="+" />
-              <CounterCard value={4} label="Years operating" delay={0.2} suffix="+" />
-              <CounterCard value={400} label="Monthly active users" delay={0.3} suffix="+" />
-              <CounterCard value={92} label="Repeat engagements" delay={0.4} suffix="%" />
-              <CounterCard value={12} label="Industries served" delay={0.5} suffix="+" />
             </div>
 
             <a

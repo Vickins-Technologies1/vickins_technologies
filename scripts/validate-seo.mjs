@@ -11,6 +11,8 @@ const requiredFiles = [
   "src/app/vtix/layout.tsx",
   "src/app/products/dira-os/page.tsx",
   "src/app/products/vornshield/page.tsx",
+  "src/app/services/[slug]/page.tsx",
+  "src/lib/service-pages.ts",
 ];
 
 for (const file of requiredFiles) {
@@ -21,6 +23,10 @@ const seoSource = await readFile("src/lib/seo.ts", "utf8");
 const robotsSource = await readFile("src/app/robots.ts", "utf8");
 const sitemapSource = await readFile("src/app/sitemap.ts", "utf8");
 const homepageSource = await readFile("src/app/page.tsx", "utf8");
+const servicePagesSource = await readFile("src/lib/service-pages.ts", "utf8");
+const serviceSectionSource = await readFile("src/components/ServicesSection.tsx", "utf8");
+const aboutSource = await readFile("src/components/AboutSection.tsx", "utf8");
+const clientsSource = await readFile("src/components/ClientsSection.tsx", "utf8");
 
 const assertions = [
   [seoSource.includes('https://www.vickinstechnologies.com'), "canonical site URL"],
@@ -35,6 +41,15 @@ const assertions = [
   [sitemapSource.includes('path: "/products/dira-os"'), "Dira OS product route"],
   [sitemapSource.includes('path: "/products/vornshield"'), "VornShield product route"],
   [homepageSource.includes("homepageJsonLd"), "homepage entity graph"],
+  [servicePagesSource.includes('slug: "web-development"'), "web development service page"],
+  [servicePagesSource.includes('slug: "custom-software-development"'), "custom software service page"],
+  [servicePagesSource.includes('slug: "mobile-app-development"'), "mobile app service page"],
+  [servicePagesSource.includes('slug: "business-automation"'), "business automation service page"],
+  [servicePagesSource.includes('slug: "pos-solutions"'), "POS solutions page"],
+  [serviceSectionSource.includes("service.href"), "crawlable homepage service links"],
+  [aboutSource.includes("kelvinthuo.vickinstechnologies.com"), "founder profile cross-link"],
+  [!aboutSource.includes("CounterCard") && !aboutSource.includes("Monthly active users"), "unsupported counters removed"],
+  [!clientsSource.includes('alt: "Client 4"') && !clientsSource.includes('alt: "Client 5"'), "generic client placeholders removed"],
 ];
 
 const failures = assertions.filter(([passed]) => !passed).map(([, label]) => label);

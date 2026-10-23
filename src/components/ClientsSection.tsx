@@ -6,18 +6,9 @@ export default function ClientsSection() {
     { src: "/Macdee.png", alt: "Macdee", url: "https://macdee-entertainment.vercel.app/" },
     { src: "/clients/sorana.png", alt: "Sorana Property Managers", url: "https://www.soranapropertymanagers.com/" },
     { src: "/Baggit.png", alt: "Baggit", url: "https://baggit-psi.vercel.app/" },
-    { src: "/clients/vmart.png", alt: "V-Mart", url: "#" },
-    { src: "/2.png", alt: "Client 4", url: "https://leasecaptain.com" },
-    { src: "/black.png", alt: "Client 5", url: "https://vickins-technologies.onrender.com" },
-    { src: "/flexi.png", alt: "Flexi", url: "#" },
-    { src: "/mti.png", alt: "crm", url: "#" },
-    { src: "/store.png", alt: "store", url: "#" },
-    { src: "/Jayden.png", alt: "ent", url: "#" },
-    { src: "/lovense.png", alt: "Blog", url: "#" },
   ];
 
-  const featured = clients.slice(0, 5);
-  const extendedClients = [...clients, ...clients];
+  const featured = clients;
 
   return (
     <motion.section
@@ -73,43 +64,14 @@ export default function ClientsSection() {
           <div className="relative overflow-hidden rounded-3xl bg-[var(--card-bg)] p-6 sm:p-7 shadow-[var(--shadow-soft)]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.14),_transparent_60%)]" />
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">
-                  Brand Wall
-                </p>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">Partners</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-semibold mt-3">A wider network of client brands.</h3>
+              <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--foreground)]/60">Selected work</p>
+              <h3 className="text-xl sm:text-2xl font-semibold mt-3">Explore projects and products.</h3>
               <p className="text-[15px] text-[var(--foreground)]/75 mt-3">
-                A quick scroll through brands we’ve contributed to — with confidentiality respected where needed.
+                Browse public project examples and Vickins-built products to see the kinds of digital systems we work on.
               </p>
-
-              <div className="mt-6 overflow-hidden">
-                <motion.div
-                  className="flex"
-                  animate={{ x: ["0%", "-50%"] }}
-                  transition={{ repeat: Infinity, ease: "linear", duration: 22 }}
-                  style={{ width: "200%" }}
-                >
-                  {extendedClients.map((client, index) => (
-                    <div
-                      key={`${client.alt}-${index}`}
-                      className="flex-shrink-0 px-3"
-                      style={{ width: `${100 / clients.length}%` }}
-                    >
-                      <div className="relative h-12 sm:h-14">
-                        <Image
-                          src={client.src}
-                          alt={client.alt}
-                          fill
-                          className="object-contain opacity-70"
-                          sizes="120px"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
+              <a href="/portfolio" className="mt-6 inline-flex rounded-full bg-[var(--button-bg)] px-5 py-3 text-sm font-semibold text-white">
+                View portfolio
+              </a>
             </div>
           </div>
         </div>

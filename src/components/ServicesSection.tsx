@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   CloudIcon,
   ComputerDesktopIcon,
@@ -15,16 +16,19 @@ export default function ServicesSection() {
   const services = [
     {
       title: "Platform Strategy & Architecture",
+      href: "/services/custom-software-development",
       description: "Discovery, roadmap, and architecture decisions that reduce long-term cost and risk.",
       icon: ComputerDesktopIcon,
     },
     {
       title: "Web Apps & Portals",
+      href: "/services/web-development",
       description: "Secure portals, dashboards, and customer platforms with performance, SEO, and clean UX.",
       icon: CodeBracketIcon,
     },
     {
       title: "Mobile Apps",
+      href: "/services/mobile-app-development",
       description: "iOS + Android experiences with offline flows, payments, and enterprise-grade auth patterns.",
       icon: DevicePhoneMobileIcon,
     },
@@ -35,6 +39,7 @@ export default function ServicesSection() {
     },
     {
       title: "Automation & AI",
+      href: "/services/business-automation",
       description: "Automations and AI enablement for ops, support, sales, and internal workflows — safely and measurably.",
       icon: CpuChipIcon,
     },
@@ -57,6 +62,12 @@ export default function ServicesSection() {
       title: "Growth Enablement",
       description: "Performance tuning, conversion optimization, and post-launch iteration with measurable ROI.",
       icon: RocketLaunchIcon,
+    },
+    {
+      title: "POS & Business Software",
+      href: "/services/pos-solutions",
+      description: "Explore Dira OS for point-of-sale, inventory and connected business operations on Android.",
+      icon: ComputerDesktopIcon,
     },
   ];
 
@@ -101,13 +112,14 @@ export default function ServicesSection() {
             <service.icon className="h-8 w-8 text-[var(--accent)] mb-3" />
             <h3 className="text-base sm:text-lg font-semibold mb-2">{service.title}</h3>
             <p className="text-[15px] text-[var(--foreground)]/75 mb-5">{service.description}</p>
-            <a
-              href="#contact"
-              className="text-[var(--accent)] font-semibold text-sm inline-flex items-center gap-2"
-            >
-              Speak with us
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
-            </a>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {"href" in service && service.href ? (
+                <Link href={service.href} className="text-[var(--accent)] font-semibold text-sm inline-flex items-center gap-2">
+                  Learn about this service <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
+              ) : null}
+              <a href="#contact" className="text-[var(--accent)]/80 font-semibold text-sm inline-flex items-center gap-2">Speak with us</a>
+            </div>
           </motion.div>
         ))}
       </div>

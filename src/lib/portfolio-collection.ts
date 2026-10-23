@@ -43,7 +43,7 @@ export const vornShieldProduct = {
   title: "VornShield",
   category: "VICKINS PRODUCT · INFRASTRUCTURE",
   description:
-    "A premium proxy management platform for controlled proxy access, dynamic credentials, usage management and prepaid infrastructure billing.",
+    "Proxy infrastructure with a shared gateway for currently supported HTTP, HTTPS CONNECT and SOCKS5 access, account controls, traffic purchases and usage visibility.",
   image: "/products/v-guard-logo.png",
   tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
   link: "https://vornshield.vickinstechnologies.com/",
