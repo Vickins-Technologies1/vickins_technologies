@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   ArrowRightIcon,
   ShieldCheckIcon,
@@ -35,8 +36,98 @@ const deliveryPillars = [
 
 const industries = ["Fintech", "Logistics", "Healthcare", "Public sector", "SaaS", "Internal tools"] as const;
 
+const primaryHeadlines = [
+  "Technology That Drives Business Forward.",
+  "Software Engineered for Real-World Impact.",
+  "Building the Future Through Technology.",
+  "Turning Complex Challenges Into Digital Solutions.",
+  "Engineering Systems That Scale With Ambition.",
+  "Software Development in Kenya, Built for Your Business.",
+  "Powerful Technology. Practical Results.",
+] as const;
+
+const secondaryHeadlines = [
+  "Engineering Digital Excellence.",
+  "Building Powerful Software Solutions.",
+  "Securing Critical Digital Infrastructure.",
+  "Transforming Business Operations Through Technology.",
+  "Designing Intelligent Digital Experiences.",
+  "Connecting Systems. Empowering Growth.",
+  "Delivering Reliable IT Infrastructure.",
+  "Turning Ideas Into Production-Ready Products.",
+] as const;
+
+type RotatingHeadlineProps = {
+  level: 1 | 2;
+  statements: readonly string[];
+  intervalMs: number;
+  transitionMs: number;
+  className: string;
+  slotClassName: string;
+  statementClassName?: string;
+};
+
+function RotatingHeadline({
+  level,
+  statements,
+  intervalMs,
+  transitionMs,
+  className,
+  slotClassName,
+  statementClassName = "",
+}: RotatingHeadlineProps) {
+  const shouldReduceMotion = useReducedMotion();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [phase, setPhase] = useState<"reading" | "exiting" | "entering">("reading");
+  const Heading = level === 1 ? "h1" : "h2";
+
+  useEffect(() => {
+    if (shouldReduceMotion || phase !== "reading" || statements.length < 2) return;
+
+    const timer = window.setTimeout(() => setPhase("exiting"), intervalMs);
+
+    return () => window.clearTimeout(timer);
+  }, [intervalMs, phase, shouldReduceMotion, statements.length]);
+
+  const completeExit = () => {
+    if (phase !== "exiting") return;
+    setActiveIndex((index) => (index + 1) % statements.length);
+    setPhase("entering");
+  };
+
+  const completeEntrance = () => {
+    if (phase === "entering") setPhase("reading");
+  };
+
+  return (
+    <Heading className={className}>
+      <span className={slotClassName} aria-live="off">
+        <AnimatePresence initial={false} mode="wait" onExitComplete={completeExit}>
+          {phase !== "exiting" && (
+            <motion.span
+              key={activeIndex}
+              initial={phase === "entering" && !shouldReduceMotion ? { y: "18%", opacity: 0 } : false}
+              animate={{ y: 0, opacity: 1 }}
+              exit={shouldReduceMotion ? { opacity: 1 } : { y: "-18%", opacity: 0 }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : transitionMs / 1000,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              onAnimationComplete={completeEntrance}
+              className={`block ${statementClassName}`}
+            >
+              {statements[activeIndex]}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </span>
+    </Heading>
+  );
+}
+
 export default function HeroSection() {
   const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.section
       id="home"
@@ -58,13 +149,24 @@ export default function HeroSection() {
               <span className="h-1 w-6 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
             </div>
 
-            <h1 className="mt-6 lg:mt-4 text-4xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-5xl xl:text-6xl text-[var(--hero-ink)]">
-              Software development in Kenya,
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]">
-                {" "}
-                built for your business.
-              </span>
-            </h1>
+            <RotatingHeadline
+              level={1}
+              statements={primaryHeadlines}
+              intervalMs={7_000}
+              transitionMs={750}
+              className="mt-6 lg:mt-4 text-3xl font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--hero-ink)] sm:text-4xl lg:text-5xl"
+              slotClassName="hero-headline-rotator mt-2 block min-h-[4.2em] sm:min-h-[2.8em] lg:min-h-[3.2em] xl:min-h-[3.2em]"
+            />
+
+            <RotatingHeadline
+              level={2}
+              statements={secondaryHeadlines}
+              intervalMs={5_000}
+              transitionMs={650}
+              className="mt-3 sm:mt-4 text-xl font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--hero-ink)] sm:text-2xl lg:text-3xl"
+              slotClassName="hero-headline-rotator block min-h-[3.6em] sm:min-h-[2.4em]"
+              statementClassName="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]"
+            />
 
             <p className="mt-4 lg:mt-3 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
               Vickins Technologies designs, develops and supports custom software, web and mobile applications, business platforms and system integrations for organizations in Kenya and beyond.
