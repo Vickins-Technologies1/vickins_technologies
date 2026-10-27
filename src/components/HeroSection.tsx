@@ -136,7 +136,7 @@ export default function HeroSection() {
       transition={{ duration: 0.9 }}
       className="hero-surface relative isolate min-h-[78vh] text-[var(--foreground)] flex items-center"
     >
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-6">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 py-12 sm:py-14 lg:pt-14 lg:pb-0">
         <div className="hero-content-layout grid items-center gap-10 lg:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
@@ -154,8 +154,8 @@ export default function HeroSection() {
               statements={primaryHeadlines}
               intervalMs={7_000}
               transitionMs={750}
-              className="mt-6 lg:mt-4 text-3xl font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--hero-ink)] sm:text-4xl lg:text-5xl"
-              slotClassName="hero-headline-rotator mt-2 block min-h-[4.2em] sm:min-h-[2.8em] lg:min-h-[3.2em] xl:min-h-[3.2em]"
+              className="mt-6 lg:mt-2 text-3xl font-semibold leading-[1.04] tracking-[-0.03em] text-[var(--hero-ink)] sm:text-4xl lg:text-5xl xl:text-[2.5rem]"
+              slotClassName="hero-headline-rotator mt-2 block min-h-[4.2em] sm:min-h-[2.8em] lg:min-h-[3.2em] xl:min-h-[2.2em]"
             />
 
             <RotatingHeadline
@@ -163,21 +163,21 @@ export default function HeroSection() {
               statements={secondaryHeadlines}
               intervalMs={5_000}
               transitionMs={650}
-              className="mt-3 sm:mt-4 text-xl font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--hero-ink)] sm:text-2xl lg:text-3xl"
+              className="mt-3 sm:mt-4 text-xl font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--hero-ink)] sm:text-2xl"
               slotClassName="hero-headline-rotator block min-h-[3.6em] sm:min-h-[2.4em]"
               statementClassName="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]"
             />
 
-            <p className="mt-4 lg:mt-3 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
+            <p className="mt-4 lg:mt-2 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
               Vickins Technologies designs, develops and supports custom software, web and mobile applications, business platforms and system integrations for organizations in Kenya and beyond.
             </p>
 
-            <p className="mt-3 lg:mt-2 text-sm text-[var(--hero-muted)] max-w-xl">
+            <p className="mt-3 lg:mt-1 text-sm text-[var(--hero-muted)] max-w-xl">
               Strong architecture, security-first execution, and clean handover — with senior ownership from kickoff to
               launch.
             </p>
 
-            <div className="mt-7 lg:mt-4 flex flex-col sm:flex-row gap-3">
+            <div className="mt-7 lg:mt-3 flex flex-col sm:flex-row gap-3">
               <a
                 href="#contact"
                 className="group inline-flex items-center justify-center gap-3 rounded-full bg-[image:var(--hero-primary-bg)] bg-[length:100%_100%] bg-no-repeat px-6 py-3 text-sm font-semibold text-[var(--hero-primary-fg)] shadow-[var(--hero-primary-shadow)] ring-1 ring-[var(--hero-border)] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--accent-sky-rgb),0.65)]"
@@ -199,7 +199,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="mt-8 lg:mt-4 flex flex-wrap items-center gap-2"
+              className="mt-8 lg:mt-2 flex flex-wrap items-center gap-2"
             >
               {trustSignals.map((item) => {
                 const Icon = item.icon;
@@ -220,7 +220,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.65 }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="mt-10 lg:mt-4 flex items-center justify-between gap-6 border-t border-[var(--hero-border)] pt-6 lg:pt-4"
+              className="mt-10 lg:mt-2 flex items-center justify-between gap-6 border-t border-[var(--hero-border)] pt-6 lg:pt-3"
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[10px] uppercase tracking-[0.34em] text-[var(--hero-muted)]">Built for</span>
@@ -242,7 +242,7 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            <p className="mt-4 lg:mt-2 text-xs text-[var(--hero-muted)] max-w-xl">
+            <p className="mt-4 lg:mt-1 text-xs text-[var(--hero-muted)] max-w-xl">
               Need physical security too?{" "}
               <Link
                 href="/vickins-security"
