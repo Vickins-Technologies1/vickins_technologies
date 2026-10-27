@@ -2,11 +2,11 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   ArrowRightIcon,
   ShieldCheckIcon,
-  CpuChipIcon,
   LockClosedIcon,
   Squares2X2Icon,
   GlobeAltIcon,
@@ -17,21 +17,6 @@ const trustSignals = [
   { icon: Squares2X2Icon, label: "Maintainable architecture" },
   { icon: ShieldCheckIcon, label: "NDA-friendly" },
   { icon: GlobeAltIcon, label: "Business software ready" },
-] as const;
-
-const deliveryPillars = [
-  {
-    title: "Plan with precision",
-    description: "Architecture baseline, risks, milestones, and delivery ownership.",
-  },
-  {
-    title: "Build for reliability",
-    description: "Secure auth, observability, and performance that holds up under load.",
-  },
-  {
-    title: "Ship what your team can own",
-    description: "Clean code, docs, and patterns your engineers can extend confidently.",
-  },
 ] as const;
 
 const industries = ["Fintech", "Logistics", "Healthcare", "Public sector", "SaaS", "Internal tools"] as const;
@@ -255,62 +240,27 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.18 }}
-            className="relative"
+            className="hero-ecosystem-visual relative mx-auto flex w-full max-w-[620px] items-center justify-center lg:ml-auto"
           >
-            <div className="absolute -inset-2 rounded-[28px] hero-panel-glow blur-2xl" />
-            <div className="hero-delivery-panel relative overflow-hidden rounded-[28px] border border-[var(--hero-border)] bg-[var(--hero-panel-bg)] p-6 shadow-[var(--hero-panel-shadow)] backdrop-blur-2xl">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.34em] text-[rgba(var(--accent-sky-rgb),0.75)]">
-                    Delivery, not demos
-                  </p>
-                  <h2 className="mt-2 text-xl font-semibold tracking-[-0.02em] sm:text-2xl text-[var(--hero-ink)]">
-                    Production-grade from week one.
-                  </h2>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-1.5 text-xs text-[var(--hero-muted)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[rgba(var(--accent-sky-rgb),0.85)]" />
-                  Reliability-focused
-                </div>
-              </div>
-
-              <div className="mt-6 grid gap-3">
-                {deliveryPillars.map((pillar) => (
-                  <div key={pillar.title} className="rounded-2xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] p-4">
-                    <div className="text-sm font-semibold text-[var(--hero-ink)]">{pillar.title}</div>
-                    <p className="mt-2 text-sm leading-relaxed text-[var(--hero-muted)]">{pillar.description}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Micro diagram */}
-              <div className="mt-6 overflow-hidden rounded-2xl border border-[var(--hero-border)] bg-[var(--hero-diagram-bg)] p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-[0.34em] text-[var(--hero-muted)]">Platform blueprint</span>
-                  <span className="text-[10px] uppercase tracking-[0.34em] text-[var(--hero-muted)]/70">v1.0</span>
-                </div>
-                <div className="mt-4 grid grid-cols-3 gap-3 text-xs">
-                  {["Auth", "Data", "Ops"].map((label) => (
-                    <div
-                      key={label}
-                      className="relative overflow-hidden rounded-xl border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-3 py-3 text-[var(--hero-muted)]"
-                    >
-                      <div className="absolute inset-0 hero-card-sheen" aria-hidden="true" />
-                      <div className="relative flex items-center justify-between">
-                        <span className="font-semibold text-[var(--hero-ink)]">{label}</span>
-                        <span className="h-2 w-2 rounded-full bg-[rgba(var(--accent-sky-rgb),0.7)] shadow-[var(--hero-dot-glow)]" />
-                      </div>
-                      <div className="relative mt-2 h-1.5 w-full rounded-full bg-[var(--hero-track)]">
-                        <div className="h-1.5 w-[72%] rounded-full bg-[var(--hero-progress)]" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <div className="hero-ecosystem-halo absolute inset-[10%]" aria-hidden="true" />
+            <motion.div
+              className="relative w-full"
+              animate={shouldReduceMotion ? undefined : { y: [0, -6, 0] }}
+              transition={shouldReduceMotion ? undefined : { duration: 7, ease: "easeInOut", repeat: Infinity }}
+            >
+              <Image
+                src="/images/technology-ecosystem.png"
+                alt="Connected technology ecosystem with secure servers, cloud infrastructure, analytics devices, and network systems"
+                width={1254}
+                height={1254}
+                priority
+                sizes="(max-width: 767px) 94vw, (max-width: 1023px) 82vw, (max-width: 1439px) 46vw, 620px"
+                className="relative z-10 h-auto w-full object-contain drop-shadow-[0_24px_45px_rgba(0,110,255,0.2)]"
+              />
+            </motion.div>
           </motion.div>
         </div>
       </div>

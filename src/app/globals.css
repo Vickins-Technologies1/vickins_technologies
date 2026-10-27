@@ -947,12 +947,6 @@ h4 {
   --hero-primary-bg: linear-gradient(90deg, rgba(var(--accent-sky-rgb), 1), rgba(var(--accent-rgb), 1));
   --hero-primary-fg: #ffffff;
   --hero-primary-shadow: 0 16px 60px rgba(var(--accent-rgb), 0.22);
-  --hero-panel-bg: var(--glass-surface);
-  --hero-panel-shadow: 0 26px 90px rgba(18, 24, 38, 0.18);
-  --hero-diagram-bg: rgba(0, 0, 0, 0.12);
-  --hero-dot-glow: 0 0 18px rgba(var(--accent-sky-rgb), 0.25);
-  --hero-track: rgba(var(--accent-2-rgb), 0.12);
-  --hero-progress: linear-gradient(90deg, rgba(var(--accent-sky-rgb), 0.9), rgba(var(--accent-rgb), 0.85));
   --hero-grad-a: rgb(0 144 224);
   --hero-grad-b: rgb(100 180 255);
   --hero-grad-c: rgb(31 109 255);
@@ -966,27 +960,20 @@ h4 {
 
 :root[data-theme="dark"] .hero-surface {
   --hero-primary-shadow: 0 16px 70px rgba(var(--accent-rgb), 0.28);
-  --hero-panel-shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
-  --hero-diagram-bg: rgba(0, 0, 0, 0.28);
   --hero-sub: rgba(238, 242, 255, 0.78);
   --hero-skyline-base: rgba(238, 242, 255, 0.16);
-  --hero-track: rgba(238, 242, 255, 0.12);
 }
 
-.hero-panel-glow {
-  background: radial-gradient(600px 420px at 20% 10%, rgba(var(--accent-sky-rgb), 0.18), transparent 60%),
-    radial-gradient(600px 420px at 80% 20%, rgba(var(--accent-rgb), 0.14), transparent 58%);
+.hero-ecosystem-halo {
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-sky-rgb), .21) 0%, rgba(var(--accent-rgb), .1) 38%, transparent 72%);
+  filter: blur(30px);
+  opacity: .8;
+  pointer-events: none;
 }
 
 .hero-scroll-dot {
   animation: heroScrollDot 1.4s ease-in-out infinite;
-}
-
-.hero-card-sheen {
-  background: linear-gradient(110deg, transparent, rgba(var(--accent-2-rgb), 0.16), transparent);
-  opacity: 0.65;
-  transform: translateX(-140%);
-  animation: heroSheen 7s ease-in-out infinite;
 }
 
 @keyframes heroScrollDot {
@@ -1001,21 +988,8 @@ h4 {
   }
 }
 
-@keyframes heroSheen {
-  0% {
-    transform: translateX(-140%);
-  }
-  45% {
-    transform: translateX(-140%);
-  }
-  100% {
-    transform: translateX(140%);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-scroll-dot,
-  .hero-card-sheen,
   .float-slow,
   .float-slower,
   .shimmer-line::after {
@@ -1061,7 +1035,6 @@ h4 {
   .hero-surface { min-height: 0; }
   .hero-surface > div { padding-top: 3.25rem; padding-bottom: 3.25rem; }
   .hero-content-layout { gap: 2.25rem; }
-  .hero-delivery-panel { padding: 1rem; }
   .hero-scroll-main { padding-bottom: 1rem; }
 }
 
