@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '../../../lib/mongodb';
 import transporter from '../../../lib/nodemailer';
+import { contactServices } from '../../../lib/contact-services';
 
 // Define the contact interface
 export interface IContact {
@@ -10,6 +11,7 @@ export interface IContact {
   phone?: string;
   services: string[];
   message: string;
+  subject: string;
   company?: string;
   role?: string;
   website?: string;
@@ -36,36 +38,42 @@ export async function POST(request: NextRequest) {
 
     const name = typeof body.name === 'string' ? body.name.trim() : '';
     const email = typeof body.email === 'string' ? body.email.trim() : '';
+    const subject = typeof body.subject === 'string' ? body.subject.trim() : '';
     const message = typeof body.message === 'string' ? body.message.trim() : '';
     const services = Array.isArray(body.services)
-      ? body.services.filter((s) => typeof s === 'string' && s.trim().length > 0)
+      ? body.services.filter((s): s is string => typeof s === 'string' && contactServices.some((service) => service.label === s))
       : [];
 
-    if (!name || !email || services.length === 0 || !message) {
-      console.error('Validation failed:', { body });
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    if (!name || !email || services.length === 0 || !subject || message.length < 10) {
+      return NextResponse.json({ message: 'Please provide your name, a valid email, a project subject, a service, and a project description.' }, { status: 400 });
     }
 
     // Validate email format
     const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
-      console.error('Invalid email format:', { email });
+    if (!emailRegex.test(email) || email.length > 254) {
       return NextResponse.json({ message: 'Please enter a valid email' }, { status: 400 });
     }
 
-    // Validate message length
-    if (message.length > 2000) {
-      console.error('Message too long:', { length: message.length });
+    if (name.length > 120 || subject.length > 160 || message.length > 5000) {
       return NextResponse.json(
-        { message: 'Message cannot be more than 2000 characters' },
+        { message: 'Please shorten your name, subject, or project description and try again.' },
         { status: 400 }
       );
     }
+
+    // Escape user-provided values before inserting them into the notification email HTML.
+    const htmlEntities: Record<string, string> = {
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    };
+    const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => htmlEntities[character]);
+    const safe = (value: unknown) => escapeHtml(typeof value === 'string' ? value : '');
+    const safeMessage = escapeHtml(message).replace(/\r?\n/g, '<br>');
 
     // Prepare contact data
     const contactData: IContact = {
       name,
       email,
+      subject,
       phone: typeof body.phone === 'string' ? body.phone : '',
       services,
       message,
@@ -81,12 +89,6 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
     };
 
-    console.log('Saving contact to MongoDB:', {
-      name: contactData.name,
-      email: contactData.email,
-      services: contactData.services,
-    });
-
     // Connect to MongoDB
     const db = await connectToDatabase();
     const collection = db.collection('contacts');
@@ -99,8 +101,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Failed to save contact' }, { status: 500 });
     }
 
-    console.log('Contact saved successfully:', { id: result.insertedId });
-
     // Send email notification
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -108,20 +108,21 @@ export async function POST(request: NextRequest) {
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Contact Inquiry</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</p>
-        <p><strong>Company:</strong> ${contactData.company || 'Not provided'}</p>
-        <p><strong>Role:</strong> ${contactData.role || 'Not provided'}</p>
-        <p><strong>Website:</strong> ${contactData.website || 'Not provided'}</p>
-        <p><strong>Budget:</strong> ${contactData.budget || 'Not provided'}</p>
-        <p><strong>Timeline:</strong> ${contactData.timeline || 'Not provided'}</p>
-        <p><strong>Preferred Contact:</strong> ${contactData.contactMethod || 'Not provided'}</p>
-        <p><strong>Referral:</strong> ${contactData.referral || 'Not provided'}</p>
+        <p><strong>Name:</strong> ${safe(name)}</p>
+        <p><strong>Email:</strong> ${safe(email)}</p>
+        <p><strong>Subject:</strong> ${safe(subject)}</p>
+        <p><strong>Phone:</strong> ${safe(contactData.phone) || 'Not provided'}</p>
+        <p><strong>Company:</strong> ${safe(contactData.company) || 'Not provided'}</p>
+        <p><strong>Role:</strong> ${safe(contactData.role) || 'Not provided'}</p>
+        <p><strong>Website:</strong> ${safe(contactData.website) || 'Not provided'}</p>
+        <p><strong>Budget:</strong> ${safe(contactData.budget) || 'Not provided'}</p>
+        <p><strong>Timeline:</strong> ${safe(contactData.timeline) || 'Not provided'}</p>
+        <p><strong>Preferred Contact:</strong> ${safe(contactData.contactMethod) || 'Not provided'}</p>
+        <p><strong>Referral:</strong> ${safe(contactData.referral) || 'Not provided'}</p>
         <p><strong>Discovery Call:</strong> ${contactData.discoveryCall ? 'Yes' : 'No'}</p>
         <p><strong>NDA Required:</strong> ${contactData.nda ? 'Yes' : 'No'}</p>
-        <p><strong>Services:</strong> ${services.join(', ')}</p>
-        <p><strong>Message:</strong> ${message}</p>
+        <p><strong>Services:</strong> ${services.map(escapeHtml).join(', ')}</p>
+        <p><strong>Message:</strong><br>${safeMessage}</p>
         <hr>
         <p>Submitted on: ${new Date().toLocaleString()}</p>
       `,
@@ -136,9 +137,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Email configuration error' }, { status: 500 });
     }
 
-    console.log('Sending email notification to:', process.env.EMAIL_RECEIVER);
     await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
 
     return NextResponse.json({ message: 'Contact saved and email sent successfully' }, { status: 200 });
   } catch (error) {

@@ -117,6 +117,7 @@ function resolveResponse(input: string) {
 
 export default function FloatingActions() {
   const [showTop, setShowTop] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -132,6 +133,17 @@ export default function FloatingActions() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const contactSection = document.getElementById("contact");
+    if (!contactSection || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setContactVisible(entry.isIntersecting);
+      if (entry.isIntersecting) setIsChatOpen(false);
+    });
+    observer.observe(contactSection);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -195,7 +207,7 @@ export default function FloatingActions() {
   );
 
   return (
-    <div className="fixed bottom-6 right-4 sm:right-6 z-[70] flex flex-col items-end gap-3">
+    <div hidden={contactVisible} className="fixed bottom-6 right-4 sm:right-6 z-[70] flex flex-col items-end gap-3">
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label="Back to top"
