@@ -870,6 +870,59 @@ h4 {
 }
 
 /* Premium marketing hero effects */
+.hero-scroll-stage {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: 26vh;
+}
+
+.hero-pinned-backdrop {
+  position: sticky;
+  top: 84px;
+  z-index: 0;
+  height: calc(100vh - 84px);
+  margin-bottom: calc(-100vh + 84px);
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 18%, rgba(var(--accent-sky-rgb), 0.12), transparent 48%),
+    radial-gradient(ellipse at 85% 32%, rgba(var(--accent-rgb), 0.10), transparent 52%),
+    linear-gradient(rgba(var(--accent-2-rgb), 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-2-rgb), 0.035) 1px, transparent 1px);
+  background-size: auto, auto, 46px 46px, 46px 46px;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+}
+
+.hero-code-fragment {
+  position: absolute;
+  color: rgba(var(--accent-2-rgb), 0.24);
+  font: 500 clamp(10px, 1vw, 13px)/1.9 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+  text-shadow: 0 0 22px rgba(var(--accent-sky-rgb), 0.12);
+}
+
+.hero-code-fragment--left { left: max(3vw, calc((100vw - 1320px) / 2)); top: 12%; }
+.hero-code-fragment--right { right: 4vw; top: 27%; }
+.hero-code-fragment--lower { left: 39%; bottom: 13%; }
+.hero-grid-cross {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(var(--accent-sky-rgb), 0.28);
+  transform: rotate(45deg);
+}
+.hero-grid-cross--one { left: 28%; top: 36%; }
+.hero-grid-cross--two { right: 24%; bottom: 24%; }
+
+.hero-scroll-main {
+  position: relative;
+  z-index: 1;
+  margin-top: -26vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .hero-surface {
   --hero-ink: var(--foreground);
   --hero-sub: rgba(var(--accent-2-rgb), 0.78);
@@ -981,6 +1034,16 @@ h4 {
   .shimmer-line::after {
     animation: none !important;
   }
+}
+
+@media (max-width: 640px) {
+  .hero-scroll-stage { padding-bottom: 18vh; }
+  .hero-scroll-main {
+    margin-top: -18vh;
+    padding-top: 2rem;
+  }
+  .hero-code-fragment--right { right: -28px; top: 24%; }
+  .hero-code-fragment--lower { left: 12%; bottom: 18%; }
 }
 
 /* Work / editorial portfolio */

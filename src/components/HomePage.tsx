@@ -28,9 +28,18 @@ export default function HomePage() {
       <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <HeroSection />
+      <div className="hero-scroll-stage">
+        <div aria-hidden="true" className="hero-pinned-backdrop">
+          <span className="hero-code-fragment hero-code-fragment--left">const innovation = &quot;Vickins Technologies&quot;;<br />function buildSolutions() &#123; ... &#125;</span>
+          <span className="hero-code-fragment hero-code-fragment--right">class SecureInfrastructure &#123;<br />&nbsp; return scalableSolutions;<br />&#125;</span>
+          <span className="hero-code-fragment hero-code-fragment--lower">if (secure &amp;&amp; scalable) &#123; deploy(); &#125;</span>
+          <span className="hero-grid-cross hero-grid-cross--one" />
+          <span className="hero-grid-cross hero-grid-cross--two" />
+        </div>
+        <HeroSection />
+      </div>
 
-      <main className="flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
+      <main className="hero-scroll-main flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <ServicesSection />
         <RecentProjectsSection />
         <ClientsSection />
