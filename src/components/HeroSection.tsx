@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowRightIcon,
@@ -37,90 +37,16 @@ const industries = ["Fintech", "Logistics", "Healthcare", "Public sector", "SaaS
 
 export default function HeroSection() {
   const shouldReduceMotion = useReducedMotion();
-  const { scrollY } = useScroll();
-  const orbY = useTransform(scrollY, [0, 900], [0, shouldReduceMotion ? 0 : 120]);
-  const gridY = useTransform(scrollY, [0, 900], [0, shouldReduceMotion ? 0 : 56]);
-
   return (
     <motion.section
       id="home"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.9 }}
-      className="hero-surface relative isolate min-h-[78vh] overflow-hidden text-[var(--foreground)] flex items-center"
+      className="hero-surface relative isolate min-h-[78vh] text-[var(--foreground)] flex items-center"
     >
-      {/* Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_12%_10%,rgba(var(--accent-sky-rgb),0.20),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(1000px_650px_at_82%_18%,rgba(var(--accent-rgb),0.16),transparent_58%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(900px_600px_at_50%_110%,rgba(var(--accent-sky-rgb),0.10),transparent_58%)]" />
-
-        <motion.div aria-hidden="true" className="absolute inset-0 opacity-45 hero-grid-mask" style={{ y: gridY }} />
-        <div aria-hidden="true" className="absolute inset-0 hero-dots hero-grid-mask opacity-55" />
-
-        {/* Nairobi line art (subtle) */}
-        <div aria-hidden="true" className="absolute -bottom-16 left-0 right-0 mx-auto w-[min(1100px,95vw)] opacity-[0.22]">
-          <svg viewBox="0 0 1200 260" className="h-auto w-full">
-            <defs>
-              <linearGradient id="skylineStroke" x1="0" x2="1" y1="0" y2="0">
-                <stop offset="0" stopColor="var(--hero-skyline-a0)" />
-                <stop offset="0.2" stopColor="var(--hero-skyline-a)" />
-                <stop offset="0.5" stopColor="var(--hero-skyline-b)" />
-                <stop offset="0.8" stopColor="var(--hero-skyline-c)" />
-                <stop offset="1" stopColor="var(--hero-skyline-c0)" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M15 214h60v-40h20v40h30V160h25v54h35V120h28v94h40V92h24v122h26V140h20v74h44V80h22v134h36V140h20v74h45V110h26v104h38V150h20v64h46V132h22v82h42V170h20v44h50"
-              fill="none"
-              stroke="url(#skylineStroke)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeDasharray="3 9"
-            />
-            <path
-              d="M20 230c190-18 305-24 360-18 88 9 126 9 206-3 102-16 250-12 395 21"
-              fill="none"
-              stroke="var(--hero-skyline-base)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-
-        {/* Fade into the page background */}
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[var(--background)]" />
-      </div>
-
-      {/* Glow orbs */}
-      <motion.div
-        aria-hidden="true"
-        className="glow-orb float-slow"
-        style={{
-          y: orbY,
-          top: "-10%",
-          left: "-7%",
-          width: "380px",
-          height: "380px",
-          background: "rgba(var(--accent-sky-rgb),0.18)",
-        }}
-      />
-      <motion.div
-        aria-hidden="true"
-        className="glow-orb float-slower"
-        style={{
-          y: orbY,
-          bottom: "-14%",
-          right: "-8%",
-          width: "460px",
-          height: "460px",
-          background: "rgba(var(--accent-rgb),0.20)",
-        }}
-      />
-
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
+        <div className="hero-content-layout grid items-center gap-10 lg:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 22 }}
             animate={{ opacity: 1, y: 0 }}
@@ -233,7 +159,7 @@ export default function HeroSection() {
             className="relative"
           >
             <div className="absolute -inset-2 rounded-[28px] hero-panel-glow blur-2xl" />
-            <div className="relative overflow-hidden rounded-[28px] border border-[var(--hero-border)] bg-[var(--hero-panel-bg)] p-6 shadow-[var(--hero-panel-shadow)] backdrop-blur-2xl">
+            <div className="hero-delivery-panel relative overflow-hidden rounded-[28px] border border-[var(--hero-border)] bg-[var(--hero-panel-bg)] p-6 shadow-[var(--hero-panel-shadow)] backdrop-blur-2xl">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.34em] text-[rgba(var(--accent-sky-rgb),0.75)]">

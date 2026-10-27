@@ -869,59 +869,129 @@ h4 {
   animation: shimmer 5s ease-in-out infinite;
 }
 
-/* Premium marketing hero effects */
+/* One architectural canvas sits behind the hero and its opening scroll transition. */
 .hero-scroll-stage {
   position: relative;
   isolation: isolate;
-  padding-bottom: 26vh;
+  overflow: clip;
+  background: var(--background);
 }
 
 .hero-pinned-backdrop {
+  --hero-grid: rgba(var(--accent-2-rgb), 0.10);
+  --hero-grid-fine: rgba(var(--accent-2-rgb), 0.035);
+  --hero-architecture: rgba(var(--accent-2-rgb), 0.25);
+  --hero-code: rgba(var(--accent-2-rgb), 0.25);
+  --hero-code-accent: rgba(var(--accent-rgb), 0.65);
   position: sticky;
   top: 84px;
   z-index: 0;
-  height: calc(100vh - 84px);
-  margin-bottom: calc(-100vh + 84px);
+  height: calc(100svh - 84px);
+  margin-bottom: calc(-100svh + 84px);
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 18% 18%, rgba(var(--accent-sky-rgb), 0.12), transparent 48%),
-    radial-gradient(ellipse at 85% 32%, rgba(var(--accent-rgb), 0.10), transparent 52%),
-    linear-gradient(rgba(var(--accent-2-rgb), 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(var(--accent-2-rgb), 0.035) 1px, transparent 1px);
-  background-size: auto, auto, 46px 46px, 46px 46px;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+    radial-gradient(ellipse 52% 76% at 84% 45%, rgba(var(--accent-rgb), 0.085), transparent 72%),
+    radial-gradient(ellipse 54% 60% at 12% 7%, rgba(var(--accent-sky-rgb), 0.10), transparent 76%),
+    linear-gradient(145deg, color-mix(in srgb, var(--background) 97%, var(--accent-sky)) 0%, var(--background) 52%, color-mix(in srgb, var(--background) 97%, var(--accent)) 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 74%, transparent 100%);
 }
 
-.hero-code-fragment {
+:root[data-theme="dark"] .hero-pinned-backdrop {
+  --hero-grid: rgba(var(--accent-2-rgb), 0.12);
+  --hero-grid-fine: rgba(var(--accent-2-rgb), 0.045);
+  --hero-architecture: rgba(var(--accent-2-rgb), 0.34);
+  --hero-code: rgba(var(--accent-2-rgb), 0.32);
+  --hero-code-accent: rgba(var(--accent-sky-rgb), 0.75);
+  background:
+    radial-gradient(ellipse 46% 72% at 85% 42%, rgba(var(--accent-rgb), 0.14), transparent 72%),
+    radial-gradient(ellipse 54% 64% at 12% 7%, rgba(var(--accent-sky-rgb), 0.12), transparent 76%),
+    linear-gradient(145deg, color-mix(in srgb, var(--background) 94%, var(--accent-sky)) 0%, var(--background) 54%, color-mix(in srgb, var(--background) 95%, var(--accent)) 100%);
+}
+
+.hero-backdrop-wash,
+.hero-backdrop-grid,
+.hero-blueprint {
   position: absolute;
-  color: rgba(var(--accent-2-rgb), 0.24);
-  font: 500 clamp(10px, 1vw, 13px)/1.9 ui-monospace, SFMono-Regular, Menlo, monospace;
-  letter-spacing: 0.015em;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-backdrop-wash {
+  background:
+    linear-gradient(90deg, var(--background) 0%, color-mix(in srgb, var(--background) 94%, transparent) 18%, transparent 53%, color-mix(in srgb, var(--background) 20%, transparent) 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--background) 10%, transparent) 58%, var(--background) 100%);
+}
+
+.hero-backdrop-grid {
+  background-image:
+    linear-gradient(var(--hero-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px),
+    linear-gradient(var(--hero-grid-fine) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hero-grid-fine) 1px, transparent 1px);
+  background-size: 72px 72px, 72px 72px, 18px 18px, 18px 18px;
+  mask-image: radial-gradient(ellipse 70% 78% at 72% 46%, #000 14%, rgba(0,0,0,.76) 58%, transparent 100%);
+}
+
+.hero-blueprint {
+  fill: none;
+  stroke: var(--hero-architecture);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: .75;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 89%, transparent 100%);
+}
+
+.hero-blueprint circle { fill: var(--background); stroke: rgba(var(--accent-sky-rgb), .7); stroke-width: 1.2; }
+.hero-blueprint .hero-blueprint-fine { stroke-dasharray: 3 6; opacity: .7; }
+.hero-blueprint .hero-blueprint-mark { stroke: rgba(var(--accent-sky-rgb), .65); }
+
+.hero-code-cluster {
+  position: absolute;
+  display: grid;
+  gap: 5px;
+  max-width: min(38vw, 480px);
+  color: var(--hero-code);
+  font: 500 11px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .01em;
   white-space: nowrap;
-  text-shadow: 0 0 22px rgba(var(--accent-sky-rgb), 0.12);
+  text-shadow: 0 1px 14px color-mix(in srgb, var(--background) 70%, transparent);
 }
 
-.hero-code-fragment--left { left: max(3vw, calc((100vw - 1320px) / 2)); top: 12%; }
-.hero-code-fragment--right { right: 4vw; top: 27%; }
-.hero-code-fragment--lower { left: 39%; bottom: 13%; }
-.hero-grid-cross {
+.hero-code-cluster > span,
+.hero-coordinate {
+  color: var(--hero-code-accent);
+  font: 600 8px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .22em;
+}
+
+.hero-code-cluster code { color: inherit; font: inherit; }
+.hero-code-cluster i { color: var(--hero-code-accent); font-style: normal; }
+.hero-code-cluster b { color: color-mix(in srgb, var(--hero-code-accent) 76%, var(--foreground)); font-weight: 600; }
+.hero-code-cluster--north { left: max(3vw, calc((100vw - 1360px) / 2)); top: 10%; opacity: .58; }
+.hero-code-cluster--east { right: max(2.8vw, calc((100vw - 1400px) / 2)); top: 24%; opacity: .70; }
+.hero-code-cluster--south { right: 15%; bottom: 12%; opacity: .62; }
+
+.hero-coordinate {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border: 1px solid rgba(var(--accent-sky-rgb), 0.28);
-  transform: rotate(45deg);
+  bottom: 9%;
+  opacity: .62;
 }
-.hero-grid-cross--one { left: 28%; top: 36%; }
-.hero-grid-cross--two { right: 24%; bottom: 24%; }
+.hero-coordinate--east { right: 3.2%; writing-mode: vertical-rl; }
+.hero-coordinate--west { left: max(3vw, calc((100vw - 1360px) / 2)); }
 
-.hero-scroll-main {
+.hero-transition-runway {
+  height: clamp(88px, 18svh, 190px);
+  pointer-events: none;
+}
+
+.hero-transition-section {
   position: relative;
   z-index: 1;
-  margin-top: -26vh;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 }
+
+.hero-scroll-main { position: relative; z-index: 1; padding-bottom: 2rem; }
 
 .hero-surface {
   --hero-ink: var(--foreground);
@@ -964,20 +1034,6 @@ h4 {
     radial-gradient(600px 420px at 80% 20%, rgba(var(--accent-rgb), 0.14), transparent 58%);
 }
 
-.hero-grid-mask {
-  background-image: linear-gradient(rgba(var(--accent-2-rgb), 0.10) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(var(--accent-2-rgb), 0.10) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: radial-gradient(70% 60% at 50% 22%, #000 52%, transparent 100%);
-}
-
-.hero-dots {
-  background-image: radial-gradient(circle, rgba(var(--accent-2-rgb), 0.14) 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: 0.55;
-  animation: heroDrift 18s ease-in-out infinite;
-}
-
 .hero-scroll-dot {
   animation: heroScrollDot 1.4s ease-in-out infinite;
 }
@@ -987,18 +1043,6 @@ h4 {
   opacity: 0.65;
   transform: translateX(-140%);
   animation: heroSheen 7s ease-in-out infinite;
-}
-
-@keyframes heroDrift {
-  0% {
-    background-position: 0 0;
-  }
-  50% {
-    background-position: 20px 14px;
-  }
-  100% {
-    background-position: 0 0;
-  }
 }
 
 @keyframes heroScrollDot {
@@ -1026,7 +1070,6 @@ h4 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-dots,
   .hero-scroll-dot,
   .hero-card-sheen,
   .float-slow,
@@ -1036,14 +1079,31 @@ h4 {
   }
 }
 
+@media (max-width: 1024px) {
+  .hero-code-cluster { display: none; }
+  .hero-coordinate { display: none; }
+  .hero-blueprint { opacity: .55; }
+  .hero-backdrop-grid { background-size: 64px 64px, 64px 64px, 16px 16px, 16px 16px; }
+}
+
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .hero-code-cluster { max-width: 33vw; font-size: 10px; }
+  .hero-code-cluster--north { left: 2.5vw; }
+  .hero-code-cluster--east { right: 2.5vw; }
+}
+
 @media (max-width: 640px) {
-  .hero-scroll-stage { padding-bottom: 18vh; }
-  .hero-scroll-main {
-    margin-top: -18vh;
-    padding-top: 2rem;
-  }
-  .hero-code-fragment--right { right: -28px; top: 24%; }
-  .hero-code-fragment--lower { left: 12%; bottom: 18%; }
+  .hero-pinned-backdrop { top: 72px; height: calc(100svh - 72px); margin-bottom: calc(-100svh + 72px); }
+  .hero-backdrop-grid { background-size: 56px 56px, 56px 56px, 14px 14px, 14px 14px; mask-image: radial-gradient(ellipse 90% 76% at 72% 36%, #000 10%, transparent 100%); }
+  .hero-blueprint { opacity: .36; }
+  .hero-coordinate { bottom: 8%; right: 5%; font-size: 7px; }
+  .hero-coordinate--west { display: none; }
+  .hero-transition-runway { height: clamp(76px, 14svh, 120px); }
+  .hero-surface { min-height: 0; }
+  .hero-surface > div { padding-top: 3.25rem; padding-bottom: 3.25rem; }
+  .hero-content-layout { gap: 2.25rem; }
+  .hero-delivery-panel { padding: 1rem; }
+  .hero-scroll-main { padding-bottom: 1rem; }
 }
 
 /* Work / editorial portfolio */

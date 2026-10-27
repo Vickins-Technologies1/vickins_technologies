@@ -30,13 +30,39 @@ export default function HomePage() {
 
       <div className="hero-scroll-stage">
         <div aria-hidden="true" className="hero-pinned-backdrop">
-          <span className="hero-code-fragment hero-code-fragment--left">const innovation = &quot;Vickins Technologies&quot;;<br />function buildSolutions() &#123; ... &#125;</span>
-          <span className="hero-code-fragment hero-code-fragment--right">class SecureInfrastructure &#123;<br />&nbsp; return scalableSolutions;<br />&#125;</span>
-          <span className="hero-code-fragment hero-code-fragment--lower">if (secure &amp;&amp; scalable) &#123; deploy(); &#125;</span>
-          <span className="hero-grid-cross hero-grid-cross--one" />
-          <span className="hero-grid-cross hero-grid-cross--two" />
+          <div className="hero-backdrop-wash" />
+          <div className="hero-backdrop-grid" />
+          <svg className="hero-blueprint" viewBox="0 0 1440 900" preserveAspectRatio="none">
+            <path d="M920 0v146h118v82h130v-56h155v196h117" />
+            <path d="M1440 566h-132v88h-116v92h-190v154" />
+            <path d="M0 692h146v-92h126v-62h150" />
+            <path d="M1110 0v102h-62m330 590h-90v-82" />
+            <path d="M80 116h170v54h88" className="hero-blueprint-fine" />
+            <circle cx="920" cy="146" r="4" /><circle cx="1168" cy="654" r="4" />
+            <circle cx="272" cy="600" r="4" /><circle cx="250" cy="116" r="3" />
+            <path d="M1016 228h46m-23-23v46M136 692h20m-10-10v20" className="hero-blueprint-mark" />
+          </svg>
+          <div className="hero-code-cluster hero-code-cluster--north">
+            <span>01 / PLATFORM</span>
+            <code><i>const</i> platform = <b>&quot;Vickins&quot;</b>;</code>
+            <code><i>await</i> buildSolutions&#40;secure, scalable&#41;;</code>
+          </div>
+          <div className="hero-code-cluster hero-code-cluster--east">
+            <span>02 / ARCHITECTURE</span>
+            <code><i>interface</i> TechnologySolution &#123;</code>
+            <code>&nbsp;&nbsp;reliable: <b>true</b>;</code>
+            <code>&nbsp;&nbsp;builtFor: <b>&quot;people&quot;</b>;</code>
+            <code>&#125;</code>
+          </div>
+          <div className="hero-code-cluster hero-code-cluster--south">
+            <span>03 / DELIVERY</span>
+            <code>ship&#40;quality, withOwnership&#41;;</code>
+          </div>
+          <span className="hero-coordinate hero-coordinate--east">01 — 37.9062° S / 1440</span>
+          <span className="hero-coordinate hero-coordinate--west">SYSTEMS / ENGINEERED TO SCALE</span>
         </div>
         <HeroSection />
+        <div className="hero-transition-runway" aria-hidden="true" />
       </div>
 
       <main className="hero-scroll-main flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
