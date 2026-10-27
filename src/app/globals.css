@@ -71,8 +71,6 @@
     radial-gradient(900px 640px at 12% -12%, rgba(var(--accent-sky-rgb), 0.14), transparent 60%),
     radial-gradient(900px 640px at 86% 0%, rgba(var(--accent-2-rgb), 0.08), transparent 55%),
     linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-cream-2) 100%);
-  --page-grid: linear-gradient(rgba(18, 24, 38, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18, 24, 38, 0.035) 1px, transparent 1px);
 
   /* Dashboard tokens (AdminLTE-like) */
   --dash-canvas: #ffffff;
@@ -132,8 +130,6 @@
     radial-gradient(900px 620px at 15% -10%, rgba(var(--accent-sky-rgb), 0.16), transparent 55%),
     radial-gradient(900px 620px at 85% 0%, rgba(var(--accent-rgb), 0.14), transparent 55%),
     linear-gradient(180deg, #070a12 0%, #050710 100%);
-  --page-grid: linear-gradient(rgba(226, 232, 240, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(226, 232, 240, 0.06) 1px, transparent 1px);
 
   --dash-canvas: #070a12;
   --dash-card-bg: rgba(10, 22, 51, 0.52);
@@ -246,17 +242,6 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: var(--page-grid);
-  background-size: 32px 32px;
-  opacity: 0.08;
-  z-index: -1;
 }
 
 .mobile-sidebar-scroll {
@@ -869,122 +854,83 @@ h4 {
   animation: shimmer 5s ease-in-out infinite;
 }
 
-/* One architectural canvas sits behind the hero and its opening scroll transition. */
+/* A single fixed, non-interactive engineering canvas sits behind the homepage. */
 .hero-scroll-stage {
   position: relative;
-  isolation: isolate;
-  overflow: clip;
-  background: var(--background);
 }
 
-.hero-pinned-backdrop {
-  --hero-grid: rgba(var(--accent-2-rgb), 0.10);
-  --hero-grid-fine: rgba(var(--accent-2-rgb), 0.035);
-  --hero-architecture: rgba(var(--accent-2-rgb), 0.25);
-  --hero-code: rgba(var(--accent-2-rgb), 0.25);
-  --hero-code-accent: rgba(var(--accent-rgb), 0.65);
-  position: sticky;
-  top: 84px;
+.site-programming-backdrop {
+  --code-ink: rgba(38, 63, 100, .36);
+  --code-accent: rgba(0, 111, 190, .72);
+  --trace-ink: rgba(37, 101, 165, .22);
+  position: fixed;
+  inset: 0;
   z-index: 0;
-  height: calc(100svh - 84px);
-  margin-bottom: calc(-100svh + 84px);
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse 52% 76% at 84% 45%, rgba(var(--accent-rgb), 0.085), transparent 72%),
-    radial-gradient(ellipse 54% 60% at 12% 7%, rgba(var(--accent-sky-rgb), 0.10), transparent 76%),
-    linear-gradient(145deg, color-mix(in srgb, var(--background) 97%, var(--accent-sky)) 0%, var(--background) 52%, color-mix(in srgb, var(--background) 97%, var(--accent)) 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 74%, transparent 100%);
+  background: var(--page-bg);
 }
 
-:root[data-theme="dark"] .hero-pinned-backdrop {
-  --hero-grid: rgba(var(--accent-2-rgb), 0.12);
-  --hero-grid-fine: rgba(var(--accent-2-rgb), 0.045);
-  --hero-architecture: rgba(var(--accent-2-rgb), 0.34);
-  --hero-code: rgba(var(--accent-2-rgb), 0.32);
-  --hero-code-accent: rgba(var(--accent-sky-rgb), 0.75);
+:root[data-theme="dark"] .site-programming-backdrop {
+  --code-ink: rgba(184, 202, 232, .4);
+  --code-accent: rgba(81, 177, 255, .86);
+  --trace-ink: rgba(92, 153, 219, .27);
   background:
-    radial-gradient(ellipse 46% 72% at 85% 42%, rgba(var(--accent-rgb), 0.14), transparent 72%),
-    radial-gradient(ellipse 54% 64% at 12% 7%, rgba(var(--accent-sky-rgb), 0.12), transparent 76%),
-    linear-gradient(145deg, color-mix(in srgb, var(--background) 94%, var(--accent-sky)) 0%, var(--background) 54%, color-mix(in srgb, var(--background) 95%, var(--accent)) 100%);
+    radial-gradient(ellipse 42% 48% at 8% 7%, rgba(var(--accent-sky-rgb), .13), transparent 100%),
+    radial-gradient(ellipse 36% 45% at 94% 52%, rgba(var(--accent-rgb), .12), transparent 100%),
+    radial-gradient(ellipse 42% 38% at 18% 100%, rgba(var(--accent-sky-rgb), .08), transparent 100%),
+    linear-gradient(148deg, #090e1a 0%, #080c17 54%, #070b14 100%);
 }
 
-.hero-backdrop-wash,
-.hero-backdrop-grid,
-.hero-blueprint {
+.site-programming-traces {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-}
-
-.hero-backdrop-wash {
-  background:
-    linear-gradient(90deg, var(--background) 0%, color-mix(in srgb, var(--background) 94%, transparent) 18%, transparent 53%, color-mix(in srgb, var(--background) 20%, transparent) 100%),
-    linear-gradient(180deg, color-mix(in srgb, var(--background) 10%, transparent) 58%, var(--background) 100%);
-}
-
-.hero-backdrop-grid {
-  background-image:
-    linear-gradient(var(--hero-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px),
-    linear-gradient(var(--hero-grid-fine) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hero-grid-fine) 1px, transparent 1px);
-  background-size: 72px 72px, 72px 72px, 18px 18px, 18px 18px;
-  mask-image: radial-gradient(ellipse 70% 78% at 72% 46%, #000 14%, rgba(0,0,0,.76) 58%, transparent 100%);
-}
-
-.hero-blueprint {
   fill: none;
-  stroke: var(--hero-architecture);
+  stroke: var(--trace-ink);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
   opacity: .75;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 89%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 20%, transparent 47%, transparent 54%, #000 79%, #000 100%);
 }
 
-.hero-blueprint circle { fill: var(--background); stroke: rgba(var(--accent-sky-rgb), .7); stroke-width: 1.2; }
-.hero-blueprint .hero-blueprint-fine { stroke-dasharray: 3 6; opacity: .7; }
-.hero-blueprint .hero-blueprint-mark { stroke: rgba(var(--accent-sky-rgb), .65); }
+.site-programming-traces circle {
+  fill: var(--background);
+  stroke: var(--code-accent);
+  stroke-width: 1.25;
+}
 
-.hero-code-cluster {
+.site-code {
   position: absolute;
   display: grid;
   gap: 5px;
-  max-width: min(38vw, 480px);
-  color: var(--hero-code);
-  font: 500 11px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: .01em;
+  max-width: min(37vw, 450px);
+  color: var(--code-ink);
+  font: 500 11px/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .015em;
   white-space: nowrap;
-  text-shadow: 0 1px 14px color-mix(in srgb, var(--background) 70%, transparent);
+  text-shadow: 0 1px 12px var(--background);
 }
 
-.hero-code-cluster > span,
-.hero-coordinate {
-  color: var(--hero-code-accent);
-  font: 600 8px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: .22em;
+.site-code code { color: inherit; font: inherit; }
+.site-code i,
+.site-code__label { color: var(--code-accent); font-style: normal; }
+.site-code b { color: color-mix(in srgb, var(--code-accent) 82%, var(--foreground)); font-weight: 600; }
+.site-code em { color: color-mix(in srgb, var(--accent-sky) 76%, var(--foreground)); font-style: normal; }
+.site-code--top { top: 17%; left: max(3vw, calc((100vw - 1360px) / 2)); }
+.site-code--right { top: 44%; right: max(3vw, calc((100vw - 1360px) / 2)); }
+.site-code--lower { bottom: 15%; left: max(5vw, calc((100vw - 1240px) / 2)); }
+.site-code__label,
+.site-code__meta {
+  color: var(--code-accent);
+  font: 600 8px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .18em;
 }
-
-.hero-code-cluster code { color: inherit; font: inherit; }
-.hero-code-cluster i { color: var(--hero-code-accent); font-style: normal; }
-.hero-code-cluster b { color: color-mix(in srgb, var(--hero-code-accent) 76%, var(--foreground)); font-weight: 600; }
-.hero-code-cluster--north { left: max(3vw, calc((100vw - 1360px) / 2)); top: 10%; opacity: .58; }
-.hero-code-cluster--east { right: max(2.8vw, calc((100vw - 1400px) / 2)); top: 24%; opacity: .70; }
-.hero-code-cluster--south { right: 15%; bottom: 12%; opacity: .62; }
-
-.hero-coordinate {
-  position: absolute;
-  bottom: 9%;
-  opacity: .62;
-}
-.hero-coordinate--east { right: 3.2%; writing-mode: vertical-rl; }
-.hero-coordinate--west { left: max(3vw, calc((100vw - 1360px) / 2)); }
-
-.hero-transition-runway {
-  height: clamp(88px, 18svh, 190px);
-  pointer-events: none;
-}
+.site-code__cursor { color: var(--code-accent); opacity: .75; }
+.site-code__meta { position: absolute; bottom: 4%; opacity: .58; }
+.site-code__meta--left { left: max(3vw, calc((100vw - 1360px) / 2)); }
+.site-code__meta--right { right: max(3vw, calc((100vw - 1360px) / 2)); }
 
 .hero-transition-section {
   position: relative;
@@ -1084,25 +1030,29 @@ h4 {
 }
 
 @media (max-width: 1024px) {
-  .hero-code-cluster { display: none; }
-  .hero-coordinate { display: none; }
-  .hero-blueprint { opacity: .55; }
-  .hero-backdrop-grid { background-size: 64px 64px, 64px 64px, 16px 16px, 16px 16px; }
-}
-
-@media (min-width: 1280px) and (max-width: 1535px) {
-  .hero-code-cluster { max-width: 33vw; font-size: 10px; }
-  .hero-code-cluster--north { left: 2.5vw; }
-  .hero-code-cluster--east { right: 2.5vw; }
+  .site-code--right { display: none; }
+  .site-code--top { left: 4vw; }
+  .site-code--lower { left: auto; right: 5vw; }
+  .site-programming-traces { opacity: .52; }
 }
 
 @media (max-width: 640px) {
-  .hero-pinned-backdrop { top: 72px; height: calc(100svh - 72px); margin-bottom: calc(-100svh + 72px); }
-  .hero-backdrop-grid { background-size: 56px 56px, 56px 56px, 14px 14px, 14px 14px; mask-image: radial-gradient(ellipse 90% 76% at 72% 36%, #000 10%, transparent 100%); }
-  .hero-blueprint { opacity: .36; }
-  .hero-coordinate { bottom: 8%; right: 5%; font-size: 7px; }
-  .hero-coordinate--west { display: none; }
-  .hero-transition-runway { height: clamp(76px, 14svh, 120px); }
+  .site-programming-backdrop {
+    --code-ink: rgba(38, 63, 100, .3);
+    --code-accent: rgba(0, 111, 190, .66);
+  }
+  :root[data-theme="dark"] .site-programming-backdrop {
+    --code-ink: rgba(184, 202, 232, .34);
+    --code-accent: rgba(81, 177, 255, .78);
+  }
+  .site-code { font-size: 9px; gap: 4px; }
+  .site-code--top { top: 16%; left: 5vw; max-width: 90vw; }
+  .site-code--lower { bottom: 13%; right: 5vw; left: auto; max-width: 90vw; }
+  .site-code__meta { display: none; }
+  .site-programming-traces { opacity: .38; }
+  .site-programming-traces path:nth-of-type(2),
+  .site-programming-traces path:nth-of-type(4),
+  .site-programming-traces path:nth-of-type(5) { display: none; }
   .hero-surface { min-height: 0; }
   .hero-surface > div { padding-top: 3.25rem; padding-bottom: 3.25rem; }
   .hero-content-layout { gap: 2.25rem; }
