@@ -24,7 +24,6 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
   const bgColor = isDarkMode ? "#0b0f1a" : "#f6f8fc";
   const glowA = isDarkMode ? "rgba(59,130,246,0.28)" : "rgba(37,99,235,0.2)";
   const glowB = isDarkMode ? "rgba(45,212,191,0.22)" : "rgba(45,212,191,0.16)";
-  const gridLine = isDarkMode ? "rgba(255,255,255,0.04)" : "rgba(15,23,42,0.04)";
   const textPrimary = isDarkMode ? "text-white" : "text-[var(--foreground)]";
   const textMuted = isDarkMode ? "text-white/60" : "text-[var(--foreground)]/60";
 
@@ -43,14 +42,6 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
         className="absolute inset-0"
         style={{ background: `radial-gradient(circle at bottom right, ${glowB}, transparent 60%)` }}
       />
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `linear-gradient(120deg, ${gridLine}, transparent), linear-gradient(90deg, ${gridLine} 1px, transparent 1px)`,
-          backgroundSize: "44px 44px",
-        }}
-      />
-
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-[80vw] max-w-4xl h-[60vh]">
           <div className="absolute inset-0 border border-white/10 rounded-[40px]" />

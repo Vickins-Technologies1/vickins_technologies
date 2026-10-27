@@ -19,7 +19,6 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
 function ProjectVisual({ project, featured = false }: { project: DevProject; featured?: boolean }) {
   const officialLogo = project.id === "my-accurate-rent";
   return <div className={["work-visual relative overflow-hidden", featured ? "min-h-[310px] sm:min-h-[440px]" : "min-h-[230px] sm:min-h-[300px]"].join(" ")}>
-    <div className="absolute inset-0 work-visual-grid" aria-hidden="true" />
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_22%,rgba(var(--accent-sky-rgb),.2),transparent_34%),radial-gradient(circle_at_20%_90%,rgba(var(--accent-rgb),.16),transparent_38%)]" aria-hidden="true" />
     {officialLogo ? <div className="absolute inset-0 z-[1] flex items-center justify-center p-5 sm:p-7"><div className="relative aspect-square w-[min(100%,250px)]"><Image src={project.image} alt="Official My Accurate Rent logo" fill className="object-contain" sizes="(max-width: 640px) 80vw, 250px" /></div></div> : <Image src={project.image || FALLBACK_MAIN} alt={`${project.title} project visual`} fill priority={featured} className={["relative z-[1] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.045]", featured ? "p-12 sm:p-20" : "p-9 sm:p-12"].join(" ")} sizes={featured ? "(max-width: 1024px) 100vw, 58vw" : "(max-width: 640px) 100vw, 50vw"} />}
     <div className="absolute inset-x-0 bottom-0 z-[2] h-24 bg-gradient-to-t from-black/25 to-transparent opacity-60" aria-hidden="true" />

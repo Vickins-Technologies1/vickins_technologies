@@ -53,7 +53,6 @@ export default function ChamaHubSection() {
       <div className="relative overflow-hidden rounded-[32px] bg-[var(--card-bg)] shadow-[var(--shadow-soft)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(27,92,255,0.18),_transparent_55%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,_rgba(20,184,166,0.2),_transparent_50%)]" />
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 p-6 sm:p-10">
           <div>
