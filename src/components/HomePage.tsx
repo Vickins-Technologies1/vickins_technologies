@@ -8,7 +8,6 @@ import HeroSection from "../components/HeroSection";
 import ProductsSection from "../components/ProductsSection";
 import ServicesSection from "../components/ServicesSection";
 import RecentProjectsSection from "../components/RecentProjectsSection";
-import ClientsSection from "../components/ClientsSection";
 import ProcessSection from "../components/ProcessSection";
 import EnterpriseSection from "../components/EnterpriseSection";
 import SecurityServiceSection from "../components/SecurityServiceSection";
@@ -42,7 +41,6 @@ export default function HomePage() {
         <main className="hero-scroll-main flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <ServicesSection />
           <RecentProjectsSection />
-          <ClientsSection />
           <ProcessSection />
           <EnterpriseSection />
           <SecurityServiceSection />
