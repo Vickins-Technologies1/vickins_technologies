@@ -993,6 +993,10 @@ h4 {
 
 .hero-scroll-main { position: relative; z-index: 1; padding-bottom: 2rem; }
 
+@media (min-width: 1024px) {
+  .hero-surface { min-height: calc(100svh - 84px); }
+}
+
 .hero-surface {
   --hero-ink: var(--foreground);
   --hero-sub: rgba(var(--accent-2-rgb), 0.78);
