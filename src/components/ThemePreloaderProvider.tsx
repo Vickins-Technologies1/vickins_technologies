@@ -11,6 +11,15 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function syncFavicon(theme: "light" | "dark") {
+  document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"]').forEach((link) => {
+    const href = link.getAttribute("href") ?? "";
+    if (href.includes("/favicon-light-") || href.includes("/favicon-dark-")) {
+      link.media = href.includes(`/favicon-${theme}-`) ? "all" : "not all";
+    }
+  });
+}
+
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -34,6 +43,7 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
       const savedTheme = localStorage.getItem("theme");
       const theme = savedTheme === "dark" || (savedTheme !== "light" && media.matches) ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", theme);
+      syncFavicon(theme);
       setIsDarkMode(theme === "dark");
     };
 
@@ -58,6 +68,7 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
     setIsDarkMode((prev) => {
       const newTheme = prev ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", newTheme);
+      syncFavicon(newTheme);
       localStorage.setItem("theme", newTheme);
       return !prev;
     });

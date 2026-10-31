@@ -79,9 +79,43 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon-v2.ico", sizes: "32x32", type: "image/x-icon" },
+      {
+        url: "/favicon-light-16.png",
+        sizes: "16x16",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-light-32.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-light-48.png",
+        sizes: "48x48",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/favicon-dark-16.png",
+        sizes: "16x16",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/favicon-dark-32.png",
+        sizes: "32x32",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/favicon-dark-48.png",
+        sizes: "48x48",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
     ],
     apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
     other: [
@@ -109,7 +143,7 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
       <Script id="theme-init" strategy="beforeInteractive">
-        {`try { var t = localStorage.getItem("theme"); var d = t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches); document.documentElement.setAttribute("data-theme", d ? "dark" : "light"); } catch { document.documentElement.setAttribute("data-theme", "light"); }`}
+        {`try { var t = localStorage.getItem("theme"); var theme = t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; document.documentElement.setAttribute("data-theme", theme); document.querySelectorAll('link[rel~="icon"]').forEach(function(link) { var href = link.getAttribute("href") || ""; if (href.includes("/favicon-light-") || href.includes("/favicon-dark-")) link.media = href.includes("/favicon-" + theme + "-") ? "all" : "not all"; }); } catch { document.documentElement.setAttribute("data-theme", "light"); }`}
       </Script>
       <body className="antialiased relative min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>
