@@ -7,8 +7,8 @@ import { getDefaultDevProjects, type DevProject } from "@/lib/portfolio-collecti
 
 const FALLBACK_MAIN = "/images/placeholder-4x3.png";
 const projects = getDefaultDevProjects();
-const featuredProjects = projects.slice(0, 2);
-const clientProjects = projects.slice(2);
+const featuredProjects = projects.filter((project) => project.category.startsWith("VICKINS PRODUCT"));
+const clientProjects = projects.filter((project) => !project.category.startsWith("VICKINS PRODUCT"));
 const isExternalLink = (href: string) => href.startsWith("http");
 
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -26,10 +26,10 @@ function ProjectVisual({ project, featured = false }: { project: DevProject; fea
   </div>;
 }
 
-function ProjectMeta({ project, featured = false }: { project: DevProject; featured?: boolean }) {
+function ProjectMeta({ project, featured = false, index = 0 }: { project: DevProject; featured?: boolean; index?: number }) {
   const external = isExternalLink(project.link);
   return <div className={featured ? "p-6 sm:p-8 lg:p-10" : "p-5 sm:p-7"}>
-    <div className="flex items-start justify-between gap-5"><div><p className="work-kicker">{project.category}</p><h3 className={featured ? "mt-4 max-w-xl text-3xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-4xl lg:text-[3.15rem]" : "mt-3 text-2xl font-semibold leading-[1.05] tracking-[-0.045em]"}>{project.title}</h3>{project.attribution && <p className="mt-2 text-xs font-medium tracking-wide text-[var(--foreground)]/55">{project.attribution}</p>}</div><span className="work-index" aria-hidden="true">{featured ? "0" : ""}</span></div>
+    <div className="flex items-start justify-between gap-5"><div><p className="work-kicker">{project.category}</p><h3 className={featured ? "mt-4 max-w-xl text-3xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-4xl lg:text-[3.15rem]" : "mt-3 text-2xl font-semibold leading-[1.05] tracking-[-0.045em]"}>{project.title}</h3>{project.attribution && <p className="mt-2 text-xs font-medium tracking-wide text-[var(--foreground)]/55">{project.attribution}</p>}</div><span className="work-index" aria-hidden="true">{featured ? String(index + 1).padStart(2, "0") : ""}</span></div>
     <p className={featured ? "mt-5 max-w-xl text-[15px] leading-7 text-[var(--foreground)]/70 sm:text-base" : "mt-4 text-sm leading-6 text-[var(--foreground)]/70"}>{project.description}</p>
     <div className="mt-6 flex flex-wrap gap-x-2 gap-y-2">{project.tags.slice(0, featured || project.id === "my-accurate-rent" ? 5 : 4).map((tag) => <span key={tag} className="work-tag">{tag}</span>)}</div>
     <span className="mt-7 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)] transition group-hover:gap-3">{project.actionLabel || (external ? "View project" : "View portfolio")}{external ? <ExternalLink className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}</span>
@@ -40,7 +40,7 @@ function FeaturedProject({ project, index }: { project: DevProject; index: numbe
   const external = isExternalLink(project.link);
   const reverse = index % 2 === 1;
   return <Reveal delay={index * 0.08}><a href={project.link} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} className={["work-feature group", reverse ? "lg:grid-cols-[0.88fr_1.12fr]" : "lg:grid-cols-[1.12fr_0.88fr]"].join(" ")} aria-label={`View ${project.title}`}>
-    <div className={reverse ? "lg:order-2" : ""}><ProjectVisual project={project} featured /></div><div className={["flex flex-col justify-center", reverse ? "lg:order-1" : ""].join(" ")}><ProjectMeta project={project} featured /></div>
+    <div className={reverse ? "lg:order-2" : ""}><ProjectVisual project={project} featured /></div><div className={["flex flex-col justify-center", reverse ? "lg:order-1" : ""].join(" ")}><ProjectMeta project={project} featured index={index} /></div>
   </a></Reveal>;
 }
 

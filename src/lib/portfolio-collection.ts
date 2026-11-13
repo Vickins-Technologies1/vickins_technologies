@@ -38,15 +38,15 @@ export const diraOsProduct = {
   link: "https://dira-os.vickinstechnologies.com/",
 };
 
-export const vornShieldProduct = {
-  id: "vornshield",
-  title: "VornShield",
-  category: "VICKINS PRODUCT · INFRASTRUCTURE",
+export const chamaPulseProduct = {
+  id: "chamapulse",
+  title: "ChamaPulse",
+  category: "VICKINS PRODUCT · COMMUNITY FINANCE",
   description:
-    "Proxy infrastructure with a shared gateway for currently supported HTTP, HTTPS CONNECT and SOCKS5 access, account controls, traffic purchases and usage visibility.",
-  image: "/products/v-guard-logo.png",
-  tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
-  link: "https://vornshield.vickinstechnologies.com/",
+    "A digital workspace for chama groups to coordinate members, track contributions and rotating payouts, and keep meetings and group records organized.",
+  image: "/products/chamapulse-icon.png",
+  tags: ["Chama Management", "Contribution Tracking", "Member Coordination", "Vickins Product"],
+  link: "https://chamapulse.vickinstechnologies.com/",
 };
 
 export const myAccurateRentProduct = {
@@ -61,8 +61,6 @@ export const myAccurateRentProduct = {
   attribution: "A Product of Sorana Property Managers",
   actionLabel: "Visit My Accurate Rent",
 };
-
-const legacyVGuardLink = "https://v-guard.vickinstechnologies.com/";
 
 export const getDefaultGraphicCollection = (): GraphicCollection => ({
   id: 100,
@@ -97,9 +95,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
     ...diraOsProduct,
     category: "VICKINS PRODUCT · FLAGSHIP",
   },
-  {
-    ...vornShieldProduct,
-  },
+  chamaPulseProduct,
   {
     id: "dev-1",
     title: "Sorana Property Managers Portal",
@@ -195,17 +191,15 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     link: item.link?.trim() || "#",
     attribution: item.attribution?.trim() || undefined,
     actionLabel: item.actionLabel?.trim() || undefined,
-  })).map((project) =>
-    project.id === "v-guard" || project.link === legacyVGuardLink
-      ? { ...vornShieldProduct, category: "VICKINS PRODUCT · INFRASTRUCTURE" }
-      : project
-  );
+  })).filter((project) => !/(?:chamahub|chama[ -]?hub|vornshield|v-guard)/i.test(
+    [project.id, project.title, project.description, project.link, project.image].join(" ")
+  ));
 
   const defaults = getDefaultDevProjects();
-  const hasDiraOs = normalized.some((project) => project.link === diraOsProduct.link || project.id === diraOsProduct.id);
-  const hasVornShield = normalized.some((project) => project.link === vornShieldProduct.link || project.id === vornShieldProduct.id);
-  const missingProducts = defaults.filter((product) =>
-    product.id === diraOsProduct.id ? !hasDiraOs : !hasVornShield
+  const missingProducts = defaults.filter(
+    (product) =>
+      product.category.startsWith("VICKINS PRODUCT") &&
+      !normalized.some((project) => project.link === product.link || project.id === product.id)
   );
 
   const projects = [...missingProducts, ...normalized];

@@ -6,7 +6,7 @@ const publicRoutes = [
   { path: "/", changeFrequency: "monthly" as const, priority: 1 },
   { path: "/portfolio", changeFrequency: "monthly" as const, priority: 0.9 },
   { path: "/products/dira-os", changeFrequency: "monthly" as const, priority: 0.8 },
-  { path: "/products/vornshield", changeFrequency: "monthly" as const, priority: 0.8 },
+  { path: "/products/chamapulse", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/vickins-security", changeFrequency: "monthly" as const, priority: 0.8 },
 ];
 
