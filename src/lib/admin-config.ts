@@ -59,18 +59,10 @@ export const getDefaultAdminConfig = (): AdminConfig => ({
     title: "Welcome back",
     subtitle: "Manage company operations, teams, finances, and platform modules from one command center.",
     ctas: [
-      { href: "/admin/chamahub", label: "Platform Analytics", variant: "primary" },
-      { href: "/admin/vtix", label: "V-Tix Analytics", variant: "secondary" },
+      { href: "/admin/vtix", label: "V-Tix Analytics", variant: "primary" },
       { href: "/admin/work", label: "Open Work Hub", variant: "secondary" },
     ],
     quickLinks: [
-      {
-        id: "chamahub-overview",
-        href: "/admin/chamahub",
-        title: "ChamaHub overview",
-        description: "Review group leases, members, and payout flow.",
-        icon: "Sparkles",
-      },
       {
         id: "vtix-overview",
         href: "/admin/vtix",

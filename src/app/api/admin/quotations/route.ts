@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectMongoose } from "@/lib/mongoose";
 import QuotationModel from "@/lib/models/quotation";
-import { getSessionUser, isSiteAdmin } from "@/lib/chama-access";
+import { getSessionUser, isSiteAdmin } from "@/lib/vtix-access";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

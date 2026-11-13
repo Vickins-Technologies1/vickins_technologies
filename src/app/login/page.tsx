@@ -154,13 +154,13 @@ function LoginContent() {
       )}
 
       <div className="mt-4 text-center text-[var(--muted)] text-xs">
-        Not an admin?{" "}
+        Need V-Tix access?{" "}
         <Link href="/moderator-login" className="text-[var(--button-bg)] font-medium hover:underline">
-          Moderator login
+          Organizer login
         </Link>{" "}
         or{" "}
         <Link href="/member-login" className="text-[var(--button-bg)] font-medium hover:underline">
-          Member login
+          Attendee login
         </Link>
       </div>
     </AuthShell>

@@ -20,13 +20,9 @@ export function proxy(request: NextRequest) {
   const noindexPaths = [
     "/admin",
     "/api",
-    "/chama",
     "/login",
     "/member-login",
-    "/member-signup",
     "/moderator-login",
-    "/moderator-signup",
-    "/moderator",
     "/vtix/dashboard",
     "/vtix/verify",
   ];

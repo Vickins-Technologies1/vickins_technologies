@@ -13,7 +13,7 @@ Verified company identity used in the implementation:
 - Public contact: `info@vickinstechnologies.com`, `+254 794 501 005`
 - Location stated on the public site: Ruiru, Kenya / Nairobi-based team
 - Official profiles currently represented in the site footer: X, Facebook, Instagram, GitHub
-- Product relationships: Dira OS and VornShield are represented as Vickins-built products; client work remains labelled as client work
+- Product relationships: Dira OS is represented as a Vickins-built product; client work remains labelled as client work
 
 The Google Play listing for Dira OS was verified separately at `https://play.google.com/store/apps/details?id=com.bizpro.vickins`. No ratings, review counts, or customer counts are claimed in structured data.
 
@@ -26,13 +26,12 @@ Indexable targets:
 | `/` | Company homepage and entity hub | Self | Yes |
 | `/portfolio` | Products and selected client work | Self | Yes |
 | `/products/dira-os` | Vickins product profile for Dira OS | Self | Yes |
-| `/products/vornshield` | Vickins product profile for VornShield | Self | Yes |
 | `/vickins-security` | Security solutions | Self | Yes |
 | `/vtix` | Public event ticketing marketplace | Self | Yes |
 | `/policy` | Privacy policy | Self | Yes |
 | `/terms` | Terms of service | Self | Yes |
 
-Non-indexable or excluded surfaces include `/admin/*`, `/api/*`, `/chama/*`, login and signup routes, `/moderator/*`, `/vtix/dashboard/*`, and `/vtix/verify`.
+Non-indexable or excluded surfaces include `/admin/*`, `/api/*`, login routes, `/vtix/dashboard/*`, and `/vtix/verify`.
 
 ## Problems found and fixes
 
@@ -40,11 +39,11 @@ Non-indexable or excluded surfaces include `/admin/*`, `/api/*`, `/chama/*`, log
 | --- | --- | --- |
 | High | No generated `robots.txt` or `sitemap.xml` existed on the deployed corporate site | Added App Router `robots.ts` and `sitemap.ts` with absolute canonical URLs and private-route exclusions |
 | High | Organization JSON-LD was emitted with inconsistent product-shaped data and no stable entity ID | Added one stable `Organization` entity at `/#organization` and referenced it from the homepage graph |
-| High | Root metadata described products but did not establish a complete company/entity graph | Added `WebSite`, `WebPage`, `SoftwareApplication` for Dira OS, and `Product` for VornShield |
+| High | Root metadata described products but did not establish a complete company/entity graph | Added `WebSite`, `WebPage`, and `SoftwareApplication` for Dira OS |
 | Medium | Page-specific canonical and social metadata was missing on most public routes | Added centralized `pageMetadata` helper and route layouts for public pages |
 | Medium | Authenticated workspaces could be discoverable through HTML links | Added route metadata and proxy `X-Robots-Tag: noindex, nofollow` protections |
 | Medium | Homepage brand identity was not explicit in the opening copy | Updated the hero introduction to name Vickins Technologies naturally and added a verified Dira OS Google Play CTA |
-| Medium | Products were only described in homepage cards with no dedicated company-owned profiles | Added `/products/dira-os` and `/products/vornshield` with verified descriptions, internal links, external official links, and product structured data |
+| Medium | Products were only described in homepage cards with no dedicated company-owned profiles | Added `/products/dira-os` with a verified description, internal links, external official links, and product structured data |
 | Low | SEO validation was manual and lint had no ESLint 9 flat config | Added `scripts/validate-seo.mjs` and `eslint.config.mjs` |
 
 ## Structured data
@@ -54,14 +53,12 @@ The root layout emits one consistent Organization entity. The homepage adds a gr
 - WebSite → Organization publisher
 - WebPage → WebSite and Organization
 - Dira OS SoftwareApplication → Organization publisher and Google Play listing
-- VornShield Product → Organization brand/manufacturer
 
 This is descriptive markup only. It does not guarantee rich results, rankings, autocomplete, or brand-name suggestions.
 
 ## External link and product checks
 
 - Dira OS: `https://dira-os.vickinstechnologies.com/` is linked from the homepage and portfolio. The official Google Play URL is linked from the Dira OS section and referenced in structured data.
-- VornShield: `https://vornshield.vickinstechnologies.com/` is the current product URL used in the product inventory. The legacy `v-guard` hostname did not resolve during the audit and is not used as the canonical product URL.
 - Client projects are presented as client work and are not represented as Vickins-owned products.
 - No fabricated reviews, ratings, awards, customer counts, or case-study outcomes were added.
 
@@ -83,7 +80,7 @@ Invoke-WebRequest https://www.vickinstechnologies.com/sitemap.xml
 Invoke-WebRequest https://www.vickinstechnologies.com/
 ```
 
-Confirm each response is 200, the sitemap contains only the six canonical public targets above, and the page source contains one Organization entity ID plus the homepage graph.
+Confirm each response is 200, the sitemap contains the canonical public targets above, and the page source contains one Organization entity ID plus the homepage graph.
 
 ## Remaining domain-owner actions
 

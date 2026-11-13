@@ -19,11 +19,9 @@ function MemberLoginContent() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/chama", [searchParams]);
+  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/vtix/dashboard", [searchParams]);
   const safeCallback = useMemo(() => {
-    if (!callbackUrl.startsWith("/")) return "/chama";
-    if (callbackUrl.startsWith("/admin")) return "/chama";
-    if (callbackUrl.startsWith("/moderator")) return "/chama";
+    if (callbackUrl !== "/vtix" && !callbackUrl.startsWith("/vtix/")) return "/vtix/dashboard";
     return callbackUrl;
   }, [callbackUrl]);
 
@@ -55,7 +53,7 @@ function MemberLoginContent() {
 
     if (!isMember) {
       await authClient.signOut();
-      setError("This login is for ChamaHub members. Use the moderator or admin login.");
+      setError("This login is for V-Tix attendees. Use the organizer login for organizer accounts.");
       setLoading(false);
       return;
     }
@@ -67,15 +65,15 @@ function MemberLoginContent() {
 
   return (
     <AuthShell
-      eyebrow="Member Login"
-      title="Access your ChamaHub member wallet."
-      subtitle="Check contributions, upcoming payouts, and member updates in one secure place."
-      brandTitle="ChamaHub Members"
-      brandSubtitle="Stay synced with your group, anytime."
+      eyebrow="Attendee Login"
+      title="Access your V-Tix attendee account."
+      subtitle="Review your tickets and keep event details together in one secure place."
+      brandTitle="V-Tix Attendees"
+      brandSubtitle="Your event access, ready when you need it."
       brandPoints={[
-        "Track your savings contributions in real time.",
-        "Get payout timelines and group updates instantly.",
-        "Secure access for every member.",
+        "Review tickets connected to your account.",
+        "Keep event details in one secure workspace.",
+        "Access your ticketing account on any device.",
       ]}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -113,12 +111,12 @@ function MemberLoginContent() {
       </form>
 
       <div className="mt-6 text-sm text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <Link href="/member-signup" className="text-[var(--button-bg)] font-semibold hover:underline">
-          Create a member account
-        </Link>
         <Link href="/moderator-login" className="inline-flex items-center gap-2 hover:underline">
-          Moderator login
+          Organizer login
           <ArrowRight size={14} />
+        </Link>
+        <Link href="/vtix" className="text-[var(--button-bg)] font-semibold hover:underline">
+          Browse events
         </Link>
       </div>
     </AuthShell>
@@ -131,7 +129,7 @@ export default function MemberLoginPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="glass-panel w-full max-w-md p-6 sm:p-8 text-center">
-            Loading member login...
+            Loading attendee login...
           </div>
         </div>
       }

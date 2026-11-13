@@ -3,7 +3,7 @@ import { Inter, Space_Grotesk, Instrument_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import ThemePreloaderProvider from "../components/ThemePreloaderProvider";
-import FloatingActionsGate from "../components/FloatingActionsGate";
+import FloatingActions from "../components/FloatingActions";
 import LenisRoot from "../components/LenisRoot";
 import { organizationJsonLd, siteName, siteUrl } from "@/lib/seo";
 
@@ -149,7 +149,7 @@ export default function RootLayout({
         <ThemePreloaderProvider>
           <LenisRoot>
             {children}
-            <FloatingActionsGate />
+            <FloatingActions />
           </LenisRoot>
         </ThemePreloaderProvider>
         <script

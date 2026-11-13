@@ -19,9 +19,6 @@
 
 # production
 /build
-v-guard/backend/v-guard
-v-guard/backend/*.exe
-v-guard/backend/coverage.out
 
 # misc
 .DS_Store

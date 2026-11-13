@@ -19,10 +19,9 @@ function ModeratorLoginContent() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/chama", [searchParams]);
+  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/vtix/dashboard", [searchParams]);
   const safeCallback = useMemo(() => {
-    if (!callbackUrl.startsWith("/")) return "/chama";
-    if (callbackUrl.startsWith("/admin")) return "/chama";
+    if (callbackUrl !== "/vtix" && !callbackUrl.startsWith("/vtix/")) return "/vtix/dashboard";
     return callbackUrl;
   }, [callbackUrl]);
 
@@ -50,11 +49,11 @@ function ModeratorLoginContent() {
         : sessionResult;
     const role = session?.user?.role ?? "";
     const roleList = role.split(",").map((value: string) => value.trim());
-    const isModerator = roleList.includes("moderator");
+    const isOrganizer = roleList.includes("moderator") || roleList.includes("admin");
 
-    if (!isModerator) {
+    if (!isOrganizer) {
       await authClient.signOut();
-      setError("This login is for ChamaHub moderators only.");
+      setError("This login is for V-Tix organizers. Use the attendee login for ticket accounts.");
       setLoading(false);
       return;
     }
@@ -66,15 +65,15 @@ function ModeratorLoginContent() {
 
   return (
     <AuthShell
-      eyebrow="Moderator Login"
-      title="Run your ChamaHub group with confidence."
-      subtitle="Manage members, contributions, and payouts from a sleek moderator command center."
-      brandTitle="ChamaHub Moderators"
-      brandSubtitle="Coordinate group savings with total visibility."
+      eyebrow="Organizer Login"
+      title="Manage your V-Tix events."
+      subtitle="Open your event workspace to manage listings, ticket sales, and attendee scanning."
+      brandTitle="V-Tix Organizers"
+      brandSubtitle="Run event operations from one workspace."
       brandPoints={[
-        "Track rotations, payouts, and member activity.",
-        "Send reminders before every due date.",
-        "Stay ahead with premium insights.",
+        "Manage event listings and ticket sales.",
+        "Review attendee activity and event performance.",
+        "Scan tickets from your organizer workspace.",
       ]}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -112,12 +111,12 @@ function ModeratorLoginContent() {
       </form>
 
       <div className="mt-6 text-sm text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <Link href="/moderator-signup" className="text-[var(--button-bg)] font-semibold hover:underline">
-          Create a moderator account
-        </Link>
         <Link href="/member-login" className="inline-flex items-center gap-2 hover:underline">
-          Member login
+          Attendee login
           <ArrowRight size={14} />
+        </Link>
+        <Link href="/vtix" className="text-[var(--button-bg)] font-semibold hover:underline">
+          Browse events
         </Link>
       </div>
     </AuthShell>
@@ -130,7 +129,7 @@ export default function ModeratorLoginPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center px-4">
           <div className="glass-panel w-full max-w-md p-6 sm:p-8 text-center">
-            Loading moderator login...
+            Loading organizer login...
           </div>
         </div>
       }

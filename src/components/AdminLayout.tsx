@@ -14,7 +14,6 @@ import {
   Boxes,
   Wallet,
   Briefcase,
-  Sparkles,
   Palette,
   Ticket,
 } from "lucide-react";
@@ -56,7 +55,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const productNavItems = [
-    { href: "/admin/chamahub", label: "ChamaHub", icon: Sparkles },
     { href: "/admin/vtix", label: "V-Tix Africa", icon: Ticket },
   ];
 
@@ -73,10 +71,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       navSections={[
         { label: "Overview", items: generalNavItems },
         { label: "Products", items: productNavItems },
-      ]}
-      quickActions={[
-        { href: "/admin/chamahub", label: "Open ChamaHub" },
-        { href: "/moderator-signup", label: "Add moderator" },
       ]}
       user={{
         primary: session.user.email,

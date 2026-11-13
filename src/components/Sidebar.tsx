@@ -215,15 +215,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                     <CubeIcon className="h-5 w-5 text-[var(--accent)]/70" aria-hidden="true" />
                   </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <Link
-                      href="/chama"
-                      onClick={toggleSidebar}
-                      className="group flex min-h-16 flex-col justify-between rounded-2xl border border-[var(--navbar-border)] bg-[var(--navbar-surface)] p-3 transition hover:border-[rgba(var(--accent-rgb),0.3)] hover:bg-[var(--navbar-surface-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                    >
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--sidebar-text)]/75">ChamaHub</span>
-                      <ArrowUpRightIcon className="h-4 w-4 text-[var(--accent)]/70 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                    </Link>
+                  <div className="mt-3 grid grid-cols-1 gap-2">
                     <Link
                       href="/vtix"
                       onClick={toggleSidebar}
