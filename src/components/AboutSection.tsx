@@ -15,14 +15,32 @@ export default function AboutSection() {
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]">About</p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3">
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35 }}
+              className="text-[10px] uppercase tracking-[0.34em] text-[var(--accent)]"
+            >About</motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.06 }}
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold mt-3"
+            >
               A technology partner for long-term systems.
-            </h2>
-            <p className="text-[15px] text-[var(--foreground)]/78 mt-3">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 9 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.13 }}
+              className="text-[15px] text-[var(--foreground)]/78 mt-3"
+            >
               We help teams modernize, integrate, and scale — with senior-led delivery, clean architecture, and
               documentation your engineers will thank you for.
-            </p>
+            </motion.p>
           </div>
           <div className="hidden lg:flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[var(--foreground)]/60">
             <SparklesIcon className="h-4 w-4" />
@@ -31,7 +49,13 @@ export default function AboutSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 lg:gap-10">
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.14 }}
+            className="space-y-6"
+          >
             <div className="glass-panel p-5 sm:p-6">
               <div className="flex items-center gap-3">
                 <SparklesIcon className="h-5 w-5 text-[var(--accent)]" />
@@ -86,9 +110,15 @@ export default function AboutSection() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.24 }}
+            className="space-y-6"
+          >
             <div className="flex items-center justify-center">
               <Image
                 src="/pnt.png"
@@ -107,7 +137,7 @@ export default function AboutSection() {
               Talk to our team
               <SparklesIcon className="h-4 w-4" />
             </a>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.section>

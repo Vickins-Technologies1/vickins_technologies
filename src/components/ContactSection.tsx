@@ -152,6 +152,14 @@ export default function ContactSection() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">Let&apos;s build something great</p>
           <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl lg:text-5xl">Tell us what you&apos;re building.</h2>
           <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--foreground)]/70">Share your project goals, the services you need, and your expected timeline. We&apos;ll review your requirements and get back to you with practical next steps.</p>
+          <motion.div
+            aria-hidden="true"
+            className="mt-5 h-px w-16 origin-left bg-[var(--accent)]"
+            initial={{ scaleX: 0, opacity: 0.5 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.65, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          />
         </div>
 
         <div className="mt-9 grid items-start gap-8 lg:grid-cols-[0.78fr_1.22fr] lg:gap-14">

@@ -81,6 +81,63 @@ export default function SecurityServiceSection() {
         ))}
       </motion.div>
 
+      <div
+        role="img"
+        aria-label="Security network connecting CCTV, access control, monitoring, and infrastructure through a central security system."
+        className="relative mx-auto mt-7 max-w-4xl overflow-hidden rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-surface)] px-3 py-4 sm:px-6"
+      >
+        <svg aria-hidden="true" viewBox="0 0 600 168" preserveAspectRatio="none" className="pointer-events-none absolute inset-y-4 left-3 right-3 h-[calc(100%-2rem)] w-[calc(100%-1.5rem)] text-[var(--accent)] sm:left-6 sm:w-[calc(100%-3rem)]">
+          {[
+            "M300 34 L300 58",
+            "M156 90 L226 90",
+            "M374 90 L444 90",
+            "M300 146 L300 122",
+          ].map((path, index) => (
+            <motion.path
+              key={path}
+              d={path}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0.25 }}
+              whileInView={{ pathLength: 1, opacity: 0.6 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.65, delay: 0.16 + index * 0.09, ease: [0.22, 1, 0.36, 1] }}
+            />
+          ))}
+        </svg>
+        <div className="relative grid grid-cols-3 grid-rows-[48px_72px_48px] items-center justify-items-center">
+          {[
+            { label: "CCTV", placement: "col-start-2 row-start-1" },
+            { label: "ACCESS CONTROL", placement: "col-start-1 row-start-2" },
+            { label: "MONITORING", placement: "col-start-3 row-start-2" },
+            { label: "NETWORK / INFRASTRUCTURE", placement: "col-start-2 row-start-3" },
+          ].map((node, index) => (
+            <motion.span
+              key={node.label}
+              initial={{ opacity: 0, y: 7 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.38, delay: 0.32 + index * 0.08 }}
+              className={`${node.placement} z-10 max-w-full rounded-full border border-[var(--glass-border-strong)] bg-[var(--glass-surface-strong)] px-2 py-1.5 text-center text-[8px] font-semibold uppercase tracking-[0.1em] text-[var(--foreground)]/75 sm:px-3 sm:text-[10px] sm:tracking-[0.16em]`}
+            >
+              {node.label}
+            </motion.span>
+          ))}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.7 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="col-start-2 row-start-2 z-10 rounded-2xl border border-[rgba(var(--accent-rgb),0.4)] bg-[var(--card-bg)] px-4 py-3 text-center shadow-[var(--shadow-tight)]"
+          >
+            <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--accent)] sm:text-[10px]">Security</span>
+            <span className="mt-1 block text-[8px] uppercase tracking-[0.12em] text-[var(--foreground)]/55 sm:text-[9px]">Connected services</span>
+          </motion.div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-7">
         {services.map((service) => (
           <motion.div

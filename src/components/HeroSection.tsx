@@ -153,31 +153,50 @@ export default function HeroSection() {
               statementClassName="text-transparent bg-clip-text bg-gradient-to-r from-[var(--hero-grad-a)] via-[var(--hero-grad-b)] to-[var(--hero-grad-c)]"
             />
 
-            <p className="mt-4 lg:mt-2 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl">
+            <motion.p
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-4 lg:mt-2 text-base leading-relaxed text-[var(--hero-sub)] sm:text-lg max-w-xl"
+            >
               Vickins Technologies designs, develops and supports custom software, web and mobile applications, business platforms and system integrations for organizations in Kenya and beyond.
-            </p>
+            </motion.p>
 
-            <p className="mt-3 lg:mt-1 text-sm text-[var(--hero-muted)] max-w-xl">
+            <motion.p
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.29 }}
+              className="mt-3 lg:mt-1 text-sm text-[var(--hero-muted)] max-w-xl"
+            >
               Strong architecture, security-first execution, and clean handover — with senior ownership from kickoff to
               launch.
-            </p>
+            </motion.p>
 
-            <div className="mt-7 lg:mt-3 flex flex-col sm:flex-row gap-3">
-              <a
+            <motion.div
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.36 }}
+              className="mt-7 lg:mt-3 flex flex-col sm:flex-row gap-3"
+            >
+              <motion.a
                 href="#contact"
                 className="group inline-flex items-center justify-center gap-3 rounded-full bg-[image:var(--hero-primary-bg)] bg-[length:100%_100%] bg-no-repeat px-6 py-3 text-sm font-semibold text-[var(--hero-primary-fg)] shadow-[var(--hero-primary-shadow)] ring-1 ring-[var(--hero-border)] transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--accent-sky-rgb),0.65)]"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 Book Strategy Call
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://dira-os.vickinstechnologies.com/"
                 className="group inline-flex items-center justify-center gap-3 rounded-full border border-[var(--hero-border)] bg-[var(--hero-chip-bg)] px-6 py-3 text-sm font-semibold text-[var(--hero-ink)] backdrop-blur-xl transition hover:bg-[var(--hero-chip-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(var(--accent-sky-rgb),0.65)]"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.99 }}
               >
                 Explore Dira OS
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 14 }}

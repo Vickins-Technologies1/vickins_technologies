@@ -48,14 +48,15 @@ export default function TechnologySection() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-7">
-        {platforms.map((platform) => (
+        {platforms.map((platform, index) => (
           <motion.div
             key={platform.name}
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="glass-panel p-5 text-left"
+            whileHover={{ y: -2, scale: 1.012 }}
+            transition={{ duration: 0.45, delay: 0.06 * index, ease: [0.22, 1, 0.36, 1] }}
+            className="glass-panel border p-5 text-left transition-[border-color,box-shadow] duration-300 hover:border-[rgba(var(--accent-sky-rgb),0.4)] hover:shadow-[var(--shadow-tight)]"
           >
             <platform.icon className="h-7 w-7 text-[var(--accent)] mb-3" />
             <h3 className="text-base font-semibold mb-2">{platform.name}</h3>
@@ -65,13 +66,18 @@ export default function TechnologySection() {
       </div>
 
       <div className="mt-7 flex flex-wrap justify-center gap-2">
-        {stack.map((item) => (
-          <span
+        {stack.map((item, index) => (
+          <motion.span
             key={item}
-            className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70"
+            initial={{ opacity: 0, y: 7 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            whileHover={{ y: -2, scale: 1.025 }}
+            transition={{ duration: 0.35, delay: index * 0.025, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface)] px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]/70 transition-colors hover:border-[rgba(var(--accent-sky-rgb),0.4)] hover:text-[var(--accent)]"
           >
             {item}
-          </span>
+          </motion.span>
         ))}
       </div>
     </motion.section>

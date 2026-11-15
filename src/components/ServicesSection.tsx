@@ -82,7 +82,12 @@ export default function ServicesSection() {
 
   const item = {
     hidden: { opacity: 0, y: 22 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, staggerChildren: 0.055, delayChildren: 0.04 } },
+  };
+
+  const iconItem = {
+    hidden: { opacity: 0, scale: 0.9 },
+    show: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
   };
 
   return (
@@ -107,19 +112,23 @@ export default function ServicesSection() {
           <motion.div
             key={service.title}
             variants={item}
-            className="glass-panel p-5 sm:p-6 group hover:-translate-y-1.5 transition-all duration-300"
+            whileHover={{ y: -3, scale: 1.012 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="glass-panel p-5 sm:p-6 group border transition-[border-color,box-shadow] duration-300 hover:border-[rgba(var(--accent-sky-rgb),0.42)] hover:shadow-[var(--shadow-tight)]"
           >
-            <service.icon className="h-8 w-8 text-[var(--accent)] mb-3" />
-            <h3 className="text-base sm:text-lg font-semibold mb-2">{service.title}</h3>
-            <p className="text-[15px] text-[var(--foreground)]/75 mb-5">{service.description}</p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <motion.div variants={iconItem} className="mb-3">
+              <service.icon className="h-8 w-8 text-[var(--accent)]" />
+            </motion.div>
+            <motion.h3 variants={item} className="text-base sm:text-lg font-semibold mb-2">{service.title}</motion.h3>
+            <motion.p variants={item} className="text-[15px] text-[var(--foreground)]/75 mb-5">{service.description}</motion.p>
+            <motion.div variants={item} className="flex flex-wrap gap-x-5 gap-y-2">
               {"href" in service && service.href ? (
                 <Link href={service.href} className="text-[var(--accent)] font-semibold text-sm inline-flex items-center gap-2">
                   Learn about this service <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
               ) : null}
               <a href="#contact" className="text-[var(--accent)]/80 font-semibold text-sm inline-flex items-center gap-2">Speak with us</a>
-            </div>
+            </motion.div>
           </motion.div>
         ))}
       </div>

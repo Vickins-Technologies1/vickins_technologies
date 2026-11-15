@@ -67,7 +67,16 @@ export default function ProcessSection() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.14),_transparent_60%)]" />
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_0.9fr] gap-6 lg:gap-8">
             <div className="relative">
-              <div className="absolute left-[18px] top-2 bottom-2 w-px bg-[var(--glass-border-strong)]" />
+              <div className="absolute left-[18px] top-2 bottom-2 w-px bg-[var(--glass-border-strong)]">
+                <motion.div
+                  aria-hidden="true"
+                  className="h-full w-full origin-top bg-[var(--accent)]"
+                  initial={{ scaleY: 0 }}
+                  whileInView={{ scaleY: 1 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                />
+              </div>
               <div className="space-y-5">
                 {processSteps.map((step, index) => (
                   <motion.div
@@ -78,9 +87,23 @@ export default function ProcessSection() {
                     transition={{ duration: 0.5, delay: index * 0.06 }}
                     className="grid grid-cols-[44px_1fr] gap-3"
                   >
-                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-strong)] text-[var(--accent-2)] text-sm font-semibold">
+                    <motion.div
+                      initial={{ opacity: 0.55, scale: 0.94 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true, amount: 0.7 }}
+                      transition={{ duration: 0.35, delay: 0.12 + index * 0.11 }}
+                      className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--glass-border)] bg-[var(--glass-surface-strong)] text-[var(--accent-2)] text-sm font-semibold"
+                    >
                       {step.number}
-                    </div>
+                      <motion.span
+                        aria-hidden="true"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 0.55 }}
+                        viewport={{ once: true, amount: 0.7 }}
+                        transition={{ duration: 0.35, delay: 0.22 + index * 0.11 }}
+                        className="pointer-events-none absolute inset-0 rounded-full border border-[var(--accent)]"
+                      />
+                    </motion.div>
                     <div className="pt-1">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2">

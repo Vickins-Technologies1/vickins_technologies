@@ -15,6 +15,8 @@ import AboutSection from "../components/AboutSection";
 import TechnologySection from "../components/TechnologySection";
 import PricingSection from "../components/PricingSection";
 import ContactSection from "../components/ContactSection";
+import { MotionConfig } from "framer-motion";
+import ScrollProgress from "../components/marketing/ScrollProgress";
 
 export default function HomePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,36 +24,39 @@ export default function HomePage() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <div className="relative isolate min-h-screen flex flex-col font-[var(--font-sans)]">
-      <div aria-hidden="true" className="site-programming-backdrop">
-        <div className="site-background-image site-background-image--code" />
-        <div className="site-background-image site-background-image--infrastructure" />
-        <div className="site-background-wash" />
-      </div>
-
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-        <div className="hero-scroll-stage">
-          <HeroSection />
+    <MotionConfig reducedMotion="user">
+      <div className="relative isolate min-h-screen flex flex-col font-[var(--font-sans)]">
+        <ScrollProgress />
+        <div aria-hidden="true" className="site-programming-backdrop">
+          <div className="site-background-image site-background-image--code" />
+          <div className="site-background-image site-background-image--infrastructure" />
+          <div className="site-background-wash" />
         </div>
 
-        <main className="hero-scroll-main flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <ServicesSection />
-          <RecentProjectsSection />
-          <ProcessSection />
-          <EnterpriseSection />
-          <SecurityServiceSection />
-          <AboutSection />
-          <TechnologySection />
-          <PricingSection />
-          <ProductsSection />
-          <ContactSection />
-        </main>
+        <div className="relative z-10 flex min-h-screen flex-col">
+          <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        <Footer />
+          <div className="hero-scroll-stage">
+            <HeroSection />
+          </div>
+
+          <main className="hero-scroll-main flex-1 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <ServicesSection />
+            <RecentProjectsSection />
+            <ProcessSection />
+            <EnterpriseSection />
+            <SecurityServiceSection />
+            <AboutSection />
+            <TechnologySection />
+            <PricingSection />
+            <ProductsSection />
+            <ContactSection />
+          </main>
+
+          <Footer />
+        </div>
       </div>
-    </div>
+    </MotionConfig>
   );
 }
