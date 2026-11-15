@@ -11,7 +11,6 @@ import RecentProjectsSection from "../components/RecentProjectsSection";
 import ProcessSection from "../components/ProcessSection";
 import EnterpriseSection from "../components/EnterpriseSection";
 import SecurityServiceSection from "../components/SecurityServiceSection";
-import DiraOSSection from "../components/DiraOSSection";
 import AboutSection from "../components/AboutSection";
 import TechnologySection from "../components/TechnologySection";
 import PricingSection from "../components/PricingSection";
@@ -44,7 +43,6 @@ export default function HomePage() {
           <ProcessSection />
           <EnterpriseSection />
           <SecurityServiceSection />
-          <DiraOSSection />
           <AboutSection />
           <TechnologySection />
           <PricingSection />
