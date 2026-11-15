@@ -143,7 +143,7 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} w-full h-full`}
     >
       <Script id="theme-init" strategy="beforeInteractive">
-        {`try { var t = localStorage.getItem("theme"); var theme = t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; document.documentElement.setAttribute("data-theme", theme); document.querySelectorAll('link[rel~="icon"]').forEach(function(link) { var href = link.getAttribute("href") || ""; if (href.includes("/favicon-light-") || href.includes("/favicon-dark-")) link.media = href.includes("/favicon-" + theme + "-") ? "all" : "not all"; }); } catch { document.documentElement.setAttribute("data-theme", "light"); }`}
+        {`try { var t = localStorage.getItem("theme"); var theme = t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; document.documentElement.setAttribute("data-theme", theme); document.documentElement.style.backgroundColor = theme === "dark" ? "#000000" : "#f7f9ff"; document.querySelectorAll('link[rel~="icon"]').forEach(function(link) { var href = link.getAttribute("href") || ""; if (href.includes("/favicon-light-") || href.includes("/favicon-dark-")) link.media = href.includes("/favicon-" + theme + "-") ? "all" : "not all"; }); } catch { document.documentElement.setAttribute("data-theme", "light"); document.documentElement.style.backgroundColor = "#f7f9ff"; }`}
       </Script>
       <body className="antialiased relative min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--foreground)]">
         <ThemePreloaderProvider>

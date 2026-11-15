@@ -43,6 +43,7 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
       const savedTheme = localStorage.getItem("theme");
       const theme = savedTheme === "dark" || (savedTheme !== "light" && media.matches) ? "dark" : "light";
       document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.backgroundColor = theme === "dark" ? "#000000" : "#f7f9ff";
       syncFavicon(theme);
       setIsDarkMode(theme === "dark");
     };
@@ -68,6 +69,7 @@ export default function ThemePreloaderProvider({ children }: ThemePreloaderProvi
     setIsDarkMode((prev) => {
       const newTheme = prev ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", newTheme);
+      document.documentElement.style.backgroundColor = newTheme === "dark" ? "#000000" : "#f7f9ff";
       syncFavicon(newTheme);
       localStorage.setItem("theme", newTheme);
       return !prev;

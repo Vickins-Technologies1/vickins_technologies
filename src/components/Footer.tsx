@@ -14,9 +14,9 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 const Footer: FC = () => {
   return (
     <footer className="mt-12">
-      <div className="relative w-full overflow-hidden border-t border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-rgb),0.14),_transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(var(--accent-sky-rgb),0.16),_transparent_60%)]" />
+      <div className="site-footer-surface relative w-full overflow-hidden border-t border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-2xl">
+        <div className="footer-glow absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--accent-rgb),0.14),_transparent_55%)]" />
+        <div className="footer-glow absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(var(--accent-sky-rgb),0.16),_transparent_60%)]" />
         <div className="relative z-10 px-4 sm:px-6 lg:px-10 py-8 sm:py-10">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16">

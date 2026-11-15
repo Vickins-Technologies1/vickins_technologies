@@ -21,7 +21,7 @@ export default function Preloader({ isDarkMode }: PreloaderProps) {
 
   if (!isVisible) return null;
 
-  const bgColor = isDarkMode ? "#0b0f1a" : "#f6f8fc";
+  const bgColor = "var(--preloader-bg)";
   const glowA = isDarkMode ? "rgba(59,130,246,0.28)" : "rgba(37,99,235,0.2)";
   const glowB = isDarkMode ? "rgba(45,212,191,0.22)" : "rgba(45,212,191,0.16)";
   const textPrimary = isDarkMode ? "text-white" : "text-[var(--foreground)]";
