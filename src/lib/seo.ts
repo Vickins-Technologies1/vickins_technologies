@@ -156,5 +156,16 @@ export const homepageJsonLd = {
       ],
       publisher: { "@id": organizationId },
     },
+    {
+      "@type": "Product",
+      "@id": `${siteUrl}/#vornshield`,
+      name: "VornShield",
+      url: "https://vornshield.vickinstechnologies.com/",
+      description:
+        "A proxy infrastructure product with a shared gateway for currently supported HTTP, HTTPS CONNECT, and SOCKS5 access, account controls, traffic purchases, and usage visibility.",
+      category: "Proxy infrastructure",
+      brand: { "@id": organizationId },
+      manufacturer: { "@id": organizationId },
+    },
   ],
 };

@@ -49,6 +49,19 @@ export const chamaPulseProduct = {
   link: "https://chamapulse.vickinstechnologies.com/",
 };
 
+export const vornShieldProduct = {
+  id: "vornshield",
+  title: "VornShield",
+  category: "VICKINS PRODUCT · INFRASTRUCTURE",
+  description:
+    "Proxy infrastructure with a shared gateway for currently supported HTTP, HTTPS CONNECT and SOCKS5 access, account controls, traffic purchases and usage visibility.",
+  image: "/products/v-guard-logo.png",
+  tags: ["Infrastructure", "Proxy", "Platform", "Vickins Product"],
+  link: "https://vornshield.vickinstechnologies.com/",
+};
+
+const legacyVGuardLink = "https://v-guard.vickinstechnologies.com/";
+
 export const myAccurateRentProduct = {
   id: "my-accurate-rent",
   title: "My Accurate Rent",
@@ -96,6 +109,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
     category: "VICKINS PRODUCT · FLAGSHIP",
   },
   chamaPulseProduct,
+  vornShieldProduct,
   {
     id: "dev-1",
     title: "Sorana Property Managers Portal",
@@ -191,9 +205,13 @@ export const mergeDevProjects = (state?: DevProject[] | null): DevProject[] => {
     link: item.link?.trim() || "#",
     attribution: item.attribution?.trim() || undefined,
     actionLabel: item.actionLabel?.trim() || undefined,
-  })).filter((project) => !/(?:chamahub|chama[ -]?hub|vornshield|v-guard)/i.test(
+  })).filter((project) => !/(?:chamahub|chama[ -]?hub)/i.test(
     [project.id, project.title, project.description, project.link, project.image].join(" ")
-  ));
+  )).map((project) =>
+    project.id === "v-guard" || project.link === legacyVGuardLink
+      ? { ...vornShieldProduct, category: "VICKINS PRODUCT · INFRASTRUCTURE" }
+      : project
+  );
 
   const defaults = getDefaultDevProjects();
   const missingProducts = defaults.filter(

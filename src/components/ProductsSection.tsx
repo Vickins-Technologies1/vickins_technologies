@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { chamaPulseProduct, diraOsProduct } from "@/lib/portfolio-collection";
+import { chamaPulseProduct, diraOsProduct, vornShieldProduct } from "@/lib/portfolio-collection";
 
 const products = [
   { ...diraOsProduct, badge: "FLAGSHIP", title: "Dira OS", category: "Business Operating System", className: "lg:col-span-12" },
   { ...chamaPulseProduct, badge: "COMMUNITY PLATFORM", category: "Chama Management Platform", className: "lg:col-span-12" },
+  { ...vornShieldProduct, badge: "INFRASTRUCTURE PLATFORM", category: "Proxy Infrastructure", className: "lg:col-span-12" },
 ];
 
 const syncStages = [
