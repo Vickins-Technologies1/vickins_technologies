@@ -139,7 +139,7 @@ export const getDefaultDevProjects = (): DevProject[] => [
       "Professional company website for Wanjahi Group showcasing premium vehicles, property services, business solutions, client testimonials, and performance stats.",
     image: "/projects/wanjahi.png",
     tags: ["Next.js", "TypeScript", "Tailwind", "Corporate", "UI/UX", "Responsive"],
-    link: "https://wanjahi.com",
+    link: "https://wanjahi-group-six.vercel.app/",
   },
   {
     id: "dev-4",
